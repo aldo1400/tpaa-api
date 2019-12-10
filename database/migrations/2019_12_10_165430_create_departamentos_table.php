@@ -18,6 +18,7 @@ class CreateDepartamentosTable extends Migration
             $table->unsignedInteger('padre_id')->nullable();
             $table->foreign('padre_id')->references('id')->on('departamentos');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
