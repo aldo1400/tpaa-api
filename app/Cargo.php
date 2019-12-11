@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Cargo extends Model
@@ -11,7 +12,7 @@ class Cargo extends Model
 
     const ESTRATEGICO_TACTICO = 'Estratégico Táctico';
     const OPERATIVO_SUPERVISIÓN = 'Operativo Supervisión';
-    const TACTICO_OPERATIVO = 'Táctivo Operativo';
+    const TACTICO_OPERATIVO = 'Táctico Operativo';
     const TACTICO = 'Táctico';
     const EJECUCION = 'Ejecución';
 
