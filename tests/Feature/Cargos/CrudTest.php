@@ -32,7 +32,7 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testObtenerUnDepartamento()
+    public function testObtenerUnCargo()
     {
         $cargos = factory(Cargo::class, 10)
                         ->create();
@@ -49,6 +49,27 @@ class CrudTest extends TestCase
                             'supervisor_id' => null,
                     ],
                 ]);
+    }
+
+    public function testCrearCargoSinSupervisor()
+    {
+        $cargo = factory(Cargo::class)->make();
+        $url = '/api/cargos';
+        $parameters = [
+            'nivel_jerarquico' => $cargo->nivel_jerarquico,
+            'nombre' => $cargo->nombre,
+            'supervisor_id' => '',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('cargos', [
+            'id' => Cargo::latest()->first()->id,
+            'nivel_jerarquico' => $parameters['nivel_jerarquico'],
+            'nombre' => $parameters['nombre'],
+            'supervisor_id' => null,
+        ]);
     }
 
     /**

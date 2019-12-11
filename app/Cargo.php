@@ -36,7 +36,7 @@ class Cargo extends Model
     /**
      * Get the supervisor for the cargo.
      */
-    public function superior(): BelongsTo
+    public function supervisor(): BelongsTo
     {
         return $this->belongsTo('App\Cargo', 'supervisor_id');
     }
