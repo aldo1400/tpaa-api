@@ -77,4 +77,25 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testValidarQueUnDepartamentoConDepartamentosInferioresNoPuedeSerEliminado()
+    {
+        $departamentoPadre = factory(Departamento::class)
+                        ->create();
+
+        $departamento = factory(Departamento::class)
+                        ->create([
+                            'padre_id' => $departamentoPadre->id,
+                        ]);
+
+        $url = '/api/departamentos/'.$departamentoPadre->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->as + sertStatus(409)
+                    ->assertSeeText('El departamento tiene hijos.');
+    }
 }
