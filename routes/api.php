@@ -24,5 +24,6 @@ Route::get('/departamentos/{id}', 'Departamentos\ShowController');
 Route::delete('/departamentos/{id}', 'Departamentos\DeleteProcessController');
 
 // Cargos
+Route::get('/cargos', 'Cargos\IndexController');
 Route::get('/cargos/{id}', 'Cargos\ShowController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');

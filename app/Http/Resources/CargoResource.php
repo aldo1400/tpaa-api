@@ -17,7 +17,7 @@ class CargoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nivel_jerarquico' => $this->nivel_jeraquico,
+            'nivel_jerarquico' => $this->nivel_jerarquico,
             'nombre' => $this->nombre,
             'supervisor_id' => $this->supervisor_id,
         ];
