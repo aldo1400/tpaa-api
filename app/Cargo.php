@@ -40,4 +40,13 @@ class Cargo extends Model
     {
         return $this->belongsTo('App\Cargo', 'supervisor_id');
     }
+
+    public function encontrarCargoInferior()
+    {
+        if (self::where('supervisor_id', $this->id)->first()) {
+            return true;
+        }
+
+        return false;
+    }
 }
