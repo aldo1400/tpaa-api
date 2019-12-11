@@ -17,5 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::delete('/departamentos/{id}', 'Departamentos\DeleteProcessController');
 Route::get('/departamentos', 'Departamentos\IndexController');
+Route::get('/departamentos/{id}', 'Departamentos\ShowController');
+Route::delete('/departamentos/{id}', 'Departamentos\DeleteProcessController');

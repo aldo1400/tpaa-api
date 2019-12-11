@@ -9,7 +9,7 @@ class CrudTest extends TestCase
 {
     public function testObtenerDepartamentos()
     {
-        $departamentos = factory(Departamento::class, 10)
+        factory(Departamento::class, 10)
                     ->create();
 
         $url = '/api/departamentos';
@@ -24,6 +24,25 @@ class CrudTest extends TestCase
                         'tipo',
                         'nombre',
                     ],
+                ],
+            ]);
+    }
+
+    public function testObtenerUnDepartamento()
+    {
+        $departamentos = factory(Departamento::class, 10)
+                    ->create();
+
+        $url = '/api/departamentos/'.$departamentos[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $departamentos[1]->id,
+                        'tipo' => $departamentos[1]->tipo,
+                        'nombre' => $departamentos[1]->nombre,
+                        'padre_id' => '',
                 ],
             ]);
     }
