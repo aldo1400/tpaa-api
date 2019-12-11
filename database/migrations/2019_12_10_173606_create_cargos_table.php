@@ -14,7 +14,11 @@ class CreateCargosTable extends Migration
         Schema::create('cargos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
+            $table->enum('nivel_jerarquico', ['Estratégico Táctico,Operativo Supervisión,Táctico Operativo,Táctico,Ejecución']);
+            $table->unsignedInteger('supervisor_id')->nullable();
+            $table->foreign('supervisor_id')->references('id')->on('cargos');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -1,0 +1,439 @@
+---
+swagger: "2.0"
+info:
+  description: API for laravel Crud
+  version: 1.0.0
+  title: Brisef Backend
+  contact:
+    email: aldo1400@gmail.com.pe
+host: virtserver.swaggerhub.com
+# basePath: /aldo1400/goplay/1.0.0
+
+tags:
+- name: users
+  description: User module
+- name: type-users
+  description: Everything about type of users
+- name: departamentos
+  description: Everything about departamentos
+  
+schemes:
+- https
+paths:
+  
+  # ---------------------
+  #   Departamentos
+  # ---------------------
+  "/departamentos":
+    get:
+      tags:
+      - departamentos
+      summary: Obtener todos los departamentos
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DepartamentoResource'
+        401:
+          description: unauthenticated  
+    
+    post:
+      tags:
+      - departamentos
+      summary: Añadir un departamento
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/DepartamentoCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+  
+  "/departamentos/{id}":
+    get:
+      tags:
+      - departamentos
+      summary: Obtener un departamento
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/DepartamentoResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    delete:
+      tags:
+      - departamentos
+      summary: Eliminar departamento
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Departure deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children
+          
+  # ---------------------
+  #   Users
+  # ---------------------
+  
+  "/logout":
+    post:
+      tags:
+      - login
+      summary: Close user session
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: Cierre de sesión satisfactorio
+        400:
+          description: bad input parameter
+        401:
+          description: No autorizado
+          
+  "/login":
+    post:
+      tags:
+      - users
+      summary: User authentication
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/LoginRequest'
+      responses:
+        200:
+          description: Loged succesfully
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ...PgNg
+              token_type:
+                type: string
+                example: bearer
+                default: bearer
+              expires_in:
+                type: string
+                example: "86400"
+                default: "86400"
+        401:
+          description: unauthenticated
+      
+      
+  "/user":
+    get:
+      tags:
+      - users
+      summary: Get data of current user logged
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            $ref: '#/definitions/UserResource'
+        401:
+          description: unauthenticated
+
+
+  "/users":
+    get:
+      tags:
+      - users
+      summary: Get all users
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserResource'
+        401:
+          description: unauthenticated
+
+    post:
+      tags:
+      - users
+      summary: Add a user
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/UserCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+    
+    delete:
+      tags:
+      - users
+      summary: Delete multiples users
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: array
+          items:
+            type: integer
+      responses:
+        200:
+          description: Users deleted 
+        404:
+          description: Route not found
+        
+  "/users/{id}":
+    get:
+      tags:
+      - users
+      summary: Get a user
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/UserResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    put:
+      tags:
+      - users
+      summary: Edit information of a user
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: User ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/UserUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access      
+  
+  # ---------------------
+  #   Type Users
+  # ---------------------
+  "/type-users":
+    get:
+      tags:
+      - type-users
+      summary: Get all type of users
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TypeUserResource'
+        401:
+          description: unauthenticated       
+         
+definitions:
+  
+  DepartamentoCreateRequest:
+    type: object
+    properties:
+      tipo:
+        type: string
+        enum: [
+          'Gerencia General',
+          'Gerencia',
+          'Subgerencia',
+          'Área',
+          'Subarea'
+          ]
+      nombre:
+        type: string
+      padre_id:
+        type: integer
+        
+  DepartamentoResource:
+    type: object
+    properties:
+      tipo:
+        type: string
+        enum: [
+          'Gerencia General',
+          'Gerencia',
+          'Subgerencia',
+          'Área',
+          'Subarea'
+          ]
+      nombre:
+        type: string
+      padre_id:
+        type: integer
+    
+  LoginRequest:
+    type: object
+    properties:
+      username:
+        type: string
+        format: email
+      password:
+        type: string
+        
+  EmailRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+  
+  PasswordResetRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+      password_confirmation:
+        type: string
+      token: 
+        type: string
+  
+  UserResource:
+    type: object
+    properties:
+      id:
+        type: number
+      email:
+        type: string
+        format: email
+      name:
+        type: string
+      typeUser:
+        $ref: "#/definitions/TypeUserResource"        
+  
+  TypeUserResource:
+    type: object
+    properties:
+      id:
+        type: number
+      name:
+        type: string
+      code:
+        type: string
+  
+  UserCreateRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+      name:
+        type: string
+      type_user_id:
+        type: integer
+        
+  UserUpdateRequest:
+    type: object
+    properties:
+      email:
+        type: string
+        format: email
+      name:
+        type: string
+      type_user_id:
+        type: integer
+      
+# Added by API Auto Mocking Plugin
+# basePath: /aldo1400/goplay/1.0.0
+# Added by API Auto Mocking Plugin
+# basePath: /inventory5/Project/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /inventory5/botica/1.0.0
