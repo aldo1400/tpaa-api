@@ -47,6 +47,84 @@ class CrudTest extends TestCase
             ]);
     }
 
+    public function testCrearDepartamentoSinPadre()
+    {
+        $departamento = factory(Departamento::class)->make();
+        $url = '/api/departamentos';
+        $parameters = [
+            'tipo' => $departamento->tipo,
+            'nombre' => $departamento->nombre,
+            'padre_id' => '',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('departamentos', [
+            'id' => Departamento::latest()->first()->id,
+            'tipo' => $parameters['tipo'],
+            'nombre' => $parameters['nombre'],
+            'padre_id' => null,
+        ]);
+    }
+
+    public function testValidarCrearDepartamentoSinPadre()
+    {
+        $departamento = factory(Departamento::class)->make();
+        $url = '/api/departamentos';
+        $parameters = [
+            'tipo' => '',
+            'nombre' => '',
+            'padre_id' => '',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'tipo',
+                'nombre',
+            ]);
+
+        $parameters = [
+                'tipo' => 'OTRO TIPO',
+                'nombre' => $departamento->nombre,
+                'padre_id' => '99999',
+            ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors([
+                    'tipo',
+                    'padre_id',
+                ]);
+    }
+
+    public function testCrearDepartamentoConPadre()
+    {
+        $departamentoPadre = factory(Departamento::class)->make();
+        $departamento = factory(Departamento::class)->make();
+        $url = '/api/departamentos';
+        $parameters = [
+            'tipo' => $departamento->tipo,
+            'nombre' => $departamento->nombre,
+            'padre_id' => $departamentoPadre->id,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('departamentos', [
+            'id' => Departamento::latest()->first()->id,
+            'tipo' => $parameters['tipo'],
+            'nombre' => $parameters['nombre'],
+            'padre_id' => $parameters['padre_id'],
+        ]);
+    }
+
     /**
      * A basic test example.
      */
@@ -95,7 +173,7 @@ class CrudTest extends TestCase
 
         $response = $this->json('DELETE', $url);
 
-        $response->as + sertStatus(409)
+        $response->assertStatus(409)
                     ->assertSeeText('El departamento tiene hijos.');
     }
 }

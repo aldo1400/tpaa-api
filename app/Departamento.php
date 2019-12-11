@@ -13,7 +13,7 @@ class Departamento extends Model
     const GERENCIAGENERAL = 'Gerencia General';
     const GERENCIA = 'Gerencia';
     const SUBGERENCIA = 'Subgerencia';
-    const AREA = 'Area';
+    const AREA = 'Área';
     const SUBAREA = 'Subarea';
 
     /**
