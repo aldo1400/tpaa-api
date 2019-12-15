@@ -7,6 +7,52 @@ use App\Colaborador;
 
 class CrudTest extends TestCase
 {
+    public function testObtenerUnColaborador()
+    {
+        $colaboradores = factory(Colaborador::class, 10)
+                    ->create();
+
+        $url = '/api/colaboradores/'.$colaboradores[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $colaboradores[1]->id,
+                        'rut' => $colaboradores[1]->rut,
+            'usuario' => $colaboradores[1]->usuario,
+            'nombres' => $colaboradores[1]->nombres,
+            'apellidos' => $colaboradores[1]->apellidos,
+            'sexo' => $colaboradores[1]->sexo,
+            'nacionalidad' => $colaboradores[1]->nacionalidad,
+            'estado_civil' => $colaboradores[1]->estado_civil,
+            'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('d-m-Y'),
+            'edad' => $colaboradores[1]->edad,
+            'email' => $colaboradores[1]->email,
+            'nivel_educacion' => $colaboradores[1]->nivel_educacion,
+            'domicilio' => $colaboradores[1]->domicilio,
+            'licencia_b' => $colaboradores[1]->licencia_b,
+            'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('d-m-Y'),
+            'licencia_d' => $colaboradores[1]->licencia_d,
+            'vencimiento_licencia_d' => $colaboradores[1]->vencimiento_licencia_d->format('d-m-Y'),
+            'carnet_portuario' => $colaboradores[1]->carnet_portuario,
+            'vencimiento_carnet_portuario' => $colaboradores[1]->vencimiento_carnet_portuario->format('d-m-Y'),
+            'talla_calzado' => $colaboradores[1]->talla_calzado,
+            'talla_chaleco' => $colaboradores[1]->talla_chaleco,
+            'talla_polera' => $colaboradores[1]->talla_polera,
+            'talla_pantalon' => $colaboradores[1]->talla_pantalon,
+            'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('d-m-Y'),
+            'telefono' => $colaboradores[1]->telefono,
+            'celular' => $colaboradores[1]->celular,
+            'anexo' => $colaboradores[1]->anexo,
+            'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
+            'estado' => $colaboradores[1]->estado,
+            'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('d-m-Y'),
+                ],
+            ]);
+    }
+
     /**
      * A basic test example.
      */
@@ -49,9 +95,7 @@ class CrudTest extends TestCase
             'fecha_inactividad' => '',
         ];
 
-        // dd($parameters);
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('colaboradores', [
