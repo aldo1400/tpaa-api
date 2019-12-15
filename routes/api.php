@@ -28,3 +28,5 @@ Route::get('/cargos', 'Cargos\IndexController');
 Route::get('/cargos/{id}', 'Cargos\ShowController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
+
+Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
