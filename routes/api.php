@@ -21,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/departamentos', 'Departamentos\IndexController');
 Route::post('/departamentos', 'Departamentos\CreateProcessController');
 Route::get('/departamentos/{id}', 'Departamentos\ShowController');
+Route::patch('/departamentos/{id}', 'Departamentos\UpdateProcessController');
 Route::delete('/departamentos/{id}', 'Departamentos\DeleteProcessController');
 
 // Cargos

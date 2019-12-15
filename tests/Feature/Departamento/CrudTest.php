@@ -176,4 +176,34 @@ class CrudTest extends TestCase
         $response->assertStatus(409)
                     ->assertSeeText('El departamento tiene hijos.');
     }
+
+    public function testEditarDepartamento()
+    {
+        $departamento = factory(Departamento::class)
+                        ->create([
+                            'tipo' => Departamento::GERENCIA_GENERAL,
+                        ]);
+
+        $url = "/api/departamentos/{$departamento->id}";
+
+        $parameters = [
+            'nombre' => 'Area de administración de recursos humanos',
+            'tipo' => Departamento::GERENCIA,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('departamentos', [
+            'id' => $departamento->id,
+            'nombre' => $parameters['nombre'],
+            'tipo' => $departamento->tipo,
+        ]);
+
+        $this->assertDatabaseMissing('departamentos', [
+            'id' => $departamento->id,
+            'nombre' => $departamento->nombre,
+        ]);
+    }
 }

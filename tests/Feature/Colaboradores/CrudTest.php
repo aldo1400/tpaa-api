@@ -64,7 +64,7 @@ class CrudTest extends TestCase
         $parameters = [
             'rut' => $colaborador->rut,
             'usuario' => $colaborador->usuario,
-            'password' => $colaborador->password,
+            'password' => 'aldo123',
             'nombres' => $colaborador->nombres,
             'apellidos' => $colaborador->apellidos,
             'sexo' => $colaborador->sexo,
@@ -102,7 +102,6 @@ class CrudTest extends TestCase
             'id' => Colaborador::latest()->first()->id,
             'rut' => $parameters['rut'],
             'usuario' => $parameters['usuario'],
-            'password' => $parameters['password'],
             'nombres' => $parameters['nombres'],
             'apellidos' => $parameters['apellidos'],
             'sexo' => $parameters['sexo'],

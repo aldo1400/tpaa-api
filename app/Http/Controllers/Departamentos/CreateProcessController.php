@@ -12,10 +12,11 @@ class CreateProcessController extends Controller
     {
         //TODO:Validar valor del padre
         $departamento = Departamento::make($request->validated());
+
         $departamento->padre()->associate($request->padre_id);
 
         $departamento->save();
 
-        return response()->json(null,201);
+        return response()->json(null, 201);
     }
 }

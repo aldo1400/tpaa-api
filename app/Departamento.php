@@ -10,7 +10,7 @@ class Departamento extends Model
 {
     use SoftDeletes;
 
-    const GERENCIAGENERAL = 'Gerencia General';
+    const GERENCIA_GENERAL = 'Gerencia General';
     const GERENCIA = 'Gerencia';
     const SUBGERENCIA = 'Subgerencia';
     const AREA = 'Área';

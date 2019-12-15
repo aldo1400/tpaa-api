@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Colaboradores;
 
-use Carbon\Carbon;
 use App\Colaborador;
 use App\Departamento;
 use Freshwork\ChileanBundle\Rut;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\ColaboradorRequest;
 
 class CreateProcessController extends Controller
@@ -15,7 +15,7 @@ class CreateProcessController extends Controller
     {
         $colaborador = Colaborador::make($request->validated());
 
-        $date = Carbon::createFromFormat('d/m/Y', '11/06/1990');
+        $colaborador->password = Hash::make($request->password);
 
         if (!(Rut::parse($request->rut)->validate())) {
             return response()->json(['message' => 'El rut es inválido.'], 409);
