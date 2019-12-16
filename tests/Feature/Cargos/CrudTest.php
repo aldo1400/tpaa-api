@@ -123,4 +123,34 @@ class CrudTest extends TestCase
         $response->assertStatus(409)
                     ->assertSeeText('El cargo tiene hijos.');
     }
+
+    public function testEditarCargo()
+    {
+        $cargo = factory(Cargo::class)
+                        ->create([
+                            'nivel_jerarquico' => Cargo::ESTRATEGICO_TACTICO,
+                        ]);
+
+        $url = "/api/cargos/{$cargo->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            'nivel_jerarquico' => Cargo::EJECUCION,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cargos', [
+            'id' => $cargo->id,
+            'nombre' => $parameters['nombre'],
+            'nivel_jerarquico' => $cargo->nivel_jerarquico,
+        ]);
+
+        $this->assertDatabaseMissing('cargos', [
+            'id' => $cargo->id,
+            'nombre' => $cargo->nombre,
+        ]);
+    }
 }

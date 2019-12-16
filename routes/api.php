@@ -27,8 +27,11 @@ Route::delete('/departamentos/{id}', 'Departamentos\DeleteProcessController');
 // Cargos
 Route::get('/cargos', 'Cargos\IndexController');
 Route::get('/cargos/{id}', 'Cargos\ShowController');
+Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 
+// Colaboradores
 Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
+// Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
 Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
