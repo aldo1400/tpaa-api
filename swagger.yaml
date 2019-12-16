@@ -94,6 +94,33 @@ paths:
         401:
           description: Unauthenticated
     
+    patch:
+      tags:
+      - cargos
+      summary: Editar nombre de un cargo
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Cargo ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/DepartamentoUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access  
+    
     delete:
       tags:
       - cargos
@@ -228,6 +255,33 @@ paths:
           description: Method or resource not found
         401:
           description: Unauthenticated
+    
+    patch:
+      tags:
+      - departamentos
+      summary: Editar nombre de un departamento
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Departamento ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/DepartamentoUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access   
     
     delete:
       tags:
@@ -497,6 +551,11 @@ definitions:
       supervisor_id:
         type: integer
   
+  CargoUpdateRequest:
+    type: object
+    properties:
+      nombre:
+        type: string
   
   ColaboradorCreateRequest:
     type: object
@@ -687,6 +746,14 @@ definitions:
       fecha_inactividad:
         type: string
         format: date
+      gerencia_id:
+        $ref: "#/definitions/DepartamentoResource" 
+      subgerencia_id:
+        $ref: "#/definitions/DepartamentoResource" 
+      area_id:
+        $ref: "#/definitions/DepartamentoResource" 
+      subarea_id:
+        $ref: "#/definitions/DepartamentoResource" 
     
   DepartamentoCreateRequest:
     type: object
@@ -704,7 +771,13 @@ definitions:
         type: string
       padre_id:
         type: integer
-        
+  
+  DepartamentoUpdateRequest:
+    type: object
+    properties:
+      nombre:
+        type: string
+  
   DepartamentoResource:
     type: object
     properties:
