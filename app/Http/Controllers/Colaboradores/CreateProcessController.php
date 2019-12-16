@@ -17,19 +17,19 @@ class CreateProcessController extends Controller
 
         $colaborador->password = Hash::make($request->password);
 
-        if (!(Rut::parse($request->rut)->validate())) {
+        if (!(Rut::parse($request->rut)->quiet()->validate())) {
             return response()->json(['message' => 'El rut es inválido.'], 409);
         }
 
         if ($request->departamento_id) {
             $departamento = Departamento::findOrFail($request->departamento_id);
-            if ($departamento->tipo == 'Gerencia General' || $departamento->tipo == 'Gerencia') {
+            if ($departamento->tipo == Departamento::GERENCIA_GENERAL || $departamento->tipo == Departamento::GERENCIA) {
                 $colaborador->gerencia()->associate($request->departamento_id);
-            } elseif ($departamento->tipo == 'Subgerencia') {
+            } elseif ($departamento->tipo == Departamento::SUBGERENCIA) {
                 $colaborador->subgerencia()->associate($request->departamento_id);
-            } elseif ($departamento->tipo == 'Área') {
+            } elseif ($departamento->tipo == Departamento::AREA) {
                 $colaborador->area()->associate($request->departamento_id);
-            } elseif ($departamento->tipo == 'Subarea') {
+            } elseif ($departamento->tipo == Departamento::SUBAREA) {
                 $colaborador->subarea()->associate($request->departamento_id);
             } else {
             }

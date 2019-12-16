@@ -47,6 +47,10 @@ class ColaboradorResource extends JsonResource
             'contacto_emergencia_telefono' => $this->contacto_emergencia_telefono,
             'estado' => $this->estado,
             'fecha_inactividad' => $this->fecha_inactividad->format('d-m-Y'),
+            'gerencia_id' => $this->gerencia_id ? new DepartamentoResource($this->gerencia) : '',
+            'subgerencia_id' => $this->subgerencia_id ? new DepartamentoResource($this->subgerencia) : '',
+            'area_id' => $this->area_id ? new DepartamentoResource($this->area) : '',
+            'subarea_id' => $this->subarea_id ? new DepartamentoResource($this->subarea) : '',
         ];
     }
 }
