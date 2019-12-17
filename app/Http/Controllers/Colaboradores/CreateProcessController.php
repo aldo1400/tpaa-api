@@ -15,6 +15,7 @@ class CreateProcessController extends Controller
     {
         $colaborador = Colaborador::make($request->validated());
 
+        $colaborador->rut = $request->rut;
         $colaborador->password = Hash::make($request->password);
 
         if (!(Rut::parse($request->rut)->quiet()->validate())) {

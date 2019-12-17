@@ -19,7 +19,6 @@ class Colaborador extends Model
      * @var array
      */
     protected $fillable = [
-        'rut',
         'usuario',
         'password',
         'nombres',

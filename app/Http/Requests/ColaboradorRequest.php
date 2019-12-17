@@ -23,8 +23,7 @@ class ColaboradorRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'rut' => ['required', 'unique:colaboradores,rut', 'max:255'],
+        $rules = [
             'usuario' => ['nullable', 'string'],
             'password' => ['nullable', 'string'],
             'nombres' => ['nullable', 'max:255'],
@@ -57,5 +56,11 @@ class ColaboradorRequest extends FormRequest
             'fecha_inactividad' => ['nullable', 'date', 'date_format:Y-m-d'],
             'departamento_id' => ['nullable', 'exists:departamentos,id'],
         ];
+
+        if (!$this->route('id')) {
+            $rules['rut'] = 'required|unique:colaboradores,rut|max:255';
+        }
+
+        return $rules;
     }
 }
