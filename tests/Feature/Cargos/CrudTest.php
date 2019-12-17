@@ -126,16 +126,22 @@ class CrudTest extends TestCase
 
     public function testEditarCargo()
     {
-        $cargo = factory(Cargo::class)
-                        ->create([
+        $cargos = factory(Cargo::class, 1)
+                    ->create([
                             'nivel_jerarquico' => Cargo::ESTRATEGICO_TACTICO,
-                        ]);
+                    ])
+                    ->each(function ($cargo) {
+                        $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
+                    });
 
-        $url = "/api/cargos/{$cargo->id}";
+        $supervisor = factory(Cargo::class)->create();
+
+        $url = "/api/cargos/{$cargos[0]->id}";
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
             'nivel_jerarquico' => Cargo::EJECUCION,
+            'supervisor_id' => $supervisor->id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -143,14 +149,17 @@ class CrudTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('cargos', [
-            'id' => $cargo->id,
+            'id' => $cargos[0]->id,
             'nombre' => $parameters['nombre'],
-            'nivel_jerarquico' => $cargo->nivel_jerarquico,
+            'nivel_jerarquico' => $parameters['nivel_jerarquico'],
+            'supervisor_id' => $parameters['supervisor_id'],
         ]);
 
         $this->assertDatabaseMissing('cargos', [
-            'id' => $cargo->id,
-            'nombre' => $cargo->nombre,
+            'id' => $cargos[0]->id,
+            'nombre' => $cargos[0]->nombre,
+            'nivel_jerarquico' => $cargos[0]->nivel_jerarquico,
+            'supervisor_id' => $cargos[0]->supervisor_id,
         ]);
     }
 }
