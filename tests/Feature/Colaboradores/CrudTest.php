@@ -518,4 +518,19 @@ class CrudTest extends TestCase
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('El rut es inválido.'));
     }
+
+    public function testValidarRUT()
+    {
+        $rut = '12345679';
+
+        $url = '/api/colaboradores/validacion-rut';
+
+        $parameters = [
+            'rut' => $rut,
+        ];
+
+        $response = $this->json('GET', $url, $parameters);
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('El rut es inválido.'));
+    }
 }
