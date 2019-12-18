@@ -11,7 +11,18 @@ class UpdateProcessController extends Controller
     {
         $colaborador = Colaborador::findOrFail($id);
         $colaborador->fill($request->validated());
-        // relaciones
+
+        $tipoDepartamento = $colaborador->obtenerTipoDepartamento();
+
+        if (empty($request->departamento_id)) {
+            $colaborador->$tipoDepartamento.'()'->associate($request->departamento_id);
+        } else {
+            $colaborador->$tipoDepartamento.'()'->associate('');
+            $departamento = Departamento::findOrFail($request->departamento_id);
+            $colaborador->definirDepartamento($departamento);
+        }
+
+        $colaborador->save();
 
         return response()->json();
     }

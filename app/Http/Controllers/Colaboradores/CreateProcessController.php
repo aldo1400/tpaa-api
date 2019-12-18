@@ -24,16 +24,7 @@ class CreateProcessController extends Controller
 
         if ($request->departamento_id) {
             $departamento = Departamento::findOrFail($request->departamento_id);
-            if ($departamento->tipo == Departamento::GERENCIA_GENERAL || $departamento->tipo == Departamento::GERENCIA) {
-                $colaborador->gerencia()->associate($request->departamento_id);
-            } elseif ($departamento->tipo == Departamento::SUBGERENCIA) {
-                $colaborador->subgerencia()->associate($request->departamento_id);
-            } elseif ($departamento->tipo == Departamento::AREA) {
-                $colaborador->area()->associate($request->departamento_id);
-            } elseif ($departamento->tipo == Departamento::SUBAREA) {
-                $colaborador->subarea()->associate($request->departamento_id);
-            } else {
-            }
+            $colaborador->definirDepartamento($departamento);
         }
 
         $colaborador->save();

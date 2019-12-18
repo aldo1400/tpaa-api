@@ -199,8 +199,8 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
-
         $this->assertDatabaseHas('colaboradores', [
             'id' => Colaborador::latest()->first()->id,
             'rut' => $parameters['rut'],

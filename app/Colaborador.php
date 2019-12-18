@@ -106,4 +106,40 @@ class Colaborador extends Model
     {
         return $this->belongsTo('App\Departamento', 'subarea_id');
     }
+
+    public function obtenerTipoDepartamento()
+    {
+        $departamento = '';
+
+        if ($this->gerencia) {
+            $departamento = 'gerencia';
+        }
+        if ($this->subgerencia) {
+            $departamento = 'subgerencia';
+        }
+        if ($this->area) {
+            $departamento = 'area';
+        }
+        if ($this->subarea) {
+            $departamento = 'subarea';
+        }
+
+        return $departamento;
+    }
+
+    public function definirDepartamento($departamento)
+    {
+        if ($departamento->tipo == Departamento::GERENCIA_GENERAL || $departamento->tipo == Departamento::GERENCIA) {
+            $this->gerencia()->associate($departamento->id);
+        } elseif ($departamento->tipo == Departamento::SUBGERENCIA) {
+            $this->subgerencia()->associate($departamento->id);
+        } elseif ($departamento->tipo == Departamento::AREA) {
+            $this->area()->associate($departamento->id);
+        } elseif ($departamento->tipo == Departamento::SUBAREA) {
+            $this->subarea()->associate($departamento->id);
+        } else {
+        }
+
+        return true;
+    }
 }
