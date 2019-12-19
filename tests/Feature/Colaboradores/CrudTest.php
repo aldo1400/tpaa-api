@@ -519,6 +519,380 @@ class CrudTest extends TestCase
                     ->assertSeeText(json_encode('El rut es inválido.'));
     }
 
+    /**
+     * A basic test example.
+     */
+    public function testActualizarColaboradorSinDepartamentoADepartamento()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $departamento = factory(Departamento::class)->create([
+            'tipo' => Departamento::GERENCIA_GENERAL,
+        ]);
+
+        $url = '/api/colaboradores/'.$colaborador->id;
+
+        $parameters = [
+            'rut' => 'RUT-1234578',
+            'usuario' => $colaborador->usuario,
+            // 'password' => 'aldo123',
+            'nombres' => $colaborador->nombres,
+            'apellidos' => $colaborador->apellidos,
+            'sexo' => $colaborador->sexo,
+            'nacionalidad' => '',
+            'estado_civil' => '',
+            'fecha_nacimiento' => '',
+            'edad' => '',
+            'email' => '',
+            'nivel_educacion' => '',
+            'domicilio' => $colaborador->domicilio,
+            'licencia_b' => $colaborador->licencia_b,
+            'vencimiento_licencia_b' => $colaborador->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaborador->licencia_d,
+            'vencimiento_licencia_d' => $colaborador->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => $colaborador->carnet_portuario,
+            'vencimiento_carnet_portuario' => $colaborador->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => $colaborador->talla_calzado,
+            'talla_chaleco' => $colaborador->talla_chaleco,
+            'talla_polera' => $colaborador->talla_polera,
+            'talla_pantalon' => $colaborador->talla_pantalon,
+            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'telefono' => $colaborador->telefono,
+            'celular' => $colaborador->celular,
+            'anexo' => $colaborador->anexo,
+            'contacto_emergencia_nombre' => $colaborador->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
+            'estado' => $colaborador->estado,
+            'fecha_inactividad' => '',
+            'departamento_id' => $departamento->id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => Colaborador::latest()->first()->id,
+            'rut' => $colaborador->rut,
+            'usuario' => $parameters['usuario'],
+            'nombres' => $parameters['nombres'],
+            'apellidos' => $parameters['apellidos'],
+            'sexo' => $parameters['sexo'],
+            'nacionalidad' => null,
+            'estado_civil' => null,
+            'fecha_nacimiento' => null,
+            'edad' => null,
+            'email' => null,
+            'nivel_educacion' => null,
+            'domicilio' => $parameters['domicilio'],
+            'licencia_b' => $parameters['licencia_b'],
+            'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+            'licencia_d' => $parameters['licencia_d'],
+            'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+            'carnet_portuario' => $parameters['carnet_portuario'],
+            'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+            'talla_calzado' => $parameters['talla_calzado'],
+            'talla_chaleco' => $parameters['talla_chaleco'],
+            'talla_polera' => $parameters['talla_polera'],
+            'talla_pantalon' => $parameters['talla_pantalon'],
+            'fecha_ingreso' => $parameters['fecha_ingreso'],
+            'telefono' => $parameters['telefono'],
+            'celular' => $parameters['celular'],
+            'anexo' => $parameters['anexo'],
+            'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+            'estado' => $parameters['estado'],
+            'fecha_inactividad' => null,
+            'gerencia_id' => $parameters['departamento_id'],
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testActualizarColaboradorConDepartamentoAOtroDepartamento()
+    {
+        $departamento = factory(Departamento::class)->create([
+            'tipo' => Departamento::GERENCIA_GENERAL,
+        ]);
+
+        $colaborador = factory(Colaborador::class)->create([
+            'gerencia_id' => $departamento->id,
+        ]);
+
+        $nuevoDepartamento = factory(Departamento::class)->create([
+            'tipo' => Departamento::AREA,
+        ]);
+
+        $url = '/api/colaboradores/'.$colaborador->id;
+
+        $parameters = [
+            'rut' => 'RUT-1234578',
+            'usuario' => $colaborador->usuario,
+            // 'password' => 'aldo123',
+            'nombres' => $colaborador->nombres,
+            'apellidos' => $colaborador->apellidos,
+            'sexo' => $colaborador->sexo,
+            'nacionalidad' => '',
+            'estado_civil' => '',
+            'fecha_nacimiento' => '',
+            'edad' => '',
+            'email' => '',
+            'nivel_educacion' => '',
+            'domicilio' => $colaborador->domicilio,
+            'licencia_b' => $colaborador->licencia_b,
+            'vencimiento_licencia_b' => $colaborador->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaborador->licencia_d,
+            'vencimiento_licencia_d' => $colaborador->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => $colaborador->carnet_portuario,
+            'vencimiento_carnet_portuario' => $colaborador->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => $colaborador->talla_calzado,
+            'talla_chaleco' => $colaborador->talla_chaleco,
+            'talla_polera' => $colaborador->talla_polera,
+            'talla_pantalon' => $colaborador->talla_pantalon,
+            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'telefono' => $colaborador->telefono,
+            'celular' => $colaborador->celular,
+            'anexo' => $colaborador->anexo,
+            'contacto_emergencia_nombre' => $colaborador->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
+            'estado' => $colaborador->estado,
+            'fecha_inactividad' => '',
+            'departamento_id' => $nuevoDepartamento->id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => Colaborador::latest()->first()->id,
+            'rut' => $colaborador->rut,
+            'usuario' => $parameters['usuario'],
+            'nombres' => $parameters['nombres'],
+            'apellidos' => $parameters['apellidos'],
+            'sexo' => $parameters['sexo'],
+            'nacionalidad' => null,
+            'estado_civil' => null,
+            'fecha_nacimiento' => null,
+            'edad' => null,
+            'email' => null,
+            'nivel_educacion' => null,
+            'domicilio' => $parameters['domicilio'],
+            'licencia_b' => $parameters['licencia_b'],
+            'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+            'licencia_d' => $parameters['licencia_d'],
+            'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+            'carnet_portuario' => $parameters['carnet_portuario'],
+            'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+            'talla_calzado' => $parameters['talla_calzado'],
+            'talla_chaleco' => $parameters['talla_chaleco'],
+            'talla_polera' => $parameters['talla_polera'],
+            'talla_pantalon' => $parameters['talla_pantalon'],
+            'fecha_ingreso' => $parameters['fecha_ingreso'],
+            'telefono' => $parameters['telefono'],
+            'celular' => $parameters['celular'],
+            'anexo' => $parameters['anexo'],
+            'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+            'estado' => $parameters['estado'],
+            'fecha_inactividad' => null,
+            'gerencia_id' => null,
+            'subgerencia_id' => null,
+            'subarea_id' => null,
+            'area_id' => $parameters['departamento_id'],
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testActualizarColaboradorDiferenteIDdeDepartamento()
+    {
+        $departamento = factory(Departamento::class)->create([
+            'tipo' => Departamento::GERENCIA_GENERAL,
+        ]);
+
+        $colaborador = factory(Colaborador::class)->create([
+            'gerencia_id' => $departamento->id,
+        ]);
+
+        $nuevoDepartamento = factory(Departamento::class)->create([
+            'tipo' => Departamento::GERENCIA_GENERAL,
+        ]);
+
+        $url = '/api/colaboradores/'.$colaborador->id;
+
+        $parameters = [
+            'rut' => 'RUT-1234578',
+            'usuario' => $colaborador->usuario,
+            // 'password' => 'aldo123',
+            'nombres' => $colaborador->nombres,
+            'apellidos' => $colaborador->apellidos,
+            'sexo' => $colaborador->sexo,
+            'nacionalidad' => '',
+            'estado_civil' => '',
+            'fecha_nacimiento' => '',
+            'edad' => '',
+            'email' => '',
+            'nivel_educacion' => '',
+            'domicilio' => $colaborador->domicilio,
+            'licencia_b' => $colaborador->licencia_b,
+            'vencimiento_licencia_b' => $colaborador->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaborador->licencia_d,
+            'vencimiento_licencia_d' => $colaborador->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => $colaborador->carnet_portuario,
+            'vencimiento_carnet_portuario' => $colaborador->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => $colaborador->talla_calzado,
+            'talla_chaleco' => $colaborador->talla_chaleco,
+            'talla_polera' => $colaborador->talla_polera,
+            'talla_pantalon' => $colaborador->talla_pantalon,
+            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'telefono' => $colaborador->telefono,
+            'celular' => $colaborador->celular,
+            'anexo' => $colaborador->anexo,
+            'contacto_emergencia_nombre' => $colaborador->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
+            'estado' => $colaborador->estado,
+            'fecha_inactividad' => '',
+            'departamento_id' => $nuevoDepartamento->id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => Colaborador::latest()->first()->id,
+            'rut' => $colaborador->rut,
+            'usuario' => $parameters['usuario'],
+            'nombres' => $parameters['nombres'],
+            'apellidos' => $parameters['apellidos'],
+            'sexo' => $parameters['sexo'],
+            'nacionalidad' => null,
+            'estado_civil' => null,
+            'fecha_nacimiento' => null,
+            'edad' => null,
+            'email' => null,
+            'nivel_educacion' => null,
+            'domicilio' => $parameters['domicilio'],
+            'licencia_b' => $parameters['licencia_b'],
+            'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+            'licencia_d' => $parameters['licencia_d'],
+            'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+            'carnet_portuario' => $parameters['carnet_portuario'],
+            'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+            'talla_calzado' => $parameters['talla_calzado'],
+            'talla_chaleco' => $parameters['talla_chaleco'],
+            'talla_polera' => $parameters['talla_polera'],
+            'talla_pantalon' => $parameters['talla_pantalon'],
+            'fecha_ingreso' => $parameters['fecha_ingreso'],
+            'telefono' => $parameters['telefono'],
+            'celular' => $parameters['celular'],
+            'anexo' => $parameters['anexo'],
+            'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+            'estado' => $parameters['estado'],
+            'fecha_inactividad' => null,
+            'gerencia_id' => $parameters['departamento_id'],
+            'subgerencia_id' => null,
+            'subarea_id' => null,
+            'area_id' => null,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testActualizarColaboradorConDepartamentoASinDepartamento()
+    {
+        $departamento = factory(Departamento::class)->create([
+            'tipo' => Departamento::GERENCIA_GENERAL,
+        ]);
+
+        $colaborador = factory(Colaborador::class)->create([
+            'gerencia_id' => $departamento->id,
+        ]);
+
+        $url = '/api/colaboradores/'.$colaborador->id;
+
+        $parameters = [
+            'rut' => 'RUT-1234578',
+            'usuario' => $colaborador->usuario,
+            // 'password' => 'aldo123',
+            'nombres' => $colaborador->nombres,
+            'apellidos' => $colaborador->apellidos,
+            'sexo' => $colaborador->sexo,
+            'nacionalidad' => '',
+            'estado_civil' => '',
+            'fecha_nacimiento' => '',
+            'edad' => '',
+            'email' => '',
+            'nivel_educacion' => '',
+            'domicilio' => $colaborador->domicilio,
+            'licencia_b' => $colaborador->licencia_b,
+            'vencimiento_licencia_b' => $colaborador->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaborador->licencia_d,
+            'vencimiento_licencia_d' => $colaborador->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => $colaborador->carnet_portuario,
+            'vencimiento_carnet_portuario' => $colaborador->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => $colaborador->talla_calzado,
+            'talla_chaleco' => $colaborador->talla_chaleco,
+            'talla_polera' => $colaborador->talla_polera,
+            'talla_pantalon' => $colaborador->talla_pantalon,
+            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'telefono' => $colaborador->telefono,
+            'celular' => $colaborador->celular,
+            'anexo' => $colaborador->anexo,
+            'contacto_emergencia_nombre' => $colaborador->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
+            'estado' => $colaborador->estado,
+            'fecha_inactividad' => '',
+            'departamento_id' => '',
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => Colaborador::latest()->first()->id,
+            'rut' => $colaborador->rut,
+            'usuario' => $parameters['usuario'],
+            'nombres' => $parameters['nombres'],
+            'apellidos' => $parameters['apellidos'],
+            'sexo' => $parameters['sexo'],
+            'nacionalidad' => null,
+            'estado_civil' => null,
+            'fecha_nacimiento' => null,
+            'edad' => null,
+            'email' => null,
+            'nivel_educacion' => null,
+            'domicilio' => $parameters['domicilio'],
+            'licencia_b' => $parameters['licencia_b'],
+            'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+            'licencia_d' => $parameters['licencia_d'],
+            'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+            'carnet_portuario' => $parameters['carnet_portuario'],
+            'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+            'talla_calzado' => $parameters['talla_calzado'],
+            'talla_chaleco' => $parameters['talla_chaleco'],
+            'talla_polera' => $parameters['talla_polera'],
+            'talla_pantalon' => $parameters['talla_pantalon'],
+            'fecha_ingreso' => $parameters['fecha_ingreso'],
+            'telefono' => $parameters['telefono'],
+            'celular' => $parameters['celular'],
+            'anexo' => $parameters['anexo'],
+            'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+            'estado' => $parameters['estado'],
+            'fecha_inactividad' => null,
+            'gerencia_id' => null,
+            'subgerencia_id' => null,
+            'subarea_id' => null,
+            'area_id' => null,
+        ]);
+    }
+
     public function testValidarRUT()
     {
         $rut = '12345679';

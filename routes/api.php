@@ -34,5 +34,5 @@ Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 // Colaboradores
 Route::get('/colaboradores/validacion-rut', 'Colaboradores\ValidateRutController');
 Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
-// Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
+Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
 Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
