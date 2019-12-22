@@ -27,4 +27,24 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+
+    public function testCrearCurso()
+    {
+        $curso = factory(Curso::class)->make();
+        $url = '/api/cursos';
+
+        $parameters = [
+            'nombre' => $curso->nombre,
+            'interno' => $curso->interno,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('cursos', [
+            'id' => Curso::latest()->first()->id,
+            'nombre' => $parameters['nombre'],
+            'interno' => $parameters['interno'],
+        ]);
+    }
 }

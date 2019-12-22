@@ -36,6 +36,7 @@ Route::get('/tipo-cargas', 'TipoCargas\IndexController');
 
 // Cursos
 Route::get('/cursos', 'Cursos\IndexController');
+Route::post('/cursos', 'Cursos\CreateProcessController');
 
 // Colaboradores
 Route::get('/colaboradores/validacion-rut', 'Colaboradores\ValidateRutController');
