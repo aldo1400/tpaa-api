@@ -68,4 +68,35 @@ class CrudTest extends TestCase
             'interno' => $parameters['interno'],
         ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarCurso()
+    {
+        $cursos = factory(Curso::class, 5)
+                    ->create();
+
+        $url = '/api/cursos/'.$cursos[0]->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('cursos', [
+            'id' => $cursos[0]->id,
+        ]);
+
+        $response = $this->json('GET', '/api/cursos');
+        $response->assertStatus(200)
+            ->assertJsonCount(4, 'data')
+            ->assertJson([
+                'data' => [
+                    '0' => ['id' => $cursos[1]->id],
+                    '1' => ['id' => $cursos[2]->id],
+                    '2' => ['id' => $cursos[3]->id],
+                    '3' => ['id' => $cursos[4]->id],
+                ],
+            ]);
+    }
 }

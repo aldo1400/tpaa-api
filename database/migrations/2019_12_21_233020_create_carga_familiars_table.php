@@ -31,6 +31,6 @@ class CreateCargaFamiliarsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('carga_familiars');
+        Schema::dropIfExists('cargas_familiares');
     }
 }

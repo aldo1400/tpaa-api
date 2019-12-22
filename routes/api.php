@@ -38,6 +38,7 @@ Route::get('/tipo-cargas', 'TipoCargas\IndexController');
 Route::get('/cursos', 'Cursos\IndexController');
 Route::get('/cursos/{id}', 'Cursos\ShowController');
 Route::post('/cursos', 'Cursos\CreateProcessController');
+Route::delete('/cursos/{id}', 'Cursos\DeleteProcessController');
 
 // Colaboradores
 Route::get('/colaboradores/validacion-rut', 'Colaboradores\ValidateRutController');
