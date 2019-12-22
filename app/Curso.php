@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Curso extends Model
 {
@@ -15,4 +16,9 @@ class Curso extends Model
         'nombre',
         'interno',
     ];
+
+    public function capacitaciones(): HasMany
+    {
+        return $this->hasMany('App\Capacitacion');
+    }
 }

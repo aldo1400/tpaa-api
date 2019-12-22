@@ -21,6 +21,7 @@ class CreateCargaFamiliarsTable extends Migration
             $table->foreign('tipo_carga_id')->references('id')->on('tipo_cargas');
             $table->unsignedInteger('colaborador_id');
             $table->foreign('colaborador_id')->references('id')->on('colaboradores');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

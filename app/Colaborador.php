@@ -13,6 +13,7 @@ class Colaborador extends Model
      * @var string
      */
     protected $table = 'colaboradores';
+
     /**
      * The attributes that are mass assignable.
      *

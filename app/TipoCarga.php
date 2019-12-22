@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TipoCarga extends Model
 {
@@ -14,4 +15,9 @@ class TipoCarga extends Model
     protected $fillable = [
         'tipo',
     ];
+
+    public function cargasFamiliares(): HasMany
+    {
+        return $this->hasMany('App\CargaFamiliar');
+    }
 }
