@@ -31,6 +31,9 @@ Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 
+// TipoCarga
+Route::get('/tipo-cargas', 'TipoCargas\IndexController');
+
 // Colaboradores
 Route::get('/colaboradores/validacion-rut', 'Colaboradores\ValidateRutController');
 Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
