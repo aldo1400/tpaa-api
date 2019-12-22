@@ -28,6 +28,27 @@ class CrudTest extends TestCase
             ]);
     }
 
+    /**
+     * A basic test example.
+     */
+    public function testObtenerUnCargo()
+    {
+        $cursos = factory(Curso::class, 10)
+                        ->create();
+
+        $url = '/api/cursos/'.$cursos[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'data' => [
+                            'id' => $cursos[1]->id,
+                            'nombre' => $cursos[1]->nombre,
+                            'interno' => $cursos[1]->interno,
+                    ],
+                ]);
+    }
+
     public function testCrearCurso()
     {
         $curso = factory(Curso::class)->make();
