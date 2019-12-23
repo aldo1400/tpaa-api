@@ -18,6 +18,7 @@ class TipoCargaResource extends JsonResource
         return [
             'id' => $this->id,
             'tipo' => $this->tipo,
+            'estado' => $this->estado,
         ];
     }
 }

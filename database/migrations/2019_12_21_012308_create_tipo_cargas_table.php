@@ -14,6 +14,7 @@ class CreateTipoCargasTable extends Migration
         Schema::create('tipo_cargas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('tipo');
+            $table->boolean('estado')->default(1);
             $table->timestamps();
         });
     }

@@ -14,6 +14,7 @@ class TipoCarga extends Model
      */
     protected $fillable = [
         'tipo',
+        'estado',
     ];
 
     public function cargasFamiliares(): HasMany

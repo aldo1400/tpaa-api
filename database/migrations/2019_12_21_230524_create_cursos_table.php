@@ -14,8 +14,10 @@ class CreateCursosTable extends Migration
         Schema::create('cursos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
-            $table->boolean('interno');
+            $table->boolean('tipo');
+            $table->boolean('estado')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

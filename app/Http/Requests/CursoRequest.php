@@ -25,7 +25,8 @@ class CursoRequest extends FormRequest
     {
         return [
             'nombre' => ['required', 'string', 'max:255'],
-            'interno' => ['required', 'boolean'],
+            'tipo' => ['required', 'boolean'],
+            'estado'=>['required','boolean']
         ];
     }
 }

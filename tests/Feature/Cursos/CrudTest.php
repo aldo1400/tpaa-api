@@ -21,8 +21,8 @@ class CrudTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'nombre',
-                        'interno',
+                        'tipo',
+                        'estado',
                     ],
                 ],
             ]);
@@ -44,7 +44,8 @@ class CrudTest extends TestCase
                     'data' => [
                             'id' => $cursos[1]->id,
                             'nombre' => $cursos[1]->nombre,
-                            'interno' => $cursos[1]->interno,
+                            'tipo' => $cursos[1]->tipo,
+                            'estado' => $cursos[1]->estado,
                     ],
                 ]);
     }
@@ -56,7 +57,8 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => $curso->nombre,
-            'interno' => $curso->interno,
+            'tipo' => $curso->tipo,
+            'estado' => $curso->estado,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -65,7 +67,40 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cursos', [
             'id' => Curso::latest()->first()->id,
             'nombre' => $parameters['nombre'],
-            'interno' => $parameters['interno'],
+            'tipo' => $parameters['tipo'],
+            'estado' => $parameters['estado'],
+        ]);
+    }
+
+    public function testEditarCurso()
+    {
+        $curso = factory(Curso::class)->create([
+            'estado' => 1,
+        ]);
+
+        $url = '/api/cursos/'.$curso->id;
+
+        $parameters = [
+            'nombre' => 'NUEVO CURSO DE BIOLOGIA',
+            'tipo' => 1,
+            'estado' => 1,
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cursos', [
+            'id' => $curso->id,
+            'nombre' => $parameters['nombre'],
+            'tipo' => $parameters['tipo'],
+            'estado' => $parameters['estado'],
+        ]);
+
+        $this->assertDatabaseMissing('cursos', [
+            'id' => $curso->id,
+            'nombre' => $curso->nombre,
+            'tipo' => $curso->tipo,
+            'estado' => $curso->estado,
         ]);
     }
 
