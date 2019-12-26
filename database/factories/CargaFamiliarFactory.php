@@ -12,6 +12,10 @@ $factory->define(App\CargaFamiliar::class, function (Faker $faker) {
         'nombres' => $faker->name,
         'apellidos' => $faker->lastName,
         'fecha_nacimiento' => $faker->dateTime($max = 'now', $timezone = null),
+        'estado' => $faker->randomElement([
+            0,
+            1,
+        ]),
         'tipo_carga_id' => function () {
             return factory(TipoCarga::class)->create()->id;
         },

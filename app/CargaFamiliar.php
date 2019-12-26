@@ -24,6 +24,7 @@ class CargaFamiliar extends Model
         'nombres',
         'apellidos',
         'fecha_nacimiento',
+        'estado',
     ];
 
     /**

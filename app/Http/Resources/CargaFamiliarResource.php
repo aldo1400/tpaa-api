@@ -21,8 +21,9 @@ class CargaFamiliarResource extends JsonResource
             'nombres' => $this->nombres,
             'apellidos' => $this->apellidos,
             'fecha_nacimiento' => $this->fecha_nacimiento->format('d-m-Y'),
+            'estado' => $this->estado,
             'tipoCarga' => new TipoCargaResource($this->tipoCarga),
-            'colaborador' => new ColaboradorResource($this->colaborador),
+            // 'colaborador' => new ColaboradorResource($this->colaborador),
         ];
     }
 }

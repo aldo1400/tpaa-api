@@ -16,6 +16,7 @@ class CreateCargaFamiliarsTable extends Migration
             $table->string('rut')->unique();
             $table->string('nombres');
             $table->string('apellidos');
+            $table->boolean('estado')->default(1);
             $table->dateTime('fecha_nacimiento');
             $table->unsignedInteger('tipo_carga_id');
             $table->foreign('tipo_carga_id')->references('id')->on('tipo_cargas');
