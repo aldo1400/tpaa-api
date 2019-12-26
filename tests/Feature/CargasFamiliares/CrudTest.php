@@ -23,7 +23,7 @@ class CrudTest extends TestCase
             'apellidos' => $cargaFamiliar->apellidos,
             'fecha_nacimiento' => $cargaFamiliar->fecha_nacimiento->format('Y-m-d'),
             'estado' => $cargaFamiliar->estado,
-            'carga_tipo_id' => $cargaTipo->id,
+            'tipo_carga_id' => $cargaTipo->id,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -36,7 +36,8 @@ class CrudTest extends TestCase
             'apellidos' => $parameters['apellidos'],
             'fecha_nacimiento' => $parameters['fecha_nacimiento'],
             'estado' => $parameters['estado'],
-            'carga_tipo_id' => $parameters['carga_tipo_id'],
+            'tipo_carga_id' => $parameters['tipo_carga_id'],
+            'colaborador_id' => $colaborador->id,
         ]);
     }
 }

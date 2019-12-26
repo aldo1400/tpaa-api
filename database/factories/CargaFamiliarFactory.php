@@ -1,6 +1,9 @@
 <?php
 
+use App\TipoCarga;
+use App\Colaborador;
 use Faker\Generator as Faker;
+use Freshwork\ChileanBundle\Rut;
 
 $factory->define(App\CargaFamiliar::class, function (Faker $faker) {
     $random_number = rand(1000000, 25000000);

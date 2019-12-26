@@ -24,6 +24,7 @@ class CargaFamiliarRequest extends FormRequest
     public function rules()
     {
         return [
+            'rut' => ['required', 'cl_rut'],
             'nombres' => ['required', 'string'],
             'apellidos' => ['required', 'string'],
             'fecha_nacimiento' => ['required', 'date', 'date_format:Y-m-d'],
