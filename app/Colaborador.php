@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Colaborador extends Model
 {
@@ -22,8 +21,10 @@ class Colaborador extends Model
     protected $fillable = [
         'usuario',
         'password',
-        'nombres',
-        'apellidos',
+        'primer_nombre',
+        'segundo_nombre',
+        'apellido_paterno',
+        'apellido_materno',
         'sexo',
         'nacionalidad',
         'estado_civil',
@@ -75,38 +76,6 @@ class Colaborador extends Model
         'fecha_inactividad',
         'deleted_at',
     ];
-
-    /**
-     * Get the father for the departamento.
-     */
-    public function gerencia(): BelongsTo
-    {
-        return $this->belongsTo('App\Departamento', 'gerencia_id');
-    }
-
-    /**
-     * Get the father for the departamento.
-     */
-    public function subgerencia(): BelongsTo
-    {
-        return $this->belongsTo('App\Departamento', 'subgerencia_id');
-    }
-
-    /**
-     * Get the father for the departamento.
-     */
-    public function area(): BelongsTo
-    {
-        return $this->belongsTo('App\Departamento', 'area_id');
-    }
-
-    /**
-     * Get the father for the departamento.
-     */
-    public function subarea(): BelongsTo
-    {
-        return $this->belongsTo('App\Departamento', 'subarea_id');
-    }
 
     public function obtenerTipoDepartamento()
     {

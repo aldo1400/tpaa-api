@@ -37,7 +37,7 @@ class RemoveSomeAttributesInColaboradoresTable extends Migration
         });
 
         Schema::table('colaboradores', function (Blueprint $table) {
-            $table->dropColumn(['estado', 'licencia_b', 'licencia_d', 'carnet_portuario']);
+            $table->dropColumn(['estado', 'licencia_b', 'licencia_d', 'carnet_portuario', 'estado_civil', 'nivel_educacion']);
         });
 
         Schema::table('colaboradores', function (Blueprint $table) {
@@ -81,6 +81,8 @@ class RemoveSomeAttributesInColaboradoresTable extends Migration
             $table->enum('licencia_b', ['SI', 'NO', 'N/A'])->nullable();
             $table->enum('licencia_d', ['SI', 'NO', 'N/A'])->nullable();
             $table->enum('carnet_portuario', ['SI', 'NO', 'N/A'])->nullable();
+            $table->enum('estado_civil', ['Casado (a)', 'Soltero (a)', 'Divorciado (a)', 'Unión Civil'])->nullable();
+            $table->string('nivel_educacion')->nullable();
         });
     }
 }
