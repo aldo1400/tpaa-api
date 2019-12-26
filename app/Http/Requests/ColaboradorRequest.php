@@ -26,15 +26,16 @@ class ColaboradorRequest extends FormRequest
         $rules = [
             'usuario' => ['nullable', 'string'],
             'password' => ['nullable', 'string'],
-            'nombres' => ['nullable', 'max:255'],
-            'apellidos' => ['nullable', 'string'],
+            'priner_nombre' => ['nullable', 'max:255'],
+            'segundo_nombre' => ['nullable', 'max:255'],
+            'apellido_paterno' => ['nullable', 'sting'],
+            'apellido_materno' => ['nullable', 'sting'],
+            'imagen' => ['nullable', 'sting'],
             'sexo' => ['nullable', 'string'],
             'nacionalidad' => ['nullable', 'string'],
-            'estado_civil' => ['nullable', 'in:Casado (a),Soltero (a),Divorciado (a),Unión Civil'],
             'fecha_nacimiento' => ['nullable', 'date', 'date_format:Y-m-d'],
             'edad' => ['nullable', 'integer'],
             'email' => ['nullable', 'email'],
-            'nivel_educacion' => ['nullable', 'string'],
             'domicilio' => ['nullable', 'string'],
             'licencia_b' => ['nullable', 'string', 'in:SI,NO,N/A'],
             'vencimiento_licencia_b' => ['nullable', 'date', 'date_format:Y-m-d'],
@@ -54,7 +55,9 @@ class ColaboradorRequest extends FormRequest
             'contacto_emergencia_telefono' => ['nullable', 'string'],
             'estado' => ['nullable', 'in:Activo (a),Desvinculado (a),Renuncia'],
             'fecha_inactividad' => ['nullable', 'date', 'date_format:Y-m-d'],
-            'departamento_id' => ['nullable', 'exists:departamentos,id'],
+            'nivel_educacion_id' => ['nullable', 'in:niveles_educacion,id'],
+            'estado_civil_id' => ['nullable', 'in:estado_civiles,id'],
+            // 'departamento_id' => ['nullable', 'exists:departamentos,id'],
         ];
 
         if (!$this->route('id')) {

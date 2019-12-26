@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Colaborador extends Model
 {
@@ -25,13 +26,12 @@ class Colaborador extends Model
         'segundo_nombre',
         'apellido_paterno',
         'apellido_materno',
+        'imagen',
         'sexo',
         'nacionalidad',
-        'estado_civil',
         'fecha_nacimiento',
         'edad',
         'email',
-        'nivel_educacion',
         'domicilio',
         'licencia_b',
         'vencimiento_licencia_b',
@@ -76,6 +76,22 @@ class Colaborador extends Model
         'fecha_inactividad',
         'deleted_at',
     ];
+
+    /**
+     * Get the estado civil for the colaborador.
+     */
+    public function estadoCivil(): BelongsTo
+    {
+        return $this->belongsTo('App\EstadoCivil');
+    }
+
+    /**
+     * Get the estado civil for the colaborador.
+     */
+    public function nivelEducacion(): BelongsTo
+    {
+        return $this->belongsTo('App\NivelEducacion');
+    }
 
     public function obtenerTipoDepartamento()
     {

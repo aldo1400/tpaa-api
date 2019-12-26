@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NivelEducacion extends Model
 {
@@ -12,4 +13,19 @@ class NivelEducacion extends Model
      * @var string
      */
     protected $table = 'niveles_educacion';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'nivel_tipo',
+        'estado',
+    ];
+
+    public function colaboradores(): HasMany
+    {
+        return $this->hasMany('App\Colaborador');
+    }
 }

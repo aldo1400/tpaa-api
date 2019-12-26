@@ -1,5 +1,7 @@
 <?php
 
+use App\EstadoCivil;
+use App\NivelEducacion;
 use Faker\Generator as Faker;
 use Freshwork\ChileanBundle\Rut;
 
@@ -15,23 +17,18 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
         'rut' => $rut->fix()->format(),
         'usuario' => $faker->userName,
         'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-        'nombres' => $faker->name,
-        'apellidos' => $faker->lastName,
+        'primer_nombre' => $faker->name,
+        'segundo_nombre' => $faker->name,
+        'apellido_paterno' => $faker->lastName,
+        'apellido_materno' => $faker->lastName,
         'sexo' => $faker->randomElement([
             'Femenino',
             'Masculino',
         ]),
         'nacionalidad' => $faker->country,
-        'estado_civil' => $faker->randomElement([
-                'Casado (a)',
-                'Soltero (a)',
-                'Divorciado (a)',
-                'Unión Civil',
-            ]),
         'fecha_nacimiento' => $faker->dateTime($max = 'now', $timezone = null),
         'edad' => $faker->numberBetween($min = 17, $max = 90),
         'email' => $faker->safeEmail,
-        'nivel_educacion' => $faker->company,
         'domicilio' => $faker->address,
         'licencia_b' => $faker->randomElement([
                 'SI', 'NO', 'N/A',
@@ -61,5 +58,11 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
             'Renuncia',
         ]),
         'fecha_inactividad' => $faker->dateTime($max = 'now', $timezone = null),
+        'nivel_educacion_id' => function () {
+            return factory(NivelEducacion::class)->create()->id;
+        },
+        'estado_civil_id' => function () {
+            return factory(EstadoCivil::class)->create()->id;
+        },
     ];
 });
