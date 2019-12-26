@@ -18,6 +18,8 @@ tags:
   description: Everything about cargos
 - name: colaboradores
   description: Everything about colaboradores
+- name: cursos
+  description: Everything about cursos
 - name: departamentos
   description: Everything about departamentos
   
@@ -186,7 +188,124 @@ paths:
           description: Unauthenticated
         403:
           description: Forbidden access
-          
+  
+  # ---------------------
+  #   Cursos
+  # ---------------------
+  "/cursos":
+    get:
+      tags:
+      - cursos
+      summary: Obtener todos los cursos
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CursoResource'
+        401:
+          description: unauthenticated  
+    
+    post:
+      tags:
+      - cursos
+      summary: Añadir un curso
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/CursoCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+    
+  "/cursos/{id}":
+    get:
+      tags:
+      - cursos
+      summary: Obtener un curso
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/CursoResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    put:
+      tags:
+      - cursos
+      summary: Editar nombre de un curso
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Curso ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CursoUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access  
+    
+    delete:
+      tags:
+      - cursos
+      summary: Eliminar curso
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Curso deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children   
+         
   # ---------------------
   #   Departamentos
   # ---------------------
@@ -557,6 +676,7 @@ definitions:
       nombre:
         type: string
   
+  
   ColaboradorCreateRequest:
     type: object
     properties:
@@ -754,6 +874,44 @@ definitions:
         $ref: "#/definitions/DepartamentoResource" 
       subarea_id:
         $ref: "#/definitions/DepartamentoResource" 
+  
+  CursoResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      nombre:
+        type: string
+      tipo:
+        type: string
+        enum: [0,1]
+      estado:
+        type: string
+        enum: [0,1]
+  
+  CursoCreateRequest:
+    type: object
+    properties:
+      nombre:
+        type: string
+      tipo:
+        type: string
+        enum: [0,1]
+      estado:
+        type: string
+        enum: [0,1]   
+  
+  CursoUpdateRequest:
+    type: object
+    properties:
+      nombre:
+        type: string
+      tipo:
+        type: string
+        enum: [0,1]
+      estado:
+        type: string
+        enum: [0,1]   
     
   DepartamentoCreateRequest:
     type: object
