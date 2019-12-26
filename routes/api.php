@@ -35,6 +35,7 @@ Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 Route::get('/tipo-cargas', 'TipoCargas\IndexController');
 
 Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
+Route::get('/estado-civiles', 'EstadoCiviles\IndexController');
 
 // Cursos
 Route::get('/cursos', 'Cursos\IndexController');
