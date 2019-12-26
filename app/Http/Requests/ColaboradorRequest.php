@@ -26,11 +26,11 @@ class ColaboradorRequest extends FormRequest
         $rules = [
             'usuario' => ['nullable', 'string'],
             'password' => ['nullable', 'string'],
-            'priner_nombre' => ['nullable', 'max:255'],
+            'primer_nombre' => ['nullable', 'max:255'],
             'segundo_nombre' => ['nullable', 'max:255'],
-            'apellido_paterno' => ['nullable', 'sting'],
-            'apellido_materno' => ['nullable', 'sting'],
-            'imagen' => ['nullable', 'sting'],
+            'apellido_paterno' => ['nullable', 'string'],
+            'apellido_materno' => ['nullable', 'string'],
+            'imagen' => ['nullable', 'string'],
             'sexo' => ['nullable', 'string'],
             'nacionalidad' => ['nullable', 'string'],
             'fecha_nacimiento' => ['nullable', 'date', 'date_format:Y-m-d'],
@@ -55,8 +55,8 @@ class ColaboradorRequest extends FormRequest
             'contacto_emergencia_telefono' => ['nullable', 'string'],
             'estado' => ['nullable', 'in:Activo (a),Desvinculado (a),Renuncia'],
             'fecha_inactividad' => ['nullable', 'date', 'date_format:Y-m-d'],
-            'nivel_educacion_id' => ['nullable', 'in:niveles_educacion,id'],
-            'estado_civil_id' => ['nullable', 'in:estado_civiles,id'],
+            'nivel_educacion_id' => ['nullable', 'exists:niveles_educacion,id'],
+            'estado_civil_id' => ['nullable', 'exists:estado_civiles,id'],
             // 'departamento_id' => ['nullable', 'exists:departamentos,id'],
         ];
 

@@ -4,7 +4,9 @@ namespace Tests\Feature\Colaboradores;
 
 use Tests\TestCase;
 use App\Colaborador;
+use App\EstadoCivil;
 use App\Departamento;
+use App\NivelEducacion;
 
 class CrudTest extends TestCase
 {
@@ -12,16 +14,7 @@ class CrudTest extends TestCase
     {
         $colaboradores = factory(Colaborador::class, 10)
                         ->create();
-
-        $departamento = factory(Departamento::class)
-                        ->create([
-                            'tipo' => Departamento::GERENCIA_GENERAL,
-                        ]);
-
-        $colaboradores[1]->gerencia()->associate($departamento->id);
-        // dd($colaboradores[1]->gerencia_id);
-        $colaboradores[1]->save();
-
+        
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
         $response = $this->json('GET', $url);
 
@@ -32,15 +25,15 @@ class CrudTest extends TestCase
                         'id' => $colaboradores[1]->id,
                         'rut' => $colaboradores[1]->rut,
                         'usuario' => $colaboradores[1]->usuario,
-                        'nombres' => $colaboradores[1]->nombres,
-                        'apellidos' => $colaboradores[1]->apellidos,
+                        'primer_nombre' => $colaboradores[1]->primer_nombre,
+                        'segundo_nombre' => $colaboradores[1]->segundo_nombre,
+                        'apellido_paterno' => $colaboradores[1]->apellido_paterno,
+                        'apellido_materno' => $colaboradores[1]->apellido_materno,
                         'sexo' => $colaboradores[1]->sexo,
                         'nacionalidad' => $colaboradores[1]->nacionalidad,
-                        'estado_civil' => $colaboradores[1]->estado_civil,
                         'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('d-m-Y'),
                         'edad' => $colaboradores[1]->edad,
                         'email' => $colaboradores[1]->email,
-                        'nivel_educacion' => $colaboradores[1]->nivel_educacion,
                         'domicilio' => $colaboradores[1]->domicilio,
                         'licencia_b' => $colaboradores[1]->licencia_b,
                         'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('d-m-Y'),
@@ -60,14 +53,16 @@ class CrudTest extends TestCase
                         'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
                         'estado' => $colaboradores[1]->estado,
                         'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('d-m-Y'),
-                        'gerencia_id' => $colaboradores[1]->gerencia->only([
+                        'nivelEducacion' => $colaboradores[1]->nivelEducacion->only([
+                            'id',
+                            'nivel_tipo',
+                            'estado',
+                        ]),
+                        'estadoCivil' => $colaboradores[1]->estadoCivil->only([
                             'id',
                             'tipo',
-                            'nombre',
+                            'estado',
                         ]),
-                        'subgerencia_id' => '',
-                        'area_id' => '',
-                        'subarea_id' => '',
                 ],
             ]);
     }
@@ -78,21 +73,30 @@ class CrudTest extends TestCase
     public function testCrearColaboradorSinDepartamento()
     {
         $colaborador = factory(Colaborador::class)->make();
+        
+        $nivelEducacion = factory(NivelEducacion::class)
+                        ->state('activo')                
+                        ->create();
+
+        $estadoCivil = factory(EstadoCivil::class)
+                        ->state('activo')
+                        ->create();
+
         $url = '/api/colaboradores';
 
         $parameters = [
             'rut' => $colaborador->rut,
             'usuario' => $colaborador->usuario,
             'password' => 'aldo123',
-            'nombres' => $colaborador->nombres,
-            'apellidos' => $colaborador->apellidos,
+            'primer_nombre' => $colaborador->primer_nombre,
+            'segundo_nombre' => $colaborador->segundo_nombre,
+            'apellido_materno' => $colaborador->apellido_materno,
+            'apellido_paterno' => $colaborador->apellido_paterno,
             'sexo' => $colaborador->sexo,
             'nacionalidad' => $colaborador->nacionalidad,
-            'estado_civil' => $colaborador->estado_civil,
             'fecha_nacimiento' => $colaborador->fecha_nacimiento->format('Y-m-d'),
             'edad' => $colaborador->edad,
             'email' => $colaborador->email,
-            'nivel_educacion' => $colaborador->nivel_educacion,
             'domicilio' => $colaborador->domicilio,
             'licencia_b' => $colaborador->licencia_b,
             'vencimiento_licencia_b' => $colaborador->vencimiento_licencia_b->format('Y-m-d'),
@@ -112,24 +116,27 @@ class CrudTest extends TestCase
             'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
             'estado' => $colaborador->estado,
             'fecha_inactividad' => '',
+            'estado_civil_id'=>$estadoCivil->id,
+            'nivel_educacion_id'=>$nivelEducacion->id
         ];
 
         $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('colaboradores', [
             'id' => Colaborador::latest()->first()->id,
             'rut' => $parameters['rut'],
             'usuario' => $parameters['usuario'],
-            'nombres' => $parameters['nombres'],
-            'apellidos' => $parameters['apellidos'],
+            'primer_nombre' => $parameters['primer_nombre'],
+            'segundo_nombre' => $parameters['segundo_nombre'],
+            'apellido_paterno' => $parameters['apellido_paterno'],
+            'apellido_materno' => $parameters['apellido_materno'],
             'sexo' => $parameters['sexo'],
             'nacionalidad' => $parameters['nacionalidad'],
-            'estado_civil' => $parameters['estado_civil'],
             'fecha_nacimiento' => $parameters['fecha_nacimiento'],
             'edad' => $parameters['edad'],
             'email' => $parameters['email'],
-            'nivel_educacion' => $parameters['nivel_educacion'],
             'domicilio' => $parameters['domicilio'],
             'licencia_b' => $parameters['licencia_b'],
             'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
@@ -149,7 +156,9 @@ class CrudTest extends TestCase
             'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
             'estado' => $parameters['estado'],
             'fecha_inactividad' => null,
-        ]);
+            'estado_civil_id' => $parameters['estado_civil_id'],
+            'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            ]);
     }
 
     /**

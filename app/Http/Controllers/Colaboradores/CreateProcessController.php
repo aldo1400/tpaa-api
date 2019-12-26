@@ -22,10 +22,12 @@ class CreateProcessController extends Controller
             return response()->json(['message' => 'El rut es inválido.'], 409);
         }
 
-        if ($request->departamento_id) {
-            $departamento = Departamento::findOrFail($request->departamento_id);
-            $colaborador->definirDepartamento($departamento);
-        }
+        $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
+        $colaborador->estadoCivil()->associate($request->estado_civil_id);
+        // if ($request->departamento_id) {
+        //     $departamento = Departamento::findOrFail($request->departamento_id);
+        //     $colaborador->definirDepartamento($departamento);
+        // }
 
         $colaborador->save();
 
