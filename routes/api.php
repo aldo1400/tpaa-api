@@ -50,4 +50,5 @@ Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
 Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
 Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
 
+Route::get('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\IndexController');
 Route::post('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\CreateProcessController');

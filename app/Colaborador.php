@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Colaborador extends Model
@@ -91,6 +92,11 @@ class Colaborador extends Model
     public function nivelEducacion(): BelongsTo
     {
         return $this->belongsTo('App\NivelEducacion');
+    }
+
+    public function cargasFamiliares(): HasMany
+    {
+        return $this->hasMany('App\CargaFamiliar');
     }
 
     public function obtenerTipoDepartamento()

@@ -9,6 +9,40 @@ use App\CargaFamiliar;
 
 class CrudTest extends TestCase
 {
+    public function testObtenerUnaCargaFamiliar()
+    {
+        $colaboradores = factory(Colaborador::class, 1)
+                    ->create()
+                    ->each(function ($colaborador) {
+                        $colaborador->cargasFamiliares()->saveMany(factory(CargaFamiliar::class, 2)->make());
+                    });
+
+        $url = '/api/colaboradores/'.$colaboradores[0]->id.'/cargas-familiares';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    '0' => [
+                        'id' => $colaboradores[0]->cargasFamiliares[0]->id,
+                        'rut' => $colaboradores[0]->cargasFamiliares[0]->rut,
+                        'nombres' => $colaboradores[0]->cargasFamiliares[0]->nombres,
+                        'apellidos' => $colaboradores[0]->cargasFamiliares[0]->apellidos,
+                        'fecha_nacimiento' => $colaboradores[0]->cargasFamiliares[0]->fecha_nacimiento->format('d-m-Y'),
+                        'estado' => $colaboradores[0]->cargasFamiliares[0]->estado,
+                    ],
+                    '1' => [
+                        'id' => $colaboradores[0]->cargasFamiliares[1]->id,
+                        'rut' => $colaboradores[0]->cargasFamiliares[1]->rut,
+                        'nombres' => $colaboradores[0]->cargasFamiliares[1]->nombres,
+                        'apellidos' => $colaboradores[0]->cargasFamiliares[1]->apellidos,
+                        'fecha_nacimiento' => $colaboradores[0]->cargasFamiliares[1]->fecha_nacimiento->format('d-m-Y'),
+                        'estado' => $colaboradores[0]->cargasFamiliares[1]->estado,
+                    ],
+                ],
+            ]);
+    }
+
     public function testCrearCargaFamiliar()
     {
         $colaborador = factory(Colaborador::class)->create();
