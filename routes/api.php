@@ -52,3 +52,4 @@ Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
 
 Route::get('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\IndexController');
 Route::post('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\CreateProcessController');
+Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');

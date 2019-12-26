@@ -9,7 +9,7 @@ use App\CargaFamiliar;
 
 class CrudTest extends TestCase
 {
-    public function testObtenerUnaCargaFamiliar()
+    public function testObtenerCargasFamiliaresDeUnColaborador()
     {
         $colaboradores = factory(Colaborador::class, 1)
                     ->create()
@@ -39,6 +39,29 @@ class CrudTest extends TestCase
                         'fecha_nacimiento' => $colaboradores[0]->cargasFamiliares[1]->fecha_nacimiento->format('d-m-Y'),
                         'estado' => $colaboradores[0]->cargasFamiliares[1]->estado,
                     ],
+                ],
+            ]);
+    }
+
+    public function testObtenerUnaCargaFamiliar()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargaFamiliar = factory(CargaFamiliar::class)->create([
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        $url = '/api/cargas-familiares/'.$cargaFamiliar->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $cargaFamiliar->id,
+                        'rut' => $cargaFamiliar->rut,
+                        'nombres' => $cargaFamiliar->nombres,
+                        'apellidos' => $cargaFamiliar->apellidos,
+                        'fecha_nacimiento' => $cargaFamiliar->fecha_nacimiento->format('d-m-Y'),
+                        'estado' => $cargaFamiliar->estado,
                 ],
             ]);
     }
