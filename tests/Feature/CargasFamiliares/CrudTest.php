@@ -97,4 +97,74 @@ class CrudTest extends TestCase
             'colaborador_id' => $colaborador->id,
         ]);
     }
+
+    public function testActualizarCargaFamiliar()
+    {
+        $colaborador = factory(Colaborador::class)
+                        ->create();
+
+        $cargaFamiliar = factory(CargaFamiliar::class)
+                        ->create([
+                            'colaborador_id' => $colaborador->id
+                        ]);
+
+        $tipoCarga = factory(TipoCarga::class)
+                        ->create();
+
+        $url = '/api/cargas-familiares/'.$cargaFamiliar->id;
+
+        $parameters = [
+            'nombres' => 'Leonidas Esteban',
+            'apellidos' => 'Ramos Quiroga',
+            'fecha_nacimiento' => '1997-05-02',
+            'estado' => 1,
+            'tipo_carga_id' => $tipoCarga->id,
+            'colaborador_id' => $colaborador->id
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cargas_familiares', [
+            'id' => $cargaFamiliar->id,
+            'rut' => $cargaFamiliar->rut,
+            'nombres' => $parameters['nombres'],
+            'apellidos' => $parameters['apellidos'],
+            'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+            'estado' => $parameters['estado'],
+            'tipo_carga_id' => $parameters['tipo_carga_id'],
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        $this->assertDatabaseMissing('cargas_familiares', [
+            'id' => $cargaFamiliar->id,
+            'rut' => $cargaFamiliar->rut,
+            'nombres' => $cargaFamiliar->nombres,
+            'apellidos' => $cargaFamiliar->apellidos,
+            'fecha_nacimiento' => $cargaFamiliar->fecha_nacimiento,
+            'estado' => $cargaFamiliar->estado,
+            'tipo_carga_id' => $tipoCarga->id,
+            'colaborador_id' => $colaborador->id,
+        ]);
+    }
+
+    public function testEliminarCargaFamiliar()
+    {
+        $colaboradores = factory(Colaborador::class, 1)
+                    ->create()
+                    ->each(function ($colaborador) {
+                        $colaborador->cargasFamiliares()->saveMany(factory(CargaFamiliar::class, 2)->make());
+                    });
+
+        $url = '/api/cargas-familiares/'.$colaboradores[0]->cargasFamiliares[1]->id;
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('cargas_familiares', [
+            'id' => $colaboradores[0]->cargasFamiliares[1]->id,
+        ]);
+
+    }
+
 }

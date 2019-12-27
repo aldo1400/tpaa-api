@@ -14,22 +14,23 @@ class UpdateProcessController extends Controller
         $colaborador = Colaborador::findOrFail($id);
         $colaborador->fill($request->validated());
 
-        $tipoDepartamento = $colaborador->obtenerTipoDepartamento();
+        $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
+        $colaborador->estadoCivil()->associate($request->estado_civil_id);
+        // $tipoDepartamento = $colaborador->obtenerTipoDepartamento();
 
-        if (empty($request->departamento_id)) {
-            // $colaborador->$tipoDepartamento.'()'->associate($request->departamento_id);
-            $association = $tipoDepartamento.'_id';
-            $colaborador->$association = null;
-            $colaborador->save();
-        } else {
-            if ($tipoDepartamento) {
-                $association = $tipoDepartamento.'_id';
-                $colaborador->$association = null;
-                $colaborador->save();
-            }
-            $departamento = Departamento::findOrFail($request->departamento_id);
-            $colaborador->definirDepartamento($departamento);
-        }
+        // if (empty($request->departamento_id)) {
+        //     $association = $tipoDepartamento.'_id';
+        //     $colaborador->$association = null;
+        //     $colaborador->save();
+        // } else {
+        //     if ($tipoDepartamento) {
+        //         $association = $tipoDepartamento.'_id';
+        //         $colaborador->$association = null;
+        //         $colaborador->save();
+        //     }
+        //     $departamento = Departamento::findOrFail($request->departamento_id);
+        //     $colaborador->definirDepartamento($departamento);
+        // }
 
         $colaborador->save();
 

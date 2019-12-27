@@ -14,19 +14,102 @@ tags:
   description: User module
 - name: type-users
   description: Everything about type of users
+- name: tipo cargas
+  description: Everything about tipo de cargas
 - name: cargos
   description: Everything about cargos
+- name: cargas familiares
+  description: Everything about cargas familiares
 - name: colaboradores
   description: Everything about colaboradores
 - name: cursos
   description: Everything about cursos
 - name: departamentos
   description: Everything about departamentos
+- name: estado civiles
+  description: Everything about niveles estado civiles
+- name: niveles educacion
+  description: Everything about niveles educacion
   
 schemes:
 - https
 paths:
   
+  # ---------------------
+  #   Cargas Familiares
+  # ---------------------
+  "/cargas-familiares/{id}":
+    get:
+      tags:
+      - cargas familiares
+      summary: Obtener una carga familiar
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/CargaFamiliarResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    patch:
+      tags:
+      - cargas familiares
+      summary: Editar una carga familiar
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Carga familiar ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CargaFamiliarUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access  
+    
+    delete:
+      tags:
+      - cargas familiares
+      summary: Eliminar carga familiar
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Carga Familiar deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children  
+          
   # ---------------------
   #   Cargos
   # ---------------------
@@ -179,6 +262,57 @@ paths:
         name: body
         schema:
           $ref: '#/definitions/ColaboradorCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+  
+  "/colaboradores/{id}/cargas-familiares":
+    get:
+      tags:
+      - colaboradores
+      summary: Obtener todos las cargas familiares de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CargaFamiliarResource'
+        401:
+          description: unauthenticated  
+    
+    post:
+      tags:
+      - colaboradores
+      summary: Crear una carga familiar a un determinado colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/CargaFamiliarCreateRequest'
       responses:
         201:
           description: Data was inserted succesfully
@@ -422,6 +556,28 @@ paths:
           description: Route not found
         409:
           description: Departure has children
+  
+  # ---------------------
+  #   Estado civiles
+  # ---------------------
+  "/estado-civiles":
+    get:
+      tags:
+      - estado civiles
+      summary: Obtener todos los estados civiles
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EstadoCivilResource'
+        401:
+          description: unauthenticated  
           
   # ---------------------
   #   Users
@@ -476,8 +632,52 @@ paths:
                 default: "86400"
         401:
           description: unauthenticated
-      
-      
+   
+  # ---------------------
+  #   Niveles educacion
+  # ---------------------
+  "/niveles-educacion":
+    get:
+      tags:
+      - niveles educacion
+      summary: Obtener todos los niveles de educacion
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NivelEducacionResource'
+        401:
+          description: unauthenticated  
+          
+  # ---------------------
+  #   Tipos carga
+  # ---------------------
+  "/tipos-carga":
+    get:
+      tags:
+      - tipos carga
+      summary: Obtener todos los tipos de carga
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TipoCargaResource'
+        401:
+          description: unauthenticated 
+  
+  
   "/user":
     get:
       tags:
@@ -633,6 +833,59 @@ paths:
          
 definitions:
   
+  CargaFamiliarResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      rut:
+        type: string
+      nombres:
+        type: string
+      apellidos:
+        type: string
+      fecha_nacimiento:
+        type: string
+        format: date
+      estado:
+        type: string
+        enum: [0,1]
+      tipoCarga:
+        $ref: '#/definitions/TipoCargaResource'
+  
+  CargaFamiliarCreateRequest:
+    type: object
+    properties:
+      rut:
+        type: string
+      nombres:
+        type: string
+      apellidos:
+        type: string
+      fecha_nacimiento:
+        type: string
+        format: date
+      estado:
+        type: string
+        enum: [0,1]
+      tipo_carga_id:
+        type: integer
+      
+  CargaFamiliarUpdateRequest:
+    type: object
+    properties:
+      nombres:
+        type: string
+      apellidos:
+        type: string
+      fecha_nacimiento:
+        type: string
+        format: date
+      estado:
+        type: string
+        enum: [0,1]
+      tipo_carga_id:
+        type: integer
   
   CargoResource:
     type: object
@@ -686,22 +939,18 @@ definitions:
         type: string
       password:
         type: string
-      nombres:
+      primer_nombre:
         type: string
-      apellidos:
+      segundo_nombre:
+        type: string
+      apellido_paterno:
+        type: string
+      apellido_materno:
         type: string
       sexo:
         type: string
       nacionalidad:
         type: string
-      estado_civil:
-        type: string
-        enum: [
-          'Casado (a)',
-          'Soltero (a)',
-          'Divorciado (a)',
-          'Unión Civil',
-        ]
       fecha_nacimiento:
         type: string
         format: date
@@ -710,8 +959,6 @@ definitions:
       email:
         type: string
         format: email
-      nivel_educacion:
-        type: string
       domicilio:
         type: string
       licencia_b:
@@ -770,8 +1017,12 @@ definitions:
       fecha_inactividad:
         type: string
         format: date
-      departamento_id:
+      nivel_educacion_id:
         type: integer
+      estado_civil_id:
+        type: integer
+      imagen:
+        type: string
   
   ColaboradorResource:
     type: object
@@ -782,22 +1033,18 @@ definitions:
         type: string
       usuario:
         type: string
-      nombres:
+      primer_nombre:
         type: string
-      apellidos:
+      segundo_nombre:
+        type: string
+      apellido_paterno:
+        type: string
+      apellido_materno:
         type: string
       sexo:
         type: string
       nacionalidad:
         type: string
-      estado_civil:
-        type: string
-        enum: [
-          'Casado (a)',
-          'Soltero (a)',
-          'Divorciado (a)',
-          'Unión Civil',
-        ]
       fecha_nacimiento:
         type: string
         format: date
@@ -806,8 +1053,6 @@ definitions:
       email:
         type: string
         format: email
-      nivel_educacion:
-        type: string
       domicilio:
         type: string
       licencia_b:
@@ -866,14 +1111,10 @@ definitions:
       fecha_inactividad:
         type: string
         format: date
-      gerencia_id:
-        $ref: "#/definitions/DepartamentoResource" 
-      subgerencia_id:
-        $ref: "#/definitions/DepartamentoResource" 
-      area_id:
-        $ref: "#/definitions/DepartamentoResource" 
-      subarea_id:
-        $ref: "#/definitions/DepartamentoResource" 
+      nivelEducacion:
+        $ref: "#/definitions/NivelEducacionResource" 
+      estadoCivil:
+        $ref: "#/definitions/EstadoCivilResource" 
   
   CursoResource:
     type: object
@@ -952,6 +1193,18 @@ definitions:
         type: string
       padre_id:
         type: integer
+  
+  EstadoCivilResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      tipo:
+        type: string
+        enum: [0,1]
+      estado:
+        type: string
+        enum: [0,1]
     
   LoginRequest:
     type: object
@@ -968,6 +1221,17 @@ definitions:
       email:
         type: string
         format: email
+  
+  NivelEducacionResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      nivel_tipo:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
   
   PasswordResetRequest:
     type: object
@@ -1004,6 +1268,17 @@ definitions:
         type: string
       code:
         type: string
+  
+  TipoCargaResource:
+    type: object
+    properties:
+      id:
+        type: string
+      tipo:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
   
   UserCreateRequest:
     type: object

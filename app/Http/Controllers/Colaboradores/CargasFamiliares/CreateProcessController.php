@@ -14,7 +14,6 @@ class CreateProcessController extends Controller
         $colaborador = Colaborador::findOrFail($id);
 
         $cargaFamiliar = CargaFamiliar::make($request->validated());
-        // dd($request->all());
         $cargaFamiliar->colaborador()->associate($colaborador->id);
         $cargaFamiliar->tipoCarga()->associate($request->tipo_carga_id);
         $cargaFamiliar->save();

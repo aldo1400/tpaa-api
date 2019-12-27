@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CargaFamiliar extends Model
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
