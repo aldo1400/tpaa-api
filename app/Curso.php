@@ -27,8 +27,8 @@ class Curso extends Model
      */
     protected $dates = ['deleted_at'];
 
-    public function capacitaciones(): HasMany
+    public function colaboradores(): HasMany
     {
-        return $this->hasMany('App\Capacitacion');
+        return $this->hasMany('App\CursoColaborador');
     }
 }

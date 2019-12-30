@@ -55,3 +55,5 @@ Route::post('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamili
 Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');
 Route::delete('/cargas-familiares/{id}', 'CargasFamiliares\DeleteProcessController');
 Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessController');
+
+Route::post('/cursos-colaborador','CursosColaborador\CreateProcessController');

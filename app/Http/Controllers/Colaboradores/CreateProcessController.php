@@ -13,6 +13,8 @@ class CreateProcessController extends Controller
 {
     public function __invoke(ColaboradorRequest $request)
     {
+        $image = base64_encode(file_get_contents($request->file('image')->pat‌​h()));
+        
         $colaborador = Colaborador::make($request->validated());
 
         $colaborador->rut = $request->rut;

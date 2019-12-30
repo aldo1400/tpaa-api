@@ -99,6 +99,11 @@ class Colaborador extends Model
         return $this->hasMany('App\CargaFamiliar');
     }
 
+    public function capacitaciones(): HasMany
+    {
+        return $this->hasMany('App\CursoColaborador');
+    }
+
     public function obtenerTipoDepartamento()
     {
         $departamento = '';
