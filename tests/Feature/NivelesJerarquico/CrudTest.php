@@ -4,8 +4,6 @@ namespace Tests\Feature\NivelesJerarquico;
 
 use Tests\TestCase;
 use App\NivelJerarquico;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CrudTest extends TestCase
 {
@@ -25,12 +23,13 @@ class CrudTest extends TestCase
                     '*' => [
                         'id',
                         'nivel_nombre',
-                        'estado'
+                        'estado',
                     ],
                 ],
             ]);
     }
-/**
+
+    /**
      * A basic test example.
      */
     public function testObtenerUnNivelJerarquico()
@@ -68,6 +67,35 @@ class CrudTest extends TestCase
             'id' => NivelJerarquico::latest()->first()->id,
             'nivel_nombre' => $parameters['nivel_nombre'],
             'estado' => $parameters['estado'],
+        ]);
+    }
+
+    public function testEditarNivelJerarquico()
+    {
+        $nivelJerarquico = factory(NivelJerarquico::class)->create([
+            'estado' => 1,
+        ]);
+
+        $url = '/api/niveles-jerarquico/'.$nivelJerarquico->id;
+
+        $parameters = [
+            'nivel_nombre' => 'NUEVO NIVEL DE JERARQUIA',
+            'estado' => 1,
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('niveles_jerarquico', [
+            'id' => $nivelJerarquico->id,
+            'nivel_nombre' => $parameters['nivel_nombre'],
+            'estado' => $parameters['estado'],
+        ]);
+
+        $this->assertDatabaseMissing('niveles_jerarquico', [
+            'id' => $nivelJerarquico->id,
+            'nivel_nombre' => $nivelJerarquico->nivel_nombre,
+            'estado' => $nivelJerarquico->estado,
         ]);
     }
 }

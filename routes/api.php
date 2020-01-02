@@ -61,6 +61,7 @@ Route::post('/cursos-colaborador', 'CursosColaborador\CreateProcessController');
 Route::get('/niveles-jerarquico', 'NivelesJerarquico\IndexController');
 Route::post('/niveles-jerarquico', 'NivelesJerarquico\CreateProcessController');
 Route::get('/niveles-jerarquico/{id}', 'NivelesJerarquico\ShowController');
+Route::put('/niveles-jerarquico/{id}', 'NivelesJerarquico\UpdateProcessController');
 
 Route::get('/tags', 'Tags\IndexController');
 Route::post('/tags', 'Tags\CreateProcessController');
