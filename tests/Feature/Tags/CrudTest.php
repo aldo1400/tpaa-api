@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class CrudTest extends TestCase
 {
-    public function testObtenerTipoCargos()
+    public function testObtenerTags()
     {
         factory(Tag::class, 10)
                     ->create();
