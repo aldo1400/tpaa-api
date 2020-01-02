@@ -57,7 +57,8 @@ class ColaboradorRequest extends FormRequest
             'fecha_inactividad' => ['nullable', 'date', 'date_format:Y-m-d'],
             'nivel_educacion_id' => ['nullable', 'exists:niveles_educacion,id'],
             'estado_civil_id' => ['nullable', 'exists:estado_civiles,id'],
-            // 'departamento_id' => ['nullable', 'exists:departamentos,id'],
+            'tags' => ['required', 'array'],
+            'tags.*' => ['required', 'distinct', 'exists:tags,id'],
         ];
 
         if (!$this->route('id')) {

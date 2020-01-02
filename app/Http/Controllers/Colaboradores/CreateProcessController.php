@@ -12,7 +12,6 @@ class CreateProcessController extends Controller
 {
     public function __invoke(ColaboradorRequest $request)
     {
-        $image = base64_encode(file_get_contents($request->file('image')->pat‌​h()));
 
         $colaborador = Colaborador::make($request->validated());
 
@@ -25,8 +24,9 @@ class CreateProcessController extends Controller
 
         $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
         $colaborador->estadoCivil()->associate($request->estado_civil_id);
-
         $colaborador->save();
+        
+        $colaborador->tags()->sync($request->tags);
 
         return response()->json(null, 201);
     }

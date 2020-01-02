@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Colaborador extends Model
 {
@@ -102,6 +103,16 @@ class Colaborador extends Model
     public function capacitaciones(): HasMany
     {
         return $this->hasMany('App\CursoColaborador');
+    }
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Tag')
+                ->withPivot('estado')
+                ->withTimestamps();
     }
 
     public function obtenerTipoDepartamento()

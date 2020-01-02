@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Colaboradores;
 
+use App\Tag;
 use Tests\TestCase;
 use App\Colaborador;
 use App\EstadoCivil;
@@ -14,7 +15,7 @@ class CrudTest extends TestCase
     {
         $colaboradores = factory(Colaborador::class, 10)
                         ->create();
-        
+
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
         $response = $this->json('GET', $url);
 
@@ -73,14 +74,16 @@ class CrudTest extends TestCase
     public function testCrearColaboradorSinDepartamento()
     {
         $colaborador = factory(Colaborador::class)->make();
-        
+
         $nivelEducacion = factory(NivelEducacion::class)
-                        ->state('activo')                
+                        ->state('activo')
                         ->create();
 
         $estadoCivil = factory(EstadoCivil::class)
                         ->state('activo')
                         ->create();
+
+        $tags = factory(Tag::class, 3)->create();
 
         $url = '/api/colaboradores';
 
@@ -116,11 +119,13 @@ class CrudTest extends TestCase
             'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
             'estado' => $colaborador->estado,
             'fecha_inactividad' => '',
-            'estado_civil_id'=>$estadoCivil->id,
-            'nivel_educacion_id'=>$nivelEducacion->id
+            'estado_civil_id' => $estadoCivil->id,
+            'nivel_educacion_id' => $nivelEducacion->id,
+            'tags' => $tags->pluck('id'),
         ];
 
         $response = $this->json('POST', $url, $parameters);
+        // dd($parameters['tags'][0]);
         // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
@@ -158,6 +163,22 @@ class CrudTest extends TestCase
             'fecha_inactividad' => null,
             'estado_civil_id' => $parameters['estado_civil_id'],
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            ]);
+
+            // dd($colaborador);
+            $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $tags[0]->id,
+                'colaborador_id'=>Colaborador::latest()->first()->id,
+            ]);
+
+            $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $tags[1]->id,
+                'colaborador_id'=>Colaborador::latest()->first()->id,
+            ]);
+
+            $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $tags[2]->id,
+                'colaborador_id'=>Colaborador::latest()->first()->id,
             ]);
     }
 
