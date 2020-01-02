@@ -33,6 +33,7 @@ Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 
 // TipoCarga
 Route::get('/tipo-cargas', 'TipoCargas\IndexController');
+Route::get('/tags', 'Tags\IndexController');
 
 Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
 Route::get('/estado-civiles', 'EstadoCiviles\IndexController');
@@ -56,4 +57,4 @@ Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');
 Route::delete('/cargas-familiares/{id}', 'CargasFamiliares\DeleteProcessController');
 Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessController');
 
-Route::post('/cursos-colaborador','CursosColaborador\CreateProcessController');
+Route::post('/cursos-colaborador', 'CursosColaborador\CreateProcessController');

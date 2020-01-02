@@ -24,6 +24,11 @@ class TagRequest extends FormRequest
     public function rules()
     {
         return [
+            'nombre' => $this->nombre,
+            'descripcion' => $this->descripcion,
+            'permisos' => $this->permisos,
+            'estado' => $this->estado,
+            'tipo' => $this->tipo,
         ];
     }
 }
