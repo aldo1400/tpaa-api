@@ -19,7 +19,7 @@ class CrudTest extends TestCase
         $response = $this->json('GET', $url);
 
         $response->assertStatus(200)
-            ->assertJsonCount(10, 'data')
+            ->assertJsonCount(16, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
@@ -30,4 +30,25 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+/**
+     * A basic test example.
+     */
+    public function testObtenerUnNivelJerarquico()
+    {
+        $nivelesJerarquico = factory(NivelJerarquico::class, 10)
+                        ->create();
+
+        $url = '/api/niveles-jerarquico/'.$nivelesJerarquico[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'data' => [
+                            'id' => $nivelesJerarquico[1]->id,
+                            'nivel_nombre' => $nivelesJerarquico[1]->nivel_nombre,
+                            'estado' => $nivelesJerarquico[1]->estado,
+                    ],
+                ]);
+    }
+
 }

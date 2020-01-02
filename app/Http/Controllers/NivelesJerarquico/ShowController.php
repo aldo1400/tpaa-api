@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NivelJerarquicoResource;
 
-class IndexController extends Controller
+class ShowController extends Controller
 {
-    public function __invoke(){
-        $nivelesJerarquico = NivelJerarquico::all();
-        return NivelJerarquicoResource::collection($nivelesJerarquico);
+    public function __invoke($id)
+    {
+        $nivelJerarquico = NivelJerarquico::findOrFail($id);
+
+        return new NivelJerarquicoResource($nivelJerarquico);
     }
 }
