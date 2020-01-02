@@ -59,6 +59,7 @@ Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessControlle
 Route::post('/cursos-colaborador', 'CursosColaborador\CreateProcessController');
 
 Route::get('/niveles-jerarquico', 'NivelesJerarquico\IndexController');
+Route::post('/niveles-jerarquico', 'NivelesJerarquico\CreateProcessController');
 Route::get('/niveles-jerarquico/{id}', 'NivelesJerarquico\ShowController');
 
 Route::get('/tags', 'Tags\IndexController');

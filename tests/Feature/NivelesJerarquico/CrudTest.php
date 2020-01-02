@@ -51,4 +51,23 @@ class CrudTest extends TestCase
                 ]);
     }
 
+    public function testCrearNivelJerarquico()
+    {
+        $nivelJerarquico = factory(NivelJerarquico::class)->make();
+        $url = '/api/niveles-jerarquico';
+
+        $parameters = [
+            'nivel_nombre' => $nivelJerarquico->nivel_nombre,
+            'estado' => $nivelJerarquico->estado,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('niveles_jerarquico', [
+            'id' => NivelJerarquico::latest()->first()->id,
+            'nivel_nombre' => $parameters['nivel_nombre'],
+            'estado' => $parameters['estado'],
+        ]);
+    }
 }
