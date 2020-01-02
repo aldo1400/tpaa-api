@@ -31,4 +31,31 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+
+    public function testCrearTag()
+    {
+        $tag = factory(Tag::class)->make();
+        $url = '/api/tags';
+
+        $parameters = [
+            'nombre' => $tag->nombre,
+            'descripcion' => $tag->descripcion,
+            'permisos' => $tag->permisos,
+            'estado' => $tag->estado,
+            'tipo' => $tag->tipo,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('tags', [
+            'id' => Tag::latest()->first()->id,
+            'nombre' => $parameters['nombre'],
+            'descripcion' => $parameters['descripcion'],
+            'permisos' => $parameters['permisos'],
+            'estado' => $parameters['estado'],
+            'tipo' => $parameters['tipo'],
+        ]);
+    }
 }
