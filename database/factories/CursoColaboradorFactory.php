@@ -6,9 +6,8 @@ use App\CursoColaborador;
 use Faker\Generator as Faker;
 
 $factory->define(CursoColaborador::class, function (Faker $faker) {
-    return [                
+    return [
         'fecha' => $faker->dateTime($max = 'now', $timezone = null),
-        // 'diploma'=>$faker->,
         'estado' => $faker->randomElement([
             0,
             1,

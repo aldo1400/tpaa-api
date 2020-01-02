@@ -15,5 +15,7 @@ class Tag extends Model
         'nombre',
         'descripcion',
         'permisos',
+        'estado',
+        'tipo',
     ];
 }
