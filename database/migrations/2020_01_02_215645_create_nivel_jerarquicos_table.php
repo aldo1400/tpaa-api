@@ -8,8 +8,6 @@ class CreateNivelJerarquicosTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -17,6 +15,7 @@ class CreateNivelJerarquicosTable extends Migration
             $table->increments('id');
             $table->string('nivel_nombre');
             $table->boolean('estado')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -62,8 +61,6 @@ class CreateNivelJerarquicosTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NivelJerarquico extends Model
 {
-     /**
+    use SoftDeletes;
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -20,6 +22,13 @@ class NivelJerarquico extends Model
      */
     protected $fillable = [
         'nivel_nombre',
-        'estado'
+        'estado',
     ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 }

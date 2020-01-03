@@ -98,4 +98,35 @@ class CrudTest extends TestCase
             'estado' => $nivelJerarquico->estado,
         ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarNivelJerarquico()
+    {
+        $nivelesJerarquico = factory(NivelJerarquico::class, 5)
+                    ->create();
+
+        $url = '/api/niveles-jerarquico/'.$nivelesJerarquico[0]->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('niveles_jerarquico', [
+            'id' => $nivelesJerarquico[0]->id,
+        ]);
+
+        $response = $this->json('GET', '/api/niveles-jerarquico');
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'data')
+            ->assertJson([
+                'data' => [
+                    '6' => ['id' => $nivelesJerarquico[1]->id],
+                    '7' => ['id' => $nivelesJerarquico[2]->id],
+                    '8' => ['id' => $nivelesJerarquico[3]->id],
+                    '9' => ['id' => $nivelesJerarquico[4]->id],
+                ],
+            ]);
+    }
 }
