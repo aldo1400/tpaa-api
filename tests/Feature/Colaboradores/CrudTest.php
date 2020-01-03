@@ -129,7 +129,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($parameters['tags'][0]);
         // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 

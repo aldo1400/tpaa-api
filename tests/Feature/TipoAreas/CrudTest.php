@@ -7,6 +7,25 @@ use Tests\TestCase;
 
 class CrudTest extends TestCase
 {
+    public function testObtenerTipoAreas()
+    {
+        $url = '/api/tipos-area';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(5, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'tipo_nombre',
+                        'nivel',
+                        'estado',
+                    ],
+                ],
+            ]);
+    }
+
     public function testCrearTipoArea()
     {
         $tipoArea = factory(TipoArea::class)->make();

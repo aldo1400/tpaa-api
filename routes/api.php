@@ -67,6 +67,6 @@ Route::delete('/niveles-jerarquico/{id}', 'NivelesJerarquico\DeleteProcessContro
 Route::get('/tags', 'Tags\IndexController');
 Route::post('/tags', 'Tags\CreateProcessController');
 
+Route::get('/tipos-area', 'TipoAreas\IndexController');
 Route::post('/tipos-area', 'TipoAreas\CreateProcessController');
-
 Route::patch('/tipos-area/{id}', 'TipoAreas\UpdateProcessController');
