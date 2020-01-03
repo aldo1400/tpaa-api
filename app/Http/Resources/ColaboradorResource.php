@@ -50,6 +50,7 @@ class ColaboradorResource extends JsonResource
             'fecha_inactividad' => $this->fecha_inactividad->format('d-m-Y'),
             'nivelEducacion' => new NivelEducacionResource($this->nivelEducacion),
             'estadoCivil' => new EstadoCivilResource($this->estadoCivil),
+            'tags' => TagResource::collection($this->tags),
         ];
     }
 }

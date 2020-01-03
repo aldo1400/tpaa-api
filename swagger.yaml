@@ -14,7 +14,9 @@ tags:
   description: User module
 - name: type-users
   description: Everything about type of users
-- name: tipo cargas
+- name: tags
+  description: Everything about tags
+- name: tipos carga
   description: Everything about tipo de cargas
 - name: cargos
   description: Everything about cargos
@@ -30,7 +32,9 @@ tags:
   description: Everything about niveles estado civiles
 - name: niveles educacion
   description: Everything about niveles educacion
-  
+- name: niveles jerarquico
+  description: Everything about niveles jerarquico 
+
 schemes:
 - https
 paths:
@@ -654,7 +658,147 @@ paths:
               $ref: '#/definitions/NivelEducacionResource'
         401:
           description: unauthenticated  
-          
+  
+  # ---------------------
+  #   Niveles jerarquico
+  # ---------------------
+  "/niveles-jerarquico":
+    get:
+      tags:
+      - niveles jerarquico
+      summary: Obtener todos los niveles jerarquico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NivelJerarquicoResource'
+        401:
+          description: unauthenticated  
+  
+    post:
+      tags:
+      - niveles jerarquico
+      summary: Añadir un nivel jerarquico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/NivelJerarquicoCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+  
+  "/niveles-jerarquico/{id}":
+    get:
+      tags:
+      - niveles jerarquico
+      summary: Obtener un nivel jerarquico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/NivelJerarquicoResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    put:
+      tags:
+      - niveles jerarquico
+      summary: Editar nombre de un nivel jerarquico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Nivel Jerarquico ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/NivelJerarquicoUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access   
+    
+    delete:
+      tags:
+      - niveles jerarquico
+      summary: Eliminar nivel jerarquico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Nivel jerarquico deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children
+  
+  
+  # ---------------------
+  #   Tags
+  # ---------------------
+  "/tags":
+    get:
+      tags:
+      - tags
+      summary: Get all tags
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TagResource'
+        401:
+          description: unauthenticated
+    
   # ---------------------
   #   Tipos carga
   # ---------------------
@@ -1023,6 +1167,12 @@ definitions:
         type: integer
       imagen:
         type: string
+      tags:
+        type: array
+        items:
+          type: integer
+      
+      
   
   ColaboradorResource:
     type: object
@@ -1115,6 +1265,10 @@ definitions:
         $ref: "#/definitions/NivelEducacionResource" 
       estadoCivil:
         $ref: "#/definitions/EstadoCivilResource" 
+      tags:
+        type: array
+        items:
+          $ref: '#/definitions/TagResource'
   
   CursoResource:
     type: object
@@ -1233,6 +1387,35 @@ definitions:
         type: string
         enum: [0,1]
   
+  NivelJerarquicoResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      nivel_nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+  
+  NivelJerarquicoCreateRequest:
+    type: object
+    properties:
+      nivel_nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+  
+  NivelJerarquicoUpdateRequest:
+    type: object
+    properties:
+      nivel_nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+  
   PasswordResetRequest:
     type: object
     properties:
@@ -1258,6 +1441,23 @@ definitions:
         type: string
       typeUser:
         $ref: "#/definitions/TypeUserResource"        
+  
+  TagResource:
+    type: object
+    properties:
+      id:
+        type: string
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      permisos:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+      tipo:
+        type: string
   
   TypeUserResource:
     type: object

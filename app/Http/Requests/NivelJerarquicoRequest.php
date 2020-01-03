@@ -24,8 +24,8 @@ class NivelJerarquicoRequest extends FormRequest
     public function rules()
     {
         return [
-            'nivel_nombre'=>['required','string'],
-            'estado'=>['required','boolean']
+            'nivel_nombre' => ['required', 'string'],
+            'estado' => ['required', 'boolean'],
         ];
     }
 }
