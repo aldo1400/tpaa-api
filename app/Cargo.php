@@ -22,8 +22,8 @@ class Cargo extends Model
      * @var array
      */
     protected $fillable = [
-        'nivel_jerarquico',
         'nombre',
+        'estado',
     ];
 
     /**
@@ -39,6 +39,22 @@ class Cargo extends Model
     public function supervisor(): BelongsTo
     {
         return $this->belongsTo('App\Cargo', 'supervisor_id');
+    }
+
+    /**
+     * Get the area for the cargo.
+     */
+    public function area(): BelongsTo
+    {
+        return $this->belongsTo('App\Area');
+    }
+
+    /**
+     * Get the nivel jerarquico for the cargo.
+     */
+    public function nivelJerarquico(): BelongsTo
+    {
+        return $this->belongsTo('App\NivelJerarquico');
     }
 
     public function encontrarCargoInferior()
