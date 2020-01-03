@@ -8,6 +8,7 @@ use App\Colaborador;
 use App\EstadoCivil;
 use App\Departamento;
 use App\NivelEducacion;
+use Illuminate\Http\UploadedFile;
 
 class CrudTest extends TestCase
 {
@@ -83,6 +84,8 @@ class CrudTest extends TestCase
                         ->state('activo')
                         ->create();
 
+        $image = UploadedFile::fake()->image('banner1.jpg', 1200, 750);
+
         $tags = factory(Tag::class, 3)->create();
 
         $url = '/api/colaboradores';
@@ -122,6 +125,7 @@ class CrudTest extends TestCase
             'estado_civil_id' => $estadoCivil->id,
             'nivel_educacion_id' => $nivelEducacion->id,
             'tags' => $tags->pluck('id'),
+            'imagen' => $image,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -165,20 +169,20 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
             ]);
 
-            // dd($colaborador);
-            $this->assertDatabaseHas('colaborador_tag', [
+        // dd($colaborador);
+        $this->assertDatabaseHas('colaborador_tag', [
                 'tag_id' => $tags[0]->id,
-                'colaborador_id'=>Colaborador::latest()->first()->id,
+                'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
 
-            $this->assertDatabaseHas('colaborador_tag', [
+        $this->assertDatabaseHas('colaborador_tag', [
                 'tag_id' => $tags[1]->id,
-                'colaborador_id'=>Colaborador::latest()->first()->id,
+                'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
 
-            $this->assertDatabaseHas('colaborador_tag', [
+        $this->assertDatabaseHas('colaborador_tag', [
                 'tag_id' => $tags[2]->id,
-                'colaborador_id'=>Colaborador::latest()->first()->id,
+                'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
     }
 

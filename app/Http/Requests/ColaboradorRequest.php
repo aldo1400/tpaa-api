@@ -59,6 +59,7 @@ class ColaboradorRequest extends FormRequest
             'estado_civil_id' => ['nullable', 'exists:estado_civiles,id'],
             'tags' => ['required', 'array'],
             'tags.*' => ['required', 'distinct', 'exists:tags,id'],
+            'imagen' => ['nullable', 'image', 'mimes:jpeg,bmp,png'],
         ];
 
         if (!$this->route('id')) {

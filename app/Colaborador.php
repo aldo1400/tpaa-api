@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -103,6 +104,11 @@ class Colaborador extends Model
     public function capacitaciones(): HasMany
     {
         return $this->hasMany('App\CursoColaborador');
+    }
+
+    public function setImagenAttribute($imagen)
+    {
+        $this->attributes['imagen'] = Image::convertImage($imagen);
     }
 
     /**

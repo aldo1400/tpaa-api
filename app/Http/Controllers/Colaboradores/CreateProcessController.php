@@ -12,22 +12,27 @@ class CreateProcessController extends Controller
 {
     public function __invoke(ColaboradorRequest $request)
     {
+        if (!(Rut::parse($request->rut)->quiet()->validate())) {
+            return response()->json(['message' => 'El rut es inválido.'], 409);
+        }
 
+        $colaborador = $this->instanciarColaborador($request);
+        $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
+        $colaborador->estadoCivil()->associate($request->estado_civil_id);
+        $colaborador->save();
+
+        $colaborador->tags()->sync($request->tags);
+
+        return response()->json(null, 201);
+    }
+
+    public function instanciarColaborador($request)
+    {
         $colaborador = Colaborador::make($request->validated());
 
         $colaborador->rut = $request->rut;
         $colaborador->password = Hash::make($request->password);
 
-        if (!(Rut::parse($request->rut)->quiet()->validate())) {
-            return response()->json(['message' => 'El rut es inválido.'], 409);
-        }
-
-        $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
-        $colaborador->estadoCivil()->associate($request->estado_civil_id);
-        $colaborador->save();
-        
-        $colaborador->tags()->sync($request->tags);
-
-        return response()->json(null, 201);
+        return $colaborador;
     }
 }
