@@ -13,12 +13,11 @@ class TipoArea extends Model
      */
     protected $fillable = [
         'tipo_nombre',
-        // 'nivel',
         'estado',
     ];
 
     public function nuevoNivel()
     {
-        return self::latest()->first()->nivel+1;
+        return self::latest()->first()->nivel + 1;
     }
 }
