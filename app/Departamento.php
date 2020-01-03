@@ -22,8 +22,9 @@ class Departamento extends Model
      * @var array
      */
     protected $fillable = [
-        'tipo',
+        // 'tipo',
         'nombre',
+        'estado',
     ];
 
     /**
@@ -39,6 +40,14 @@ class Departamento extends Model
     public function padre(): BelongsTo
     {
         return $this->belongsTo('App\Departamento', 'padre_id');
+    }
+
+    /**
+     * Get the tipo for area.
+     */
+    public function tipoArea(): BelongsTo
+    {
+        return $this->belongsTo('App\TipoArea');
     }
 
     public function encontrarDepartamentoInferior()
