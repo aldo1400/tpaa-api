@@ -29,4 +29,33 @@ class CrudTest extends TestCase
             'nivel' => 5,
         ]);
     }
+
+    public function testEditarTipoArea()
+    {
+        $tipoArea = TipoArea::first();
+
+        $url = '/api/tipos-area/'.$tipoArea->id;
+
+        $parameters = [
+            'tipo_nombre' => 'Nueva Subárea',
+            'estado' => 1,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('tipo_areas', [
+            'id' => $tipoArea->id,
+            'tipo_nombre' => $parameters['tipo_nombre'],
+            'estado' => $parameters['estado'],
+            'nivel' => 0,
+        ]);
+
+        $this->assertDatabaseMissing('tipo_areas', [
+            'id' => $tipoArea->id,
+            'tipo_nombre' => $tipoArea->tipo_nombre,
+            'estado' => $tipoArea->estado,
+            'nivel' => 0,
+        ]);
+    }
 }

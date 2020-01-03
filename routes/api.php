@@ -68,3 +68,5 @@ Route::get('/tags', 'Tags\IndexController');
 Route::post('/tags', 'Tags\CreateProcessController');
 
 Route::post('/tipos-area', 'TipoAreas\CreateProcessController');
+
+Route::patch('/tipos-area/{id}', 'TipoAreas\UpdateProcessController');
