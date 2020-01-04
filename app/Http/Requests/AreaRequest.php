@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DepartamentoRequest extends FormRequest
+class AreaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,10 @@ class DepartamentoRequest extends FormRequest
     public function rules()
     {
         return [
-            'tipo' => ['required', 'in:Gerencia General,Gerencia,Subgerencia,Área,Subarea'],
             'nombre' => ['required', 'string'],
-            'padre_id' => ['nullable', 'exists:departamentos,id'],
+            'padre_id' => ['nullable', 'exists:areas,id'],
+            'estado' => ['required', 'boolean'],
+            'tipo_area_id' => ['required', 'exists:tipo_areas,id'],
         ];
     }
 }

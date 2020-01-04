@@ -1,18 +1,21 @@
 <?php
 
-namespace Tests\Feature\Departamento;
+namespace Tests\Feature\Areas;
 
+use App\Area;
 use Tests\TestCase;
 use App\Departamento;
 
 class CrudTest extends TestCase
 {
-    public function testObtenerDepartamentos()
+    public function testObtenerAreas()
     {
-        factory(Departamento::class, 10)
-                    ->create();
+        factory(Area::class, 10)
+                    ->create([
+                        'tipo_area_id' => 1,
+                    ]);
 
-        $url = '/api/departamentos';
+        $url = '/api/areas';
         $response = $this->json('GET', $url);
 
         $response->assertStatus(200)
@@ -21,8 +24,13 @@ class CrudTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'tipo',
                         'nombre',
+                        'tipoArea' => [
+                            'id',
+                            'tipo_nombre',
+                            'nivel',
+                            'estado',
+                        ],
                     ],
                 ],
             ]);
