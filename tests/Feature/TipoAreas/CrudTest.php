@@ -98,4 +98,34 @@ class CrudTest extends TestCase
             'nivel' => 0,
         ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarTipoDeArea()
+    {
+        $tiposArea = TipoArea::all();
+
+        $url = '/api/tipos-area/'.$tiposArea[0]->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('tipo_areas', [
+            'id' => $tiposArea[0]->id,
+        ]);
+
+        $response = $this->json('GET', '/api/tipos-area');
+        $response->assertStatus(200)
+            ->assertJsonCount(4, 'data')
+            ->assertJson([
+                'data' => [
+                    '0' => ['id' => $tiposArea[1]->id],
+                    '1' => ['id' => $tiposArea[2]->id],
+                    '2' => ['id' => $tiposArea[3]->id],
+                    '3' => ['id' => $tiposArea[4]->id],
+                ],
+            ]);
+    }
 }
