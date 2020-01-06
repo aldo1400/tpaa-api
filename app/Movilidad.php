@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Movilidad extends Model
 {
+    const NUEVO='Nuevo';
     /**
      * The table associated with the model.
      *
@@ -36,4 +38,20 @@ class Movilidad extends Model
         'fecha_termino',
         'deleted_at',
     ];
+
+    /**
+     * Get the estado civil for the colaborador.
+     */
+    public function colaborador(): BelongsTo
+    {
+        return $this->belongsTo('App\Colaborador');
+    }
+
+    /**
+     * Get the estado civil for the colaborador.
+     */
+    public function cargo(): BelongsTo
+    {
+        return $this->belongsTo('App\Cargo');
+    }
 }

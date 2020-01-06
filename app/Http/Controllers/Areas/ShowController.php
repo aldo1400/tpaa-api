@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Departamentos;
+namespace App\Http\Controllers\Areas;
 
-use App\Departamento;
+use App\Area;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DepartamentoResource;
+use App\Http\Resources\AreaResource;
 
 class ShowController extends Controller
 {
     public function __invoke($id)
     {
-        $departamento = Departamento::findOrFail($id);
+        $area = Area::findOrFail($id);
 
-        return new DepartamentoResource($departamento);
+        return new AreaResource($area);
     }
 }

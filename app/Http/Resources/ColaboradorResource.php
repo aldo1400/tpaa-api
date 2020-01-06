@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Movilidad;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ColaboradorResource extends JsonResource
@@ -51,6 +52,7 @@ class ColaboradorResource extends JsonResource
             'nivelEducacion' => new NivelEducacionResource($this->nivelEducacion),
             'estadoCivil' => new EstadoCivilResource($this->estadoCivil),
             'tags' => TagResource::collection($this->tags),
+            'cargoActual'=> $this->cargoActual() ? new CargoResource($this->cargoActual()) : ''
         ];
     }
 }

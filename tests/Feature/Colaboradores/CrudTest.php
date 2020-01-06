@@ -3,6 +3,8 @@
 namespace Tests\Feature\Colaboradores;
 
 use App\Tag;
+use App\Cargo;
+use App\Movilidad;
 use Tests\TestCase;
 use App\Colaborador;
 use App\EstadoCivil;
@@ -76,6 +78,8 @@ class CrudTest extends TestCase
     {
         $colaborador = factory(Colaborador::class)->make();
 
+        $cargo=factory(Cargo::class)->create();
+        
         $nivelEducacion = factory(NivelEducacion::class)
                         ->state('activo')
                         ->create();
@@ -126,6 +130,8 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $nivelEducacion->id,
             'tags' => $tags->pluck('id'),
             'imagen' => $image,
+            'cargo_id'=>$cargo->id,
+            'fecha_inicio'=>now()->format('Y-m-d')
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -183,6 +189,16 @@ class CrudTest extends TestCase
                 'tag_id' => $tags[2]->id,
                 'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
+
+        $this->assertDatabaseHas('movilidades',[
+            'fecha_inicio'=>$parameters['fecha_inicio'],
+            'colaborador_id'=>Colaborador::latest()->first()->id,
+            'cargo_id'=>$parameters['cargo_id'],
+            'fecha_termino'=>null,
+            'tipo'=>Movilidad::NUEVO,
+            'observaciones'=>null,
+            'estado'=>1
+        ]);
     }
 
     /**

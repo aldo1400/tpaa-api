@@ -106,6 +106,11 @@ class Colaborador extends Model
         return $this->hasMany('App\CursoColaborador');
     }
 
+    public function movilidades(): HasMany
+    {
+        return $this->hasMany('App\Movilidad');
+    }
+
     public function setImagenAttribute($imagen)
     {
         $this->attributes['imagen'] = Image::convertImage($imagen);
@@ -119,6 +124,12 @@ class Colaborador extends Model
         return $this->belongsToMany('App\Tag')
                 ->withPivot('estado')
                 ->withTimestamps();
+    }
+
+    public function cargoActual(){
+        return $this->movilidades()
+                ->where('estado',1)
+                ->first();
     }
 
     public function obtenerTipoDepartamento()

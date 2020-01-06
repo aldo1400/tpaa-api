@@ -9,5 +9,6 @@ $factory->define(App\TipoArea::class, function (Faker $faker) {
             0,
             1,
         ]),
+        'nivel'=>0
     ];
 });

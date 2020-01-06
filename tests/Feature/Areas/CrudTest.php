@@ -25,6 +25,7 @@ class CrudTest extends TestCase
                     '*' => [
                         'id',
                         'nombre',
+                        'estado',
                         'tipoArea' => [
                             'id',
                             'tipo_nombre',
@@ -38,19 +39,27 @@ class CrudTest extends TestCase
 
     public function testObtenerUnDepartamento()
     {
-        $departamentos = factory(Departamento::class, 10)
-                    ->create();
+        $areas = factory(Area::class, 10)
+                    ->create([
+                        'tipo_area_id' => 1,
+                    ]);
 
-        $url = '/api/departamentos/'.$departamentos[1]->id;
+        $url = '/api/areas/'.$areas[1]->id;
         $response = $this->json('GET', $url);
 
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
-                        'id' => $departamentos[1]->id,
-                        'tipo' => $departamentos[1]->tipo,
-                        'nombre' => $departamentos[1]->nombre,
+                        'id' => $areas[1]->id,
+                        'nombre' => $areas[1]->nombre,
+                        'estado' => $areas[1]->estado,
                         'padre_id' => '',
+                        'tipoArea' => $areas[1]->tipoArea->only([
+                            'id',
+                            'tipo_nombre',
+                            'nivel',
+                            'estado',
+                        ]),
                 ],
             ]);
     }

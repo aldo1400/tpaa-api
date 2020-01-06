@@ -60,6 +60,8 @@ class ColaboradorRequest extends FormRequest
             'tags' => ['required', 'array'],
             'tags.*' => ['required', 'distinct', 'exists:tags,id'],
             'imagen' => ['nullable', 'image', 'mimes:jpeg,bmp,png'],
+            'cargo_id'=>['nullable','exists:cargos,id'],
+            'fecha_inicio'=>['nullable','date','date_format:Y-m-d']
         ];
 
         if (!$this->route('id')) {
