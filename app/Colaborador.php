@@ -113,7 +113,7 @@ class Colaborador extends Model
 
     public function setImagenAttribute($imagen)
     {
-        $this->attributes['imagen'] = Image::convertImage($imagen);
+        $this->attributes['imagen'] = $imagen ? Image::convertImage($imagen) : '';
     }
 
     /**
@@ -126,9 +126,10 @@ class Colaborador extends Model
                 ->withTimestamps();
     }
 
-    public function cargoActual(){
+    public function cargoActual()
+    {
         return $this->movilidades()
-                ->where('estado',1)
+                ->where('estado', 1)
                 ->first();
     }
 
