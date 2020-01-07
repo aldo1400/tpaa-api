@@ -13,9 +13,10 @@ class UpdateProcessController extends Controller
     {
         $area = Area::findOrFail($id);
 
-        $area->update([
-            'nombre' => $request->nombre,
-        ]);
+        $area->update($request->validated());
+
+        $area->padre()->associate($request->padre_id);
+        $area->save();
 
       return response()->json();
     }

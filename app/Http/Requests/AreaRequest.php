@@ -23,11 +23,17 @@ class AreaRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules=[
             'nombre' => ['required', 'string'],
             'padre_id' => ['nullable', 'exists:areas,id'],
             'estado' => ['required', 'boolean'],
-            'tipo_area_id' => ['required', 'exists:tipo_areas,id'],
         ];
+        
+        if (!$this->route('id')) {
+            $rules['tipo_area_id'] ='required|exists:tipo_areas,id';
+        }
+
+        return $rules;
+
     }
 }

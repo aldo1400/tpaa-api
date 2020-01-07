@@ -19,10 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Departamentos
 Route::get('/areas', 'Areas\IndexController');
-// Route::post('/departamentos', 'Departamentos\CreateProcessController');
+Route::post('/areas', 'Areas\CreateProcessController');
 Route::get('/areas/{id}', 'Areas\ShowController');
-// Route::patch('/departamentos/{id}', 'Departamentos\UpdateProcessController');
-// Route::delete('/departamentos/{id}', 'Departamentos\DeleteProcessController');
+Route::patch('/areas/{id}', 'Areas\UpdateProcessController');
+Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 
 // Cargos
 Route::get('/cargos', 'Cargos\IndexController');

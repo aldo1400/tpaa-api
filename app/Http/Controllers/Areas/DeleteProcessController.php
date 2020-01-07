@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Departamentos;
+namespace App\Http\Controllers\Areas;
 
-use App\Departamento;
+use App\Area;
 use App\Http\Controllers\Controller;
 
 class DeleteProcessController extends Controller
 {
     public function __invoke($id)
     {
-        $departamento = Departamento::findOrFail($id);
+        $area = Area::findOrFail($id);
 
-        if ($departamento->encontrarDepartamentoInferior()) {
-            return response()->json(['status' => 'El departamento tiene hijos.'], 409);
-        }
+        // if ($departamento->encontrarDepartamentoInferior()) {
+        //     return response()->json(['status' => 'El departamento tiene hijos.'], 409);
+        // }
 
-        $departamento->delete();
+        $area->delete();
 
         return response()->json();
     }
