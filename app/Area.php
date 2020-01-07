@@ -49,7 +49,7 @@ class Area extends Model
         return $this->belongsTo('App\TipoArea');
     }
 
-    public function encontrarDepartamentoInferior()
+    public function encontrarAreaInferior()
     {
         if (self::where('padre_id', $this->id)->first()) {
             return true;

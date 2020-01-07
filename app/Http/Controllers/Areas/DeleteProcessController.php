@@ -11,9 +11,9 @@ class DeleteProcessController extends Controller
     {
         $area = Area::findOrFail($id);
 
-        // if ($departamento->encontrarDepartamentoInferior()) {
-        //     return response()->json(['status' => 'El departamento tiene hijos.'], 409);
-        // }
+        if ($area->encontrarAreaInferior()) {
+            return response()->json(['status' => 'El area tiene hijos.'], 409);
+        }
 
         $area->delete();
 

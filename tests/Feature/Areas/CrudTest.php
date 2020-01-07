@@ -188,22 +188,22 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testValidarQueUnDepartamentoConDepartamentosInferioresNoPuedeSerEliminado()
+    public function testValidarQueUnAreaConAreasInferioresNoPuedeSerEliminado()
     {
-        $departamentoPadre = factory(Departamento::class)
+        $areaPadre = factory(Area::class)
                         ->create();
 
-        $departamento = factory(Departamento::class)
+        $area = factory(Area::class)
                         ->create([
-                            'padre_id' => $departamentoPadre->id,
+                            'padre_id' => $areaPadre->id,
                         ]);
 
-        $url = '/api/departamentos/'.$departamentoPadre->id;
+        $url = '/api/areas/'.$areaPadre->id;
 
         $response = $this->json('DELETE', $url);
 
         $response->assertStatus(409)
-                    ->assertSeeText('El departamento tiene hijos.');
+                    ->assertSeeText('El area tiene hijos.');
     }
 
     public function testEditarArea()
