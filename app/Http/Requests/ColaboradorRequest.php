@@ -59,7 +59,7 @@ class ColaboradorRequest extends FormRequest
             'estado_civil_id' => ['nullable', 'exists:estado_civiles,id'],
             'tags' => ['required', 'array'],
             'tags.*' => ['required', 'distinct', 'exists:tags,id'],
-            'imagen' => ['nullable', 'image', 'mimes:jpeg,bmp,png'],
+            'imagen' => ['nullable', 'image'],
             'cargo_id' => ['nullable', 'exists:cargos,id'],
             'fecha_inicio' => ['nullable', 'date', 'date_format:Y-m-d'],
             'credencial_vigilante' => ['nullable', 'string', 'in:SI,NO,N/A'],
