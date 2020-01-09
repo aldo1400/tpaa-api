@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CargoResource extends JsonResource
+class TipoComentarioResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,11 +17,8 @@ class CargoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nombre' => $this->nombre,
-            'supervisor_id' => $this->supervisor_id,
+            'tipo' => $this->tipo,
             'estado' => $this->estado,
-            'nivelJerarquico' => new NivelJerarquicoResource($this->nivelJerarquico),
-            'area' => new AreaResource($this->area),
         ];
     }
 }
