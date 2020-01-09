@@ -57,6 +57,8 @@ class CrudTest extends TestCase
                         'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
                         'estado' => $colaboradores[1]->estado,
                         'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('d-m-Y'),
+                        'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
+                        'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('d-m-Y'),
                         'nivelEducacion' => $colaboradores[1]->nivelEducacion->only([
                             'id',
                             'nivel_tipo',
@@ -78,8 +80,8 @@ class CrudTest extends TestCase
     {
         $colaborador = factory(Colaborador::class)->make();
 
-        $cargo=factory(Cargo::class)->create();
-        
+        $cargo = factory(Cargo::class)->create();
+
         $nivelEducacion = factory(NivelEducacion::class)
                         ->state('activo')
                         ->create();
@@ -130,8 +132,10 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $nivelEducacion->id,
             'tags' => $tags->pluck('id'),
             'imagen' => $image,
-            'cargo_id'=>$cargo->id,
-            'fecha_inicio'=>now()->format('Y-m-d')
+            'cargo_id' => $cargo->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'credencial_vigilante' => $colaborador->credencial_vigilante,
+            'vencimiento_credencial_vigilante' => $colaborador->vencimiento_credencial_vigilante->format('Y-m-d'),
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -172,6 +176,8 @@ class CrudTest extends TestCase
             'fecha_inactividad' => null,
             'estado_civil_id' => $parameters['estado_civil_id'],
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            'credencial_vigilante' => $parameters['credencial_vigilante'],
+            'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
             ]);
 
         // dd($colaborador);
@@ -190,14 +196,14 @@ class CrudTest extends TestCase
                 'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
 
-        $this->assertDatabaseHas('movilidades',[
-            'fecha_inicio'=>$parameters['fecha_inicio'],
-            'colaborador_id'=>Colaborador::latest()->first()->id,
-            'cargo_id'=>$parameters['cargo_id'],
-            'fecha_termino'=>null,
-            'tipo'=>Movilidad::NUEVO,
-            'observaciones'=>null,
-            'estado'=>1
+        $this->assertDatabaseHas('movilidades', [
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'colaborador_id' => Colaborador::latest()->first()->id,
+            'cargo_id' => $parameters['cargo_id'],
+            'fecha_termino' => null,
+            'tipo' => Movilidad::NUEVO,
+            'observaciones' => null,
+            'estado' => 1,
         ]);
     }
 

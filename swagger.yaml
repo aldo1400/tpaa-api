@@ -1286,6 +1286,16 @@ definitions:
       fecha_inicio:
         type: string
         format: date
+      credencial_vigilante:
+        type: string
+        enum: [
+          'SI', 
+          'NO',
+          'N/A'
+          ]
+      vencimiento_credencial_vigilante:
+        type: string
+        format: date
   
   ColaboradorResource:
     type: object
@@ -1384,6 +1394,16 @@ definitions:
           $ref: '#/definitions/TagResource'
       cargoActual:
         $ref: "#/definitions/CargoResource"
+      credencial_vigilante:
+        type: string
+        enum: [
+          'SI', 
+          'NO',
+          'N/A'
+          ]
+      vencimiento_credencial_vigilante:
+        type: string
+        format: date
   
   CursoResource:
     type: object

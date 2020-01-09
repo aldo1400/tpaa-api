@@ -54,6 +54,8 @@ class Colaborador extends Model
         'contacto_emergencia_telefono',
         'estado',
         'fecha_inactividad',
+        'credencial_vigilante',
+        'vencimiento_credencial_vigilante',
     ];
 
     /**
@@ -78,6 +80,7 @@ class Colaborador extends Model
         'fecha_ingreso',
         'fecha_inactividad',
         'deleted_at',
+        'vencimiento_credencial_vigilante',
     ];
 
     /**

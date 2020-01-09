@@ -60,8 +60,10 @@ class ColaboradorRequest extends FormRequest
             'tags' => ['required', 'array'],
             'tags.*' => ['required', 'distinct', 'exists:tags,id'],
             'imagen' => ['nullable', 'image', 'mimes:jpeg,bmp,png'],
-            'cargo_id'=>['nullable','exists:cargos,id'],
-            'fecha_inicio'=>['nullable','date','date_format:Y-m-d']
+            'cargo_id' => ['nullable', 'exists:cargos,id'],
+            'fecha_inicio' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'credencial_vigilante' => ['nullable', 'string', 'in:SI,NO,N/A'],
+            'vencimiento_credencial_vigilante' => ['nullable', 'date', 'date_format:Y-m-d'],
         ];
 
         if (!$this->route('id')) {

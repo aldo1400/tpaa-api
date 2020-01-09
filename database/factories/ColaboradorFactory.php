@@ -58,6 +58,10 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
             'Renuncia',
         ]),
         'fecha_inactividad' => $faker->dateTime($max = 'now', $timezone = null),
+        'credencial_vigilante' => $faker->randomElement([
+            'SI', 'NO', 'N/A',
+        ]),
+        'vencimiento_credencial_vigilante' => $faker->dateTime($max = 'now', $timezone = null),
         'nivel_educacion_id' => function () {
             return factory(NivelEducacion::class)->create()->id;
         },
