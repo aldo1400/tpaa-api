@@ -14,6 +14,69 @@ use Illuminate\Http\UploadedFile;
 
 class CrudTest extends TestCase
 {
+    public function testObtenerTodosLosColaboradores()
+    {
+        factory(Colaborador::class, 10)
+                    ->create();
+
+        $url = '/api/colaboradores';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'usuario',
+                        'primer_nombre',
+                        'segundo_nombre',
+                        'apellido_paterno',
+                        'apellido_materno',
+                        'imagen',
+                        'sexo',
+                        'nacionalidad',
+                        'fecha_nacimiento',
+                        'edad',
+                        'email',
+                        'domicilio',
+                        'licencia_b',
+                        'vencimiento_licencia_b',
+                        'licencia_d',
+                        'vencimiento_licencia_d',
+                        'carnet_portuario',
+                        'vencimiento_carnet_portuario',
+                        'talla_calzado',
+                        'talla_chaleco',
+                        'talla_polera',
+                        'talla_pantalon',
+                        'fecha_ingreso',
+                        'telefono',
+                        'celular',
+                        'anexo',
+                        'contacto_emergencia_nombre',
+                        'contacto_emergencia_telefono',
+                        'estado',
+                        'fecha_inactividad',
+                        'nivelEducacion'=>[
+                            'id',
+                            'nivel_tipo',
+                            'estado'
+                        ],
+                        'estadoCivil'=>[
+                            'id',
+                            'tipo',
+                            'estado'
+                        ],
+                        'tags',
+                        'cargoActual',
+                        'credencial_vigilante',
+                        'vencimiento_credencial_vigilante',
+                    ],
+                ],
+            ]);
+    }
+
     public function testObtenerUnColaborador()
     {
         $colaboradores = factory(Colaborador::class, 10)
