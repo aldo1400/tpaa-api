@@ -12,7 +12,10 @@ $factory->define(Tag::class, function (Faker $faker) {
             0,
             1,
         ]),
-        'tipo' => $faker->company,
+        'tipo' => $faker->randomElement([
+            Tag::NEGATIVO,
+            Tag::POSITIVO,
+        ]),
     ];
 });
 

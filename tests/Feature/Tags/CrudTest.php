@@ -58,4 +58,32 @@ class CrudTest extends TestCase
             'tipo' => $parameters['tipo'],
         ]);
     }
+
+    public function testEliminarTag()
+    {
+        $tags = factory(Tag::class, 5)
+                    ->create();
+
+        $url = '/api/tags/'.$tags[0]->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('tags', [
+            'id' => $tags[0]->id,
+        ]);
+
+        $response = $this->json('GET', '/api/tags');
+        $response->assertStatus(200)
+            ->assertJsonCount(4, 'data')
+            ->assertJson([
+                'data' => [
+                    '0' => ['id' => $tags[1]->id],
+                    '1' => ['id' => $tags[2]->id],
+                    '2' => ['id' => $tags[3]->id],
+                    '3' => ['id' => $tags[4]->id],
+                ],
+            ]);
+    }
 }

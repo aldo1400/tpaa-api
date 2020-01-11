@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
+    use SoftDeletes;
     const POSITIVO='POSITIVO';
     const NEGATIVO='NEGATIVO';
     /**
@@ -22,6 +24,13 @@ class Tag extends Model
         'tipo',
     ];
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
+    
     /**
      * The users that belong to the role.
      */
