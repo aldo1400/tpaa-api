@@ -14,12 +14,6 @@ tags:
   description: User module
 - name: type-users
   description: Everything about type of users
-- name: tags
-  description: Everything about tags
-- name: tipos carga
-  description: Everything about tipo de cargas
-- name: tipos area
-  description: Everything about tipo de area
 - name: cargos
   description: Everything about cargos
 - name: cargas familiares
@@ -36,6 +30,12 @@ tags:
   description: Everything about niveles educacion
 - name: niveles jerarquico
   description: Everything about niveles jerarquico 
+- name: tags
+  description: Everything about tags
+- name: tipos carga
+  description: Everything about tipo de cargas
+- name: tipos area
+  description: Everything about tipo de area
 
 schemes:
 - https
@@ -800,6 +800,74 @@ paths:
               $ref: '#/definitions/TagResource'
         401:
           description: unauthenticated
+    
+    post:
+      tags:
+      - tags
+      summary: Añadir un tag
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/TagCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+  
+  "/tags/{id}":
+    get:
+      tags:
+      - tags
+      summary: Obtener un tag
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/TagResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    delete:
+      tags:
+      - tags
+      summary: Eliminar un tag
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Tag deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children     
   
   # ---------------------
   #   Tipos Area
@@ -1388,10 +1456,6 @@ definitions:
         $ref: "#/definitions/NivelEducacionResource" 
       estadoCivil:
         $ref: "#/definitions/EstadoCivilResource" 
-      tags:
-        type: array
-        items:
-          $ref: '#/definitions/TagResource'
       cargoActual:
         $ref: "#/definitions/CargoResource"
       credencial_vigilante:
@@ -1615,6 +1679,29 @@ definitions:
         enum: [0,1]
       tipo:
         type: string
+        enum: [
+          'POSITIVO',
+          'NEGATIVO'
+          ]
+        
+  TagCreateRequest:
+    type: object
+    properties:
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      permisos:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+      tipo:
+        type: string
+        enum: [
+          'POSITIVO',
+          'NEGATIVO'
+          ]
   
   TypeUserResource:
     type: object
