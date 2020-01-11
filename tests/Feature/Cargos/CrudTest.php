@@ -21,9 +21,17 @@ class CrudTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'nivel_jerarquico',
                         'nombre',
                         'supervisor_id',
+                        'nivelJerarquico' => [
+                            'id',
+                            'nivel_nombre',
+                            'estado',
+                        ],
+                        'estado',
+                        'area' => [
+                            'id',
+                        ],
                     ],
                 ],
             ]);
@@ -44,9 +52,14 @@ class CrudTest extends TestCase
                 ->assertJson([
                     'data' => [
                             'id' => $cargos[1]->id,
-                            'nivel_jerarquico' => $cargos[1]->nivel_jerarquico,
                             'nombre' => $cargos[1]->nombre,
                             'supervisor_id' => null,
+                            'estado' => $cargos[1]->estado,
+                            'nivelJerarquico' => $cargos[1]->nivelJerarquico->only([
+                                'id',
+                                'nivel_nombre',
+                                'estado',
+                            ]),
                     ],
                 ]);
     }
@@ -54,11 +67,16 @@ class CrudTest extends TestCase
     public function testCrearCargoSinSupervisor()
     {
         $cargo = factory(Cargo::class)->make();
+        $nivelJerarquico = factory(NivelJerarquico::class)->create();
+        $area = factory(Area::class)->create();
+
         $url = '/api/cargos';
         $parameters = [
-            'nivel_jerarquico' => $cargo->nivel_jerarquico,
             'nombre' => $cargo->nombre,
+            'estado' => $cargo->estado,
             'supervisor_id' => '',
+            'nivel_jerarquico_id' => $nivelJerarquico->id,
+            'area_id' => $area->id,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -66,9 +84,11 @@ class CrudTest extends TestCase
 
         $this->assertDatabaseHas('cargos', [
             'id' => Cargo::latest()->first()->id,
-            'nivel_jerarquico' => $parameters['nivel_jerarquico'],
             'nombre' => $parameters['nombre'],
             'supervisor_id' => null,
+            'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
+            'area_id' => $parameters['area_id'],
+            'estado' => $parameters['estado'],
         ]);
     }
 

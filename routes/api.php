@@ -74,3 +74,4 @@ Route::patch('/tipos-area/{id}', 'TipoAreas\UpdateProcessController');
 Route::delete('/tipos-area/{id}', 'TipoAreas\DeleteProcessController');
 
 Route::get('/tipo-comentarios', 'TipoComentarios\IndexController');
+Route::post('/comentarios', 'Comentarios\CreateProcessController');

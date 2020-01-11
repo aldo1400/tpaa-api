@@ -10,12 +10,6 @@ class Cargo extends Model
 {
     use SoftDeletes;
 
-    const ESTRATEGICO_TACTICO = 'Estratégico Táctico';
-    const OPERATIVO_SUPERVISIÓN = 'Operativo Supervisión';
-    const TACTICO_OPERATIVO = 'Táctico Operativo';
-    const TACTICO = 'Táctico';
-    const EJECUCION = 'Ejecución';
-
     /**
      * The attributes that are mass assignable.
      *

@@ -13,6 +13,8 @@ class CreateProcessController extends Controller
         //TODO:Validar valor del padre
         $cargo = Cargo::make($request->validated());
         $cargo->supervisor()->associate($request->supervisor_id);
+        $cargo->nivelJerarquico()->associate($request->nivel_jerarquico_id);
+        $cargo->area()->associate($request->area_id);
 
         $cargo->save();
 

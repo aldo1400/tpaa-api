@@ -31,6 +31,6 @@ class Comentario extends Model
 
     public function autor(): BelongsTo
     {
-        return $this->belongsTo('App\COlaborador', 'colaborador_autor_id');
+        return $this->belongsTo('App\Colaborador', 'colaborador_autor_id');
     }
 }

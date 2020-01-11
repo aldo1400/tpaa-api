@@ -24,9 +24,11 @@ class CargoRequest extends FormRequest
     public function rules()
     {
         return [
-            'nivel_jerarquico' => ['required', 'in:Estratégico Táctico,Operativo Supervisión,Táctico Operativo,Táctico,Ejecución'],
             'nombre' => ['required', 'string'],
+            'estado' => ['required', 'boolean'],
             'supervisor_id' => ['nullable', 'exists:cargos,id'],
+            'area_id' => ['required', 'exists:areas,id'],
+            'nivel_jerarquico_id' => ['required', 'exists:niveles_jerarquico,id'],
         ];
     }
 }
