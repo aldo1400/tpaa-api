@@ -70,7 +70,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('tags', [
@@ -82,6 +81,47 @@ class CrudTest extends TestCase
             'tipo' => $parameters['tipo'],
         ]);
     }
+
+    public function testEditarTag()
+    {
+        $tag = factory(Tag::class)
+                    ->state('activo')
+                    ->create([
+                        'tipo'=>Tag::NEGATIVO
+                    ]);
+
+        $url = '/api/tags/'.$tag->id;
+
+        $parameters = [
+            'nombre' => 'EMPATIA',
+            'descripcion' =>'PONERSE EN EL LUGAR DE OTRO',
+            'permisos' =>'NO DEFINIDO',
+            'estado' => 1,
+            'tipo' => Tag::POSITIVO,
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('tags', [
+            'id' => $tag->id,
+            'nombre' => $parameters['nombre'],
+            'descripcion' => $parameters['descripcion'],
+            'permisos' => $parameters['permisos'],
+            'estado' => $parameters['estado'],
+            'tipo' => $parameters['tipo'],
+        ]);
+
+        $this->assertDatabaseMissing('tags', [
+            'id' => $tag->id,
+            'nombre' => $tag->nombre,
+            'descripcion' => $tag->descripcion,
+            'permisos' => $tag->permisos,
+            'estado' => $tag->estado,
+            'tipo' => $tag->tipo,
+        ]);
+    }
+
 
     public function testEliminarTag()
     {

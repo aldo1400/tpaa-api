@@ -848,6 +848,34 @@ paths:
         401:
           description: Unauthenticated
     
+        
+    put:
+      tags:
+      - tags
+      summary: Editar tag
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: tag ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/TagUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access
+    
     delete:
       tags:
       - tags
@@ -1685,6 +1713,25 @@ definitions:
           ]
         
   TagCreateRequest:
+    type: object
+    properties:
+      nombre:
+        type: string
+      descripcion:
+        type: string
+      permisos:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+      tipo:
+        type: string
+        enum: [
+          'POSITIVO',
+          'NEGATIVO'
+          ]
+          
+  TagUpdateRequest:
     type: object
     properties:
       nombre:

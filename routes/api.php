@@ -70,8 +70,9 @@ Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexControlle
 
 Route::get('/tags', 'Tags\IndexController');
 Route::get('/tags/{id}', 'Tags\ShowController');
-Route::post('/tags', 'Tags\CreateProcessController');
+Route::put('/tags/{id}', 'Tags\UpdateProcessController');
 Route::delete('/tags/{id}', 'Tags\DeleteProcessController');
+Route::post('/tags', 'Tags\CreateProcessController');
 
 Route::get('/tipos-area', 'TipoAreas\IndexController');
 Route::get('/tipos-area/{id}', 'TipoAreas\ShowController');
