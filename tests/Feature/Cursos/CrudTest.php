@@ -31,7 +31,7 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testObtenerUnCargo()
+    public function testObtenerUnCurso()
     {
         $cursos = factory(Curso::class, 10)
                         ->create();

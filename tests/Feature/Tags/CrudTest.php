@@ -32,6 +32,30 @@ class CrudTest extends TestCase
             ]);
     }
 
+    /**
+     * A basic test example.
+     */
+    public function testObtenerUnTag()
+    {
+        $tags = factory(Tag::class, 10)
+                        ->create();
+
+        $url = '/api/tags/'.$tags[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'data' => [
+                        'id'=>$tags[1]->id,
+                        'nombre'=>$tags[1]->nombre,
+                        'descripcion'=>$tags[1]->descripcion,
+                        'permisos'=>$tags[1]->permisos,
+                        'estado'=>$tags[1]->estado,
+                        'tipo'=>$tags[1]->tipo,
+                    ],
+                ]);
+    }
+
     public function testCrearTag()
     {
         $tag = factory(Tag::class)->make();

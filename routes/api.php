@@ -69,6 +69,7 @@ Route::get('/colaboradores/{id}/tags', 'Colaboradores\Tags\IndexController');
 Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
 
 Route::get('/tags', 'Tags\IndexController');
+Route::get('/tags/{id}', 'Tags\ShowController');
 Route::post('/tags', 'Tags\CreateProcessController');
 Route::delete('/tags/{id}', 'Tags\DeleteProcessController');
 
