@@ -136,6 +136,12 @@ class Colaborador extends Model
                 ->first();
     }
 
+    public function tagsPositivos(){
+        return $this->tags()
+                ->where('tags.estado',1)
+                ->where('tipo','POSITIVO')
+                ->get();
+    }
     public function obtenerTipoDepartamento()
     {
         $departamento = '';

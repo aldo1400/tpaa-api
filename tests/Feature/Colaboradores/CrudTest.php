@@ -68,7 +68,7 @@ class CrudTest extends TestCase
                             'tipo',
                             'estado'
                         ],
-                        'tags',
+                        // 'tags',
                         'cargoActual',
                         'credencial_vigilante',
                         'vencimiento_credencial_vigilante',
@@ -1024,5 +1024,112 @@ class CrudTest extends TestCase
         $response = $this->json('GET', $url, $parameters);
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('El rut es inválido.'));
+    }
+
+    public function testObtenerMisTagsPositivos(){
+
+        $colaborador=factory(Colaborador::class,1)
+                    ->create()
+                    ->each(function ($colaborador) {
+                        $colaborador->tags()->saveMany(factory(Tag::class, 4)
+                                    ->state('activo')
+                                    ->make([
+                                        'tipo'=>Tag::POSITIVO,
+                                    ]));
+                    });
+
+        $url = '/api/colaboradores/'.$colaborador[0]->id.'/tags?positivo=true';
+
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    0=>[
+                        'id' => $colaborador[0]->tags[0]->id,
+                        'nombre' => $colaborador[0]->tags[0]->nombre,
+                        'descripcion' => $colaborador[0]->tags[0]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[0]->permisos,
+                        'estado' => $colaborador[0]->tags[0]->estado,
+                        'tipo' => $colaborador[0]->tags[0]->tipo,
+                    ],
+                    1=>[
+                        'id' => $colaborador[0]->tags[1]->id,
+                        'nombre' => $colaborador[0]->tags[1]->nombre,
+                        'descripcion' => $colaborador[0]->tags[1]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[1]->permisos,
+                        'estado' => $colaborador[0]->tags[1]->estado,
+                        'tipo' => $colaborador[0]->tags[1]->tipo,
+                    ],
+                    2=>[
+                        'id' => $colaborador[0]->tags[2]->id,
+                        'nombre' => $colaborador[0]->tags[2]->nombre,
+                        'descripcion' => $colaborador[0]->tags[2]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[2]->permisos,
+                        'estado' => $colaborador[0]->tags[2]->estado,
+                        'tipo' => $colaborador[0]->tags[2]->tipo,
+                    ],
+                    3=>[
+                        'id' => $colaborador[0]->tags[3]->id,
+                        'nombre' => $colaborador[0]->tags[3]->nombre,
+                        'descripcion' => $colaborador[0]->tags[3]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[3]->permisos,
+                        'estado' => $colaborador[0]->tags[3]->estado,
+                        'tipo' => $colaborador[0]->tags[3]->tipo,
+                    ],
+                ]
+        ]);
+    }
+
+    public function testObtenerTodosLosTagsDeUnColaborador(){
+
+        $colaborador=factory(Colaborador::class,1)
+                    ->create()
+                    ->each(function ($colaborador) {
+                        $colaborador->tags()->saveMany(factory(Tag::class, 4)
+                                    ->make([
+                                        'tipo'=>Tag::POSITIVO,
+                                    ]));
+                    });
+
+        $url = '/api/colaboradores/'.$colaborador[0]->id.'/tags';
+
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    0=>[
+                        'id' => $colaborador[0]->tags[0]->id,
+                        'nombre' => $colaborador[0]->tags[0]->nombre,
+                        'descripcion' => $colaborador[0]->tags[0]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[0]->permisos,
+                        'estado' => $colaborador[0]->tags[0]->estado,
+                        'tipo' => $colaborador[0]->tags[0]->tipo,
+                    ],
+                    1=>[
+                        'id' => $colaborador[0]->tags[1]->id,
+                        'nombre' => $colaborador[0]->tags[1]->nombre,
+                        'descripcion' => $colaborador[0]->tags[1]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[1]->permisos,
+                        'estado' => $colaborador[0]->tags[1]->estado,
+                        'tipo' => $colaborador[0]->tags[1]->tipo,
+                    ],
+                    2=>[
+                        'id' => $colaborador[0]->tags[2]->id,
+                        'nombre' => $colaborador[0]->tags[2]->nombre,
+                        'descripcion' => $colaborador[0]->tags[2]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[2]->permisos,
+                        'estado' => $colaborador[0]->tags[2]->estado,
+                        'tipo' => $colaborador[0]->tags[2]->tipo,
+                    ],
+                    3=>[
+                        'id' => $colaborador[0]->tags[3]->id,
+                        'nombre' => $colaborador[0]->tags[3]->nombre,
+                        'descripcion' => $colaborador[0]->tags[3]->descripcion,
+                        'permisos' =>$colaborador[0]->tags[3]->permisos,
+                        'estado' => $colaborador[0]->tags[3]->estado,
+                        'tipo' => $colaborador[0]->tags[3]->tipo,
+                    ],
+                ]
+        ]);
     }
 }

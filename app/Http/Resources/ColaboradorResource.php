@@ -50,7 +50,7 @@ class ColaboradorResource extends JsonResource
             'fecha_inactividad' => $this->fecha_inactividad->format('d-m-Y'),
             'nivelEducacion' => new NivelEducacionResource($this->nivelEducacion),
             'estadoCivil' => new EstadoCivilResource($this->estadoCivil),
-            'tags' => TagResource::collection($this->tags),
+            // 'tags' => TagResource::collection($this->tags),
             'cargoActual' => $this->cargoActual() ? new CargoResource($this->cargoActual()) : '',
             'credencial_vigilante' => $this->credencial_vigilante,
             'vencimiento_credencial_vigilante' => $this->vencimiento_credencial_vigilante->format('d-m-Y'),

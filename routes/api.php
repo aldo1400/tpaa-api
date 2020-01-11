@@ -65,6 +65,9 @@ Route::get('/niveles-jerarquico/{id}', 'NivelesJerarquico\ShowController');
 Route::put('/niveles-jerarquico/{id}', 'NivelesJerarquico\UpdateProcessController');
 Route::delete('/niveles-jerarquico/{id}', 'NivelesJerarquico\DeleteProcessController');
 
+Route::get('/colaboradores/{id}/tags', 'Colaboradores\Tags\IndexController');
+Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
+
 Route::get('/tags', 'Tags\IndexController');
 Route::post('/tags', 'Tags\CreateProcessController');
 

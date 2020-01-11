@@ -15,3 +15,15 @@ $factory->define(Tag::class, function (Faker $faker) {
         'tipo' => $faker->company,
     ];
 });
+
+$factory->state(Tag::class, 'activo', function (Faker $faker) {
+    return [
+        'estado' => 1,
+    ];
+});
+
+$factory->state(Tag::class, 'inactivo', function (Faker $faker) {
+    return [
+        'estado' => 0,
+    ];
+});

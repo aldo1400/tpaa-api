@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
+    const POSITIVO='POSITIVO';
+    const NEGATIVO='NEGATIVO';
     /**
      * The attributes that are mass assignable.
      *
