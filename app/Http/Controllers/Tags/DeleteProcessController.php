@@ -11,6 +11,7 @@ class DeleteProcessController extends Controller
     public function __invoke($id)
     {
         $tag = Tag::findOrFail($id);
+        $tag->colaboradores()->detach();
         $tag->delete();
 
         return response()->json();

@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Movilidad extends Model
 {
+    use SoftDeletes;
     const NUEVO='Nuevo';
     /**
      * The table associated with the model.

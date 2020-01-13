@@ -51,6 +51,9 @@ Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
 Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
 Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
 
+Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');
+Route::delete('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\DeleteProcessController');
+
 Route::get('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\IndexController');
 Route::post('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\CreateProcessController');
 Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');

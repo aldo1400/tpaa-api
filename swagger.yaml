@@ -26,10 +26,12 @@ tags:
   description: Everything about areas
 - name: estado civiles
   description: Everything about niveles estado civiles
+- name: movilidades
+  description: Everything about movilidades
 - name: niveles educacion
   description: Everything about niveles educacion
 - name: niveles jerarquico
-  description: Everything about niveles jerarquico 
+  description: Everything about niveles jerarquico
 - name: tags
   description: Everything about tags
 - name: tipos carga
@@ -778,7 +780,54 @@ paths:
         409:
           description: Departure has children
   
+  "/colaboradores/{id}/movilidades":
+    post:
+      tags:
+      - movilidades
+      summary: Agregar una nueva movilidad a un determinado colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/MovilidadCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
   
+    delete:
+      tags:
+      - movilidades
+      summary: Eliminar la movilidad actual del colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Movilidad deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children 
   # ---------------------
   #   Tags
   # ---------------------
@@ -1568,6 +1617,24 @@ definitions:
         type: boolean
       tipoArea:  
         $ref: "#/definitions/TipoAreaResource"  
+  
+  MovilidadCreateRequest:
+    type: object
+    properties:
+      fecha_termino:
+        type: string
+        format: date
+      fecha_inicio:
+        type: string
+        format: date
+      tipo:
+        type: string
+      observaciones:
+        type: string
+      estado:
+        type: string
+      cargo_id:
+        type: integer
       
   TipoAreaResource:
     type: object
