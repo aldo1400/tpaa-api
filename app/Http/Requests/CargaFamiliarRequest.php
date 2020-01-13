@@ -31,7 +31,7 @@ class CargaFamiliarRequest extends FormRequest
             'tipo_carga_id' => ['required', 'exists:tipo_cargas,id'],
         ];
 
-        if (!$this->route('id')) {
+        if ($this->method()=='POST') {
             $rules['rut'] = 'required|unique:colaboradores,rut|max:255|cl_rut';
         }
 
