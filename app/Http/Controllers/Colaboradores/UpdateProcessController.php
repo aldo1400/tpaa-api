@@ -16,6 +16,8 @@ class UpdateProcessController extends Controller
 
         $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
         $colaborador->estadoCivil()->associate($request->estado_civil_id);
+        
+        $colaborador->tags()->sync($request->tags);
         // $tipoDepartamento = $colaborador->obtenerTipoDepartamento();
 
         // if (empty($request->departamento_id)) {

@@ -280,6 +280,34 @@ paths:
         403:
           description: Forbidden access
   
+  "/colaboradores/{id}":
+    patch:
+      tags:
+      - colaboradores
+      summary: Editar datos de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Colaborador ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ColaboradorUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access  
+          
   "/colaboradores/{id}/cargas-familiares":
     get:
       tags:
@@ -1066,7 +1094,7 @@ paths:
   # ---------------------
   #   Tipos carga
   # ---------------------
-  "/tipos-carga":
+  "/tipo-cargas":
     get:
       tags:
       - tipos carga
@@ -1442,6 +1470,105 @@ definitions:
         type: string
         format: date
   
+  ColaboradorUpdateRequest:
+    type: object
+    properties:
+      usuario:
+        type: string
+      primer_nombre:
+        type: string
+      segundo_nombre:
+        type: string
+      apellido_paterno:
+        type: string
+      apellido_materno:
+        type: string
+      sexo:
+        type: string
+      nacionalidad:
+        type: string
+      fecha_nacimiento:
+        type: string
+        format: date
+      edad:
+        type: integer
+      email:
+        type: string
+        format: email
+      domicilio:
+        type: string
+      licencia_b:
+        type: string
+        enum: [
+          'SI', 
+          'NO',
+          'N/A'
+          ]
+      vencimiento_licencia_b:
+        type: string
+        format: date
+      licencia_d:
+        type: string
+        enum: [
+          'SI', 
+          'NO',
+          'N/A'
+          ]
+      vencimiento_licencia_d:
+        type: string
+        format: date
+      carnet_portuario:
+        type: string
+        enum: [
+          'SI', 
+          'NO',
+          'N/A'
+          ]
+      vencimiento_carnet_portuario:
+        type: string
+        format: date
+      talla_calzado:
+        type: string
+      talla_chaleco:
+        type: string
+      talla_polera:
+        type: string
+      talla_pantalon:
+        type: string
+      fecha_ingreso:
+        type: string
+        format: date
+      telefono:
+        type: string
+      celular:
+        type: string
+      anexo:
+        type: string
+      contacto_emergencia_nombre:
+        type: string
+      contacto_emergencia_telefono:
+        type: string
+      nivel_educacion_id:
+        type: integer
+      estado_civil_id:
+        type: integer
+      imagen:
+        type: string
+      tags:
+        type: array
+        items:
+          type: integer
+      credencial_vigilante:
+        type: string
+        enum: [
+          'SI', 
+          'NO',
+          'N/A'
+          ]
+      vencimiento_credencial_vigilante:
+        type: string
+        format: date
+        
   ColaboradorResource:
     type: object
     properties:

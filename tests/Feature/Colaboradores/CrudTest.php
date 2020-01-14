@@ -640,48 +640,62 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testActualizarColaboradorSinDepartamentoADepartamento()
+    public function testEditarColaborador()
     {
-        $colaborador = factory(Colaborador::class)->create();
-        $departamento = factory(Departamento::class)->create([
-            'tipo' => Departamento::GERENCIA_GENERAL,
-        ]);
+        $anterioresTags=factory(Tag::class,2)->create();
+        $nuevosTags=factory(Tag::class,2)->create();
+        $estadoCivil=factory(EstadoCivil::class)->create();
+        $nivelEducacion=factory(NivelEducacion::class)->create();
+        $image = UploadedFile::fake()->image('banner1.jpg', 1200, 750);
 
-        $url = '/api/colaboradores/'.$colaborador->id;
+        $colaboradores = factory(Colaborador::class,1)
+                        ->create()
+                        ->each(function ($colaborador) use ($anterioresTags) {
+                            $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
+                        });;
+
+                        // dd($colaboradores[0]->tags->count());
+        
+                        $url = '/api/colaboradores/'.$colaboradores[0]->id;
 
         $parameters = [
             'rut' => 'RUT-1234578',
-            'usuario' => $colaborador->usuario,
-            // 'password' => 'aldo123',
-            'nombres' => $colaborador->nombres,
-            'apellidos' => $colaborador->apellidos,
-            'sexo' => $colaborador->sexo,
-            'nacionalidad' => '',
-            'estado_civil' => '',
-            'fecha_nacimiento' => '',
-            'edad' => '',
-            'email' => '',
-            'nivel_educacion' => '',
-            'domicilio' => $colaborador->domicilio,
-            'licencia_b' => $colaborador->licencia_b,
-            'vencimiento_licencia_b' => $colaborador->vencimiento_licencia_b->format('Y-m-d'),
-            'licencia_d' => $colaborador->licencia_d,
-            'vencimiento_licencia_d' => $colaborador->vencimiento_licencia_d->format('Y-m-d'),
-            'carnet_portuario' => $colaborador->carnet_portuario,
-            'vencimiento_carnet_portuario' => $colaborador->vencimiento_carnet_portuario->format('Y-m-d'),
-            'talla_calzado' => $colaborador->talla_calzado,
-            'talla_chaleco' => $colaborador->talla_chaleco,
-            'talla_polera' => $colaborador->talla_polera,
-            'talla_pantalon' => $colaborador->talla_pantalon,
-            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
-            'telefono' => $colaborador->telefono,
-            'celular' => $colaborador->celular,
-            'anexo' => $colaborador->anexo,
-            'contacto_emergencia_nombre' => $colaborador->contacto_emergencia_nombre,
-            'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
-            'estado' => $colaborador->estado,
-            'fecha_inactividad' => '',
-            'departamento_id' => $departamento->id,
+            'usuario' => $colaboradores[0]->usuario,
+            'primer_nombre' => 'MIKE',
+            'segundo_nombre' => '',
+            'apellido_materno' => '',
+            'apellido_paterno' => 'SHINODA',
+            'sexo' => $colaboradores[0]->sexo,
+            'nacionalidad' => 'ESTADOUNIDENSE',
+            'fecha_nacimiento' => '1997-05-02',
+            'edad' => '22',
+            'email' => 'achoque1400@gmail.com',
+            'domicilio' => $colaboradores[0]->domicilio,
+            'licencia_b' => $colaboradores[0]->licencia_b,
+            'vencimiento_licencia_b' => $colaboradores[0]->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaboradores[0]->licencia_d,
+            'vencimiento_licencia_d' => $colaboradores[0]->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => $colaboradores[0]->carnet_portuario,
+            'vencimiento_carnet_portuario' => $colaboradores[0]->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => '41',
+            'talla_chaleco' => 'S',
+            'talla_polera' => 'S',
+            'talla_pantalon' => '30',
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'telefono' => '00000123',
+            'celular' => '931245655',
+            'anexo' => $colaboradores[0]->anexo,
+            'contacto_emergencia_nombre' => $colaboradores[0]->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaboradores[0]->contacto_emergencia_telefono,
+            'estado' => 'Renuncia',
+            'fecha_inactividad' => '2000-01-01',
+            'estado_civil_id' =>$estadoCivil->id,
+            'nivel_educacion_id' => $nivelEducacion->id,
+            'tags'=>$nuevosTags->pluck('id'),
+            'imagen'=>$image,
+            'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
+            'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
+            // 'departamento_id' => $departamento->id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -689,18 +703,18 @@ class CrudTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('colaboradores', [
-            'id' => Colaborador::latest()->first()->id,
-            'rut' => $colaborador->rut,
+            'id' => $colaboradores[0]->id,
+            'rut' => $colaboradores[0]->rut,
             'usuario' => $parameters['usuario'],
-            'nombres' => $parameters['nombres'],
-            'apellidos' => $parameters['apellidos'],
+            'primer_nombre' => $parameters['primer_nombre'],
+            'segundo_nombre' => null,
+            'apellido_paterno' => $parameters['apellido_paterno'],
+            'apellido_materno' => null,
             'sexo' => $parameters['sexo'],
-            'nacionalidad' => null,
-            'estado_civil' => null,
-            'fecha_nacimiento' => null,
-            'edad' => null,
-            'email' => null,
-            'nivel_educacion' => null,
+            'nacionalidad' => $parameters['nacionalidad'],
+            'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+            'edad' => $parameters['edad'],
+            'email' => $parameters['email'],
             'domicilio' => $parameters['domicilio'],
             'licencia_b' => $parameters['licencia_b'],
             'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
@@ -718,10 +732,73 @@ class CrudTest extends TestCase
             'anexo' => $parameters['anexo'],
             'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
             'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
-            'estado' => $parameters['estado'],
-            'fecha_inactividad' => null,
-            'gerencia_id' => $parameters['departamento_id'],
-        ]);
+            'estado' => $colaboradores[0]->estado,
+            'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
+            'estado_civil_id' => $parameters['estado_civil_id'],
+            'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            'credencial_vigilante' => $parameters['credencial_vigilante'],
+            'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+            ]);
+
+            $this->assertDatabaseMissing('colaboradores', [
+                'id' => $colaboradores[0]->id,
+                'rut' => $colaboradores[0]->rut,
+                'usuario' => $colaboradores[0]->usuario,
+                'primer_nombre' => $colaboradores[0]->primer_nombre,
+                'segundo_nombre' => $colaboradores[0]->segundo_nombre,
+                'apellido_paterno' => $colaboradores[0]->apellido_paterno,
+                // 'apellido_materno' => null,
+                // 'sexo' => $parameters
+                
+                ['sexo'],
+                // 'nacionalidad' => $parameters['nacionalidad'],
+                // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+                // 'edad' => $parameters['edad'],
+                // 'email' => $parameters['email'],
+                // 'domicilio' => $parameters['domicilio'],
+                // 'licencia_b' => $parameters['licencia_b'],
+                // 'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+                // 'licencia_d' => $parameters['licencia_d'],
+                // 'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+                // 'carnet_portuario' => $parameters['carnet_portuario'],
+                // 'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+                // 'talla_calzado' => $parameters['talla_calzado'],
+                // 'talla_chaleco' => $parameters['talla_chaleco'],
+                // 'talla_polera' => $parameters['talla_polera'],
+                // 'talla_pantalon' => $parameters['talla_pantalon'],
+                // 'fecha_ingreso' => $parameters['fecha_ingreso'],
+                // 'telefono' => $parameters['telefono'],
+                // 'celular' => $parameters['celular'],
+                // 'anexo' => $parameters['anexo'],
+                // 'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+                // 'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+                // 'estado' => $colaboradores[0]->estado,
+                // 'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
+                // 'estado_civil_id' => $parameters['estado_civil_id'],
+                // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+                // 'credencial_vigilante' => $parameters['credencial_vigilante'],
+                // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+                ]);
+
+            $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $nuevosTags[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+            $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $nuevosTags[1]->id,
+                'colaborador_id' =>$colaboradores[0]->id,
+            ]);
+
+            $this->assertDatabaseMissing('colaborador_tag', [
+                'tag_id' => $anterioresTags[0]->id,
+                'colaborador_id' =>$colaboradores[0]->id,
+            ]);
+
+            $this->assertDatabaseMissing('colaborador_tag', [
+                'tag_id' => $anterioresTags[1]->id,
+                'colaborador_id' =>$colaboradores[0]->id,
+            ]);
     }
 
     /**

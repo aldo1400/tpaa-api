@@ -53,8 +53,6 @@ class ColaboradorRequest extends FormRequest
             'anexo' => ['nullable', 'string'],
             'contacto_emergencia_nombre' => ['nullable', 'string'],
             'contacto_emergencia_telefono' => ['nullable', 'string'],
-            'estado' => ['nullable', 'in:Activo (a),Desvinculado (a),Renuncia'],
-            'fecha_inactividad' => ['nullable', 'date', 'date_format:Y-m-d'],
             'nivel_educacion_id' => ['nullable', 'exists:niveles_educacion,id'],
             'estado_civil_id' => ['nullable', 'exists:estado_civiles,id'],
             'tags' => ['required', 'array'],
@@ -65,9 +63,11 @@ class ColaboradorRequest extends FormRequest
             'credencial_vigilante' => ['nullable', 'string', 'in:SI,NO,N/A'],
             'vencimiento_credencial_vigilante' => ['nullable', 'date', 'date_format:Y-m-d'],
         ];
-
+        
         if (!$this->route('id')) {
             $rules['rut'] = 'required|unique:colaboradores,rut|max:255';
+            $rules['fecha_inactividad'] = 'nullable|date|date_format:Y-m-d';
+            $rules['estado'] = 'nullable|in:Activo (a),Desvinculado (a),Renuncia';
         }
 
         return $rules;
