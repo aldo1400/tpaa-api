@@ -205,7 +205,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/AreaUpdateRequest'
+          $ref: '#/definitions/CargoUpdateRequest'
       responses:
         200:
           description: Data modified succesfully
@@ -1330,21 +1330,19 @@ definitions:
         type: integer
       nombre:
         type: string
+      estado:
+        type: string
+        enum: [0,1]
       supervisor_id:
         type: integer
+      nivelJerarquico:
+        $ref: "#/definitions/NivelJerarquicoResource"
+      area:
+        $ref: "#/definitions/AreaResource"
   
   CargoCreateRequest:
     type: object
     properties:
-      nivel_jerarquico:
-        type: string
-        enum: [
-          'Estratégico Táctico',
-          'Operativo Supervisión',
-          'Táctico Operativo',
-          'Táctico',
-          'Ejecución'
-          ]
       nombre:
         type: string
       supervisor_id:
@@ -1355,6 +1353,8 @@ definitions:
     properties:
       nombre:
         type: string
+      supervisor_id:
+        type: integer
   
   
   ColaboradorCreateRequest:

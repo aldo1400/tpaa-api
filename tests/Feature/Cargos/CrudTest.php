@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Cargos;
 
+use App\Area;
 use App\Cargo;
 use Tests\TestCase;
+use App\NivelJerarquico;
 
 class CrudTest extends TestCase
 {
@@ -31,6 +33,8 @@ class CrudTest extends TestCase
                         'estado',
                         'area' => [
                             'id',
+                            'nombre',
+                            'estado'
                         ],
                     ],
                 ],
@@ -60,6 +64,11 @@ class CrudTest extends TestCase
                                 'nivel_nombre',
                                 'estado',
                             ]),
+                            'area'=> $cargos[1]->area->only([
+                                'id',
+                                'nombre',
+                                'estado',
+                            ]),
                     ],
                 ]);
     }
@@ -86,6 +95,34 @@ class CrudTest extends TestCase
             'id' => Cargo::latest()->first()->id,
             'nombre' => $parameters['nombre'],
             'supervisor_id' => null,
+            'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
+            'area_id' => $parameters['area_id'],
+            'estado' => $parameters['estado'],
+        ]);
+    }
+
+     public function testCrearCargoConSupervisor()
+    {
+        $cargoSupervisor = factory(Cargo::class)->create();
+        $cargo = factory(Cargo::class)->make();
+        $nivelJerarquico = factory(NivelJerarquico::class)->create();
+        $area = factory(Area::class)->create();
+
+        $url = '/api/cargos';
+        $parameters = [
+            'nombre' => $cargo->nombre,
+            'estado' => $cargo->estado,
+            'supervisor_id' => $cargoSupervisor->id,
+            'nivel_jerarquico_id' => $nivelJerarquico->id,
+            'area_id' => $area->id,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('cargos', [
+            'nombre' => $parameters['nombre'],
+            'supervisor_id' => $parameters['supervisor_id'],
             'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
             'area_id' => $parameters['area_id'],
             'estado' => $parameters['estado'],
@@ -147,9 +184,7 @@ class CrudTest extends TestCase
     public function testEditarCargo()
     {
         $cargos = factory(Cargo::class, 1)
-                    ->create([
-                            'nivel_jerarquico' => Cargo::ESTRATEGICO_TACTICO,
-                    ])
+                    ->create()
                     ->each(function ($cargo) {
                         $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
                     });
@@ -160,7 +195,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
-            'nivel_jerarquico' => Cargo::EJECUCION,
+            // 'nivel_jerarquico' => Cargo::EJECUCION,
             'supervisor_id' => $supervisor->id,
         ];
 
@@ -171,14 +206,12 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $parameters['nombre'],
-            'nivel_jerarquico' => $parameters['nivel_jerarquico'],
             'supervisor_id' => $parameters['supervisor_id'],
         ]);
 
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $cargos[0]->nombre,
-            'nivel_jerarquico' => $cargos[0]->nivel_jerarquico,
             'supervisor_id' => $cargos[0]->supervisor_id,
         ]);
     }
