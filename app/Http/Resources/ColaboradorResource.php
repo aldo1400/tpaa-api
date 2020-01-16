@@ -15,6 +15,20 @@ class ColaboradorResource extends JsonResource
      */
     public function toArray($request)
     {
+        $image_parts = explode(';base64,', $this->imagen);
+
+            $image_type_aux = explode('image/', $image_parts[0]);
+
+            $image_type = $image_type_aux[1];
+
+            $image_base64 = base64_decode($image_parts[1]);
+
+            $fileName = 'Foto'.uniqid().'.png';
+
+            // Storage::put('public/registereds/images/'.$fileName, $image_base64);
+
+
+        
         return [
             'id' => $this->id,
             'rut' => $this->rut,
@@ -23,7 +37,8 @@ class ColaboradorResource extends JsonResource
             'segundo_nombre' => $this->segundo_nombre,
             'apellido_paterno' => $this->apellido_paterno,
             'apellido_materno' => $this->apellido_materno,
-            'imagen' => $this->imagen,
+            // 'imagen' => $this->imagen,
+            'imagen'=>$image_base64,
             'sexo' => $this->sexo,
             'nacionalidad' => $this->nacionalidad,
             'fecha_nacimiento' => $this->fecha_nacimiento ? $this->fecha_nacimiento->format('d-m-Y') : '',

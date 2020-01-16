@@ -58,15 +58,15 @@ class CrudTest extends TestCase
                         'contacto_emergencia_telefono',
                         'estado',
                         'fecha_inactividad',
-                        'nivelEducacion'=>[
+                        'nivelEducacion' => [
                             'id',
                             'nivel_tipo',
-                            'estado'
+                            'estado',
                         ],
-                        'estadoCivil'=>[
+                        'estadoCivil' => [
                             'id',
                             'tipo',
-                            'estado'
+                            'estado',
                         ],
                         // 'tags',
                         'cargoActual',
@@ -642,21 +642,21 @@ class CrudTest extends TestCase
      */
     public function testEditarColaborador()
     {
-        $anterioresTags=factory(Tag::class,2)->create();
-        $nuevosTags=factory(Tag::class,2)->create();
-        $estadoCivil=factory(EstadoCivil::class)->create();
-        $nivelEducacion=factory(NivelEducacion::class)->create();
+        $anterioresTags = factory(Tag::class, 2)->create();
+        $nuevosTags = factory(Tag::class, 2)->create();
+        $estadoCivil = factory(EstadoCivil::class)->create();
+        $nivelEducacion = factory(NivelEducacion::class)->create();
         $image = UploadedFile::fake()->image('banner1.jpg', 1200, 750);
 
-        $colaboradores = factory(Colaborador::class,1)
+        $colaboradores = factory(Colaborador::class, 1)
                         ->create()
                         ->each(function ($colaborador) use ($anterioresTags) {
                             $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
-                        });;
+                        });
+        // dd($colaboradores[0]);
+        // dd($colaboradores[0]->tags->count());
 
-                        // dd($colaboradores[0]->tags->count());
-        
-                        $url = '/api/colaboradores/'.$colaboradores[0]->id;
+        $url = '/api/colaboradores/'.$colaboradores[0]->id;
 
         $parameters = [
             'rut' => 'RUT-1234578',
@@ -689,10 +689,10 @@ class CrudTest extends TestCase
             'contacto_emergencia_telefono' => $colaboradores[0]->contacto_emergencia_telefono,
             'estado' => 'Renuncia',
             'fecha_inactividad' => '2000-01-01',
-            'estado_civil_id' =>$estadoCivil->id,
+            'estado_civil_id' => $estadoCivil->id,
             'nivel_educacion_id' => $nivelEducacion->id,
-            'tags'=>$nuevosTags->pluck('id'),
-            'imagen'=>$image,
+            'tags' => $nuevosTags->pluck('id'),
+            'imagen' => $image,
             'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
             'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
             // 'departamento_id' => $departamento->id,
@@ -740,7 +740,7 @@ class CrudTest extends TestCase
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
             ]);
 
-            $this->assertDatabaseMissing('colaboradores', [
+        $this->assertDatabaseMissing('colaboradores', [
                 'id' => $colaboradores[0]->id,
                 'rut' => $colaboradores[0]->rut,
                 'usuario' => $colaboradores[0]->usuario,
@@ -748,9 +748,7 @@ class CrudTest extends TestCase
                 'segundo_nombre' => $colaboradores[0]->segundo_nombre,
                 'apellido_paterno' => $colaboradores[0]->apellido_paterno,
                 // 'apellido_materno' => null,
-                // 'sexo' => $parameters
-                
-                ['sexo'],
+                // 'sexo' => $parameters['sexo'],
                 // 'nacionalidad' => $parameters['nacionalidad'],
                 // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
                 // 'edad' => $parameters['edad'],
@@ -780,24 +778,24 @@ class CrudTest extends TestCase
                 // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
                 ]);
 
-            $this->assertDatabaseHas('colaborador_tag', [
+        $this->assertDatabaseHas('colaborador_tag', [
                 'tag_id' => $nuevosTags[0]->id,
                 'colaborador_id' => $colaboradores[0]->id,
             ]);
 
-            $this->assertDatabaseHas('colaborador_tag', [
+        $this->assertDatabaseHas('colaborador_tag', [
                 'tag_id' => $nuevosTags[1]->id,
-                'colaborador_id' =>$colaboradores[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
             ]);
 
-            $this->assertDatabaseMissing('colaborador_tag', [
+        $this->assertDatabaseMissing('colaborador_tag', [
                 'tag_id' => $anterioresTags[0]->id,
-                'colaborador_id' =>$colaboradores[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
             ]);
 
-            $this->assertDatabaseMissing('colaborador_tag', [
+        $this->assertDatabaseMissing('colaborador_tag', [
                 'tag_id' => $anterioresTags[1]->id,
-                'colaborador_id' =>$colaboradores[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
             ]);
     }
 
@@ -1103,15 +1101,15 @@ class CrudTest extends TestCase
                     ->assertSeeText(json_encode('El rut es inválido.'));
     }
 
-    public function testObtenerMisTagsPositivos(){
-
-        $colaborador=factory(Colaborador::class,1)
+    public function testObtenerMisTagsPositivos()
+    {
+        $colaborador = factory(Colaborador::class, 1)
                     ->create()
                     ->each(function ($colaborador) {
                         $colaborador->tags()->saveMany(factory(Tag::class, 4)
                                     ->state('activo')
                                     ->make([
-                                        'tipo'=>Tag::POSITIVO,
+                                        'tipo' => Tag::POSITIVO,
                                     ]));
                     });
 
@@ -1121,50 +1119,50 @@ class CrudTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    0=>[
+                    0 => [
                         'id' => $colaborador[0]->tags[0]->id,
                         'nombre' => $colaborador[0]->tags[0]->nombre,
                         'descripcion' => $colaborador[0]->tags[0]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[0]->permisos,
+                        'permisos' => $colaborador[0]->tags[0]->permisos,
                         'estado' => $colaborador[0]->tags[0]->estado,
                         'tipo' => $colaborador[0]->tags[0]->tipo,
                     ],
-                    1=>[
+                    1 => [
                         'id' => $colaborador[0]->tags[1]->id,
                         'nombre' => $colaborador[0]->tags[1]->nombre,
                         'descripcion' => $colaborador[0]->tags[1]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[1]->permisos,
+                        'permisos' => $colaborador[0]->tags[1]->permisos,
                         'estado' => $colaborador[0]->tags[1]->estado,
                         'tipo' => $colaborador[0]->tags[1]->tipo,
                     ],
-                    2=>[
+                    2 => [
                         'id' => $colaborador[0]->tags[2]->id,
                         'nombre' => $colaborador[0]->tags[2]->nombre,
                         'descripcion' => $colaborador[0]->tags[2]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[2]->permisos,
+                        'permisos' => $colaborador[0]->tags[2]->permisos,
                         'estado' => $colaborador[0]->tags[2]->estado,
                         'tipo' => $colaborador[0]->tags[2]->tipo,
                     ],
-                    3=>[
+                    3 => [
                         'id' => $colaborador[0]->tags[3]->id,
                         'nombre' => $colaborador[0]->tags[3]->nombre,
                         'descripcion' => $colaborador[0]->tags[3]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[3]->permisos,
+                        'permisos' => $colaborador[0]->tags[3]->permisos,
                         'estado' => $colaborador[0]->tags[3]->estado,
                         'tipo' => $colaborador[0]->tags[3]->tipo,
                     ],
-                ]
+                ],
         ]);
     }
 
-    public function testObtenerTodosLosTagsDeUnColaborador(){
-
-        $colaborador=factory(Colaborador::class,1)
+    public function testObtenerTodosLosTagsDeUnColaborador()
+    {
+        $colaborador = factory(Colaborador::class, 1)
                     ->create()
                     ->each(function ($colaborador) {
                         $colaborador->tags()->saveMany(factory(Tag::class, 4)
                                     ->make([
-                                        'tipo'=>Tag::POSITIVO,
+                                        'tipo' => Tag::POSITIVO,
                                     ]));
                     });
 
@@ -1174,39 +1172,39 @@ class CrudTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    0=>[
+                    0 => [
                         'id' => $colaborador[0]->tags[0]->id,
                         'nombre' => $colaborador[0]->tags[0]->nombre,
                         'descripcion' => $colaborador[0]->tags[0]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[0]->permisos,
+                        'permisos' => $colaborador[0]->tags[0]->permisos,
                         'estado' => $colaborador[0]->tags[0]->estado,
                         'tipo' => $colaborador[0]->tags[0]->tipo,
                     ],
-                    1=>[
+                    1 => [
                         'id' => $colaborador[0]->tags[1]->id,
                         'nombre' => $colaborador[0]->tags[1]->nombre,
                         'descripcion' => $colaborador[0]->tags[1]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[1]->permisos,
+                        'permisos' => $colaborador[0]->tags[1]->permisos,
                         'estado' => $colaborador[0]->tags[1]->estado,
                         'tipo' => $colaborador[0]->tags[1]->tipo,
                     ],
-                    2=>[
+                    2 => [
                         'id' => $colaborador[0]->tags[2]->id,
                         'nombre' => $colaborador[0]->tags[2]->nombre,
                         'descripcion' => $colaborador[0]->tags[2]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[2]->permisos,
+                        'permisos' => $colaborador[0]->tags[2]->permisos,
                         'estado' => $colaborador[0]->tags[2]->estado,
                         'tipo' => $colaborador[0]->tags[2]->tipo,
                     ],
-                    3=>[
+                    3 => [
                         'id' => $colaborador[0]->tags[3]->id,
                         'nombre' => $colaborador[0]->tags[3]->nombre,
                         'descripcion' => $colaborador[0]->tags[3]->descripcion,
-                        'permisos' =>$colaborador[0]->tags[3]->permisos,
+                        'permisos' => $colaborador[0]->tags[3]->permisos,
                         'estado' => $colaborador[0]->tags[3]->estado,
                         'tipo' => $colaborador[0]->tags[3]->tipo,
                     ],
-                ]
+                ],
         ]);
     }
 }

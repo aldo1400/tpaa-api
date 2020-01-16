@@ -17,7 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Departamentos
+Route::get('/colaboradores/{rut}', 'Colaboradores\Testing');
+
+
 Route::get('/areas', 'Areas\IndexController');
 Route::post('/areas', 'Areas\CreateProcessController');
 Route::get('/areas/{id}', 'Areas\ShowController');
