@@ -55,15 +55,15 @@ class ColaboradorRequest extends FormRequest
             'contacto_emergencia_telefono' => ['nullable', 'string'],
             'nivel_educacion_id' => ['nullable', 'exists:niveles_educacion,id'],
             'estado_civil_id' => ['nullable', 'exists:estado_civiles,id'],
-            'tags' => ['required', 'array'],
-            'tags.*' => ['required', 'distinct', 'exists:tags,id'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['nullable', 'distinct', 'exists:tags,id'],
             'imagen' => ['nullable', 'image'],
             'cargo_id' => ['nullable', 'exists:cargos,id'],
             'fecha_inicio' => ['nullable', 'date', 'date_format:Y-m-d'],
             'credencial_vigilante' => ['nullable', 'string', 'in:SI,NO,N/A'],
             'vencimiento_credencial_vigilante' => ['nullable', 'date', 'date_format:Y-m-d'],
         ];
-        
+
         if (!$this->route('id')) {
             $rules['rut'] = 'required|unique:colaboradores,rut|max:255';
             $rules['fecha_inactividad'] = 'nullable|date|date_format:Y-m-d';
