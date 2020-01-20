@@ -26,13 +26,13 @@ class CargaFamiliarRequest extends FormRequest
         $rules=[
             'nombres' => ['required', 'string'],
             'apellidos' => ['required', 'string'],
-            'fecha_nacimiento' => ['required', 'date', 'date_format:Y-m-d'],
+            'fecha_nacimiento' => ['nullable', 'date', 'date_format:Y-m-d'],
             'estado' => ['required', 'boolean'],
             'tipo_carga_id' => ['required', 'exists:tipo_cargas,id'],
         ];
 
         if ($this->method()=='POST') {
-            $rules['rut'] = 'required|unique:colaboradores,rut|max:255|cl_rut';
+            $rules['rut'] = 'nullable|unique:colaboradores,rut|max:255|cl_rut';
         }
 
         return $rules;
