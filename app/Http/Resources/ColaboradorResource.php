@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ColaboradorResource extends JsonResource
@@ -15,22 +17,14 @@ class ColaboradorResource extends JsonResource
      */
     public function toArray($request)
     {
-        // $image_parts = explode(';base64,', $this->imagen);
+        if ($this->imagen) {
+            if (!(Storage::disk('local')->exists($this->imagen_url))) {
+                $url = str_replace('http://localhost/storage/', '/public/', $this->imagen_url);
+                Storage::disk('local')
+                        ->put($url, $this->imagen);
+            }
+        }
 
-            // $image_type_aux = explode('image/', $image_parts[0]);
-
-            // $image_type = $image_type_aux[1];
-
-            // $image_base64 = base64_decode($image_parts[1]);
-            // $image_base64 = base64_decode($this->imagen);
-
-
-            // $fileName = 'Foto'.uniqid().'.png';
-
-            // Storage::put('public/registereds/images/'.$fileName, $image_base64);
-
-
-        
         return [
             'id' => $this->id,
             'rut' => $this->rut,
@@ -39,8 +33,7 @@ class ColaboradorResource extends JsonResource
             'segundo_nombre' => $this->segundo_nombre,
             'apellido_paterno' => $this->apellido_paterno,
             'apellido_materno' => $this->apellido_materno,
-            'imagen' => $this->imagen,
-            // 'imagen'=>$image_base64,
+            'imagen_url' => $this->imagen_url,
             'sexo' => $this->sexo,
             'nacionalidad' => $this->nacionalidad,
             'fecha_nacimiento' => $this->fecha_nacimiento ? $this->fecha_nacimiento->format('d-m-Y') : '',

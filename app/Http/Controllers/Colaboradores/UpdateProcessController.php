@@ -13,8 +13,8 @@ class UpdateProcessController extends Controller
     {
         $colaborador = Colaborador::findOrFail($id);
         $colaborador->fill($request->validated());
+        $colaborador->imagen_url = $request->imagen ? $colaborador->saveImage($request) : '';
         $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
-        // dd($request->estado_civil_id);
         $colaborador->estadoCivil()->associate($request->estado_civil_id);
         $colaborador->save();
 

@@ -11,6 +11,7 @@ use App\EstadoCivil;
 use App\Departamento;
 use App\NivelEducacion;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class CrudTest extends TestCase
 {
@@ -68,10 +69,10 @@ class CrudTest extends TestCase
                             'tipo',
                             'estado',
                         ],
-                        // 'tags',
                         'cargoActual',
                         'credencial_vigilante',
                         'vencimiento_credencial_vigilante',
+                        'imagen_url'
                     ],
                 ],
             ]);
@@ -85,7 +86,6 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
         $response = $this->json('GET', $url);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
@@ -205,6 +205,10 @@ class CrudTest extends TestCase
         // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
+        $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();
+        Storage::disk('local')->assertExists($imageUrl);
+
+
         $this->assertDatabaseHas('colaboradores', [
             'id' => Colaborador::latest()->first()->id,
             'rut' => $parameters['rut'],
@@ -241,9 +245,9 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
             'credencial_vigilante' => $parameters['credencial_vigilante'],
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
-            ]);
+            'imagen_url'=>url(Storage::url($imageUrl))
+        ]);
 
-        // dd($colaborador);
         $this->assertDatabaseHas('colaborador_tag', [
                 'tag_id' => $tags[0]->id,
                 'colaborador_id' => Colaborador::latest()->first()->id,
@@ -640,21 +644,21 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testEditarColaborador()
+    public function testEditarColaboradorSinFotoAFoto()
     {
         $anterioresTags = factory(Tag::class, 2)->create();
         $nuevosTags = factory(Tag::class, 2)->create();
         $estadoCivil = factory(EstadoCivil::class)->create();
         $nivelEducacion = factory(NivelEducacion::class)->create();
-        $image = UploadedFile::fake()->image('banner1.jpg', 1200, 750);
+        
+        Storage::fake('local');
+        $nuevaImagen = UploadedFile::fake()->image('banner2.jpg', 1200, 750);
 
         $colaboradores = factory(Colaborador::class, 1)
                         ->create()
                         ->each(function ($colaborador) use ($anterioresTags) {
                             $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
                         });
-        // dd($colaboradores[0]);
-        // dd($colaboradores[0]->tags->count());
 
         $url = '/api/colaboradores/'.$colaboradores[0]->id;
 
@@ -692,15 +696,17 @@ class CrudTest extends TestCase
             'estado_civil_id' => $estadoCivil->id,
             'nivel_educacion_id' => $nivelEducacion->id,
             'tags' => $nuevosTags->pluck('id'),
-            'imagen' => $image,
+            'imagen' => $nuevaImagen,
             'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
             'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
-            // 'departamento_id' => $departamento->id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
+
+        $imageUrl = 'public/colaboradores/imagenes/'.$colaboradores[0]->rut.'.'.$nuevaImagen->clientExtension();
+
+        Storage::disk('local')->assertExists($imageUrl);
 
         $this->assertDatabaseHas('colaboradores', [
             'id' => $colaboradores[0]->id,
@@ -738,7 +744,8 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
             'credencial_vigilante' => $parameters['credencial_vigilante'],
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
-            ]);
+            'imagen_url'=>url(Storage::url($imageUrl))
+        ]);
 
         $this->assertDatabaseMissing('colaboradores', [
                 'id' => $colaboradores[0]->id,
@@ -747,6 +754,8 @@ class CrudTest extends TestCase
                 'primer_nombre' => $colaboradores[0]->primer_nombre,
                 'segundo_nombre' => $colaboradores[0]->segundo_nombre,
                 'apellido_paterno' => $colaboradores[0]->apellido_paterno,
+                'imagen_url'=>null,
+                'imagen'=>null,
                 // 'apellido_materno' => null,
                 // 'sexo' => $parameters['sexo'],
                 // 'nacionalidad' => $parameters['nacionalidad'],

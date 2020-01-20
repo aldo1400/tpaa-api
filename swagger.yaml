@@ -1672,6 +1672,8 @@ definitions:
       vencimiento_credencial_vigilante:
         type: string
         format: date
+      imagen_url:
+        type: string
   
   CursoResource:
     type: object

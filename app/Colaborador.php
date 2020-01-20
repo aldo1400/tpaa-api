@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helpers\Image;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -60,6 +61,7 @@ class Colaborador extends Model
         'fecha_inactividad',
         'credencial_vigilante',
         'vencimiento_credencial_vigilante',
+        'imagen_url',
     ];
 
     /**
@@ -121,6 +123,16 @@ class Colaborador extends Model
     public function setImagenAttribute($imagen)
     {
         $this->attributes['imagen'] = $imagen ? Image::convertImage($imagen) : '';
+    }
+
+    public function saveImage($request)
+    {
+        $imagePath = $request->file('imagen')
+                ->storeAs(
+                    'public/colaboradores/imagenes',
+                    $this->rut.'.'.$request->file('imagen')->extension()
+                );
+        return url(Storage::url($imagePath));
     }
 
     /**

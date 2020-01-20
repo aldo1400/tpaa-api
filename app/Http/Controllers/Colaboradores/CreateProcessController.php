@@ -7,6 +7,7 @@ use App\Colaborador;
 use Freshwork\ChileanBundle\Rut;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ColaboradorRequest;
 
 class CreateProcessController extends Controller
@@ -25,7 +26,7 @@ class CreateProcessController extends Controller
 
         if ($request->cargo_id) {
             $movilidad = Movilidad::make([
-                            'fecha_inicio'=> $request->fecha_inicio,
+                            'fecha_inicio' => $request->fecha_inicio,
                         ]);
             $movilidad->colaborador()->associate($colaborador->id);
             $movilidad->cargo()->associate($request->cargo_id);
@@ -43,6 +44,14 @@ class CreateProcessController extends Controller
 
         $colaborador->rut = $request->rut;
         $colaborador->password = Hash::make($request->password);
+
+        $imagePath = $request->file('imagen')
+                        ->storeAs(
+                            'public/colaboradores/imagenes',
+                            $request->rut.'.'.$request->file('imagen')->extension()
+                        );
+
+        $colaborador->imagen_url = url(Storage::url($imagePath));
 
         return $colaborador;
     }
