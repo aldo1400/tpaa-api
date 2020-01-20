@@ -11,29 +11,30 @@ use App\Http\Controllers\Controller;
 class Testing extends Controller
 {
     public function __invoke($rut){
-        // dd('hola');
         $colaborador = Colaborador::where('rut', $rut)->first();
-        // dd($colaborador);
         $movilidad = Movilidad::where('colaborador_id', $colaborador->id)
                     ->where('estado', 1)
                     ->first();
-// dd($movilidad);
         $array_hijos = Cargo::where('supervisor_id', $movilidad->cargo_id)->get();
-        // dd($array_hijos);
+        
         if(count($array_hijos) == 0)
             return 0;
+        
+        $i=0;
 
-        for($i=0; $i < count($array_hijos); $i++){
-            // dd( $array_hijos[$i]->id);
-            $resultados_hijos = Cargo::where('supervisor_id', $array_hijos[$i]->id)->get();
-            // dd($resultados_hijos);
+        while( $i < count($array_hijos)){
+
+            if(count($array_hijos) != 0){
+                $resultados_hijos = Cargo::where('supervisor_id', $array_hijos[$i]->id)->get();
+            }
+            echo $i;
+                      
             if(count($resultados_hijos) > 0){
-                // dd('xd');
-                foreach($resultados_hijos as $hijos){
-                    // dd($array_hijos);
-                    array_push($array_hijos, $hijos);
+                for($j=0;$j < count($resultados_hijos);$j++){
+                    $array_hijos[count($array_hijos)]=$resultados_hijos[$j];
                 }
             }
+            $i++;
         }
 
         dd($array_hijos);

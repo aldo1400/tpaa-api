@@ -13,12 +13,12 @@ class UpdateProcessController extends Controller
     {
         $colaborador = Colaborador::findOrFail($id);
         $colaborador->fill($request->validated());
-        // dd($request->nivel_educacion_id);
         $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
+        // dd($request->estado_civil_id);
         $colaborador->estadoCivil()->associate($request->estado_civil_id);
+        $colaborador->save();
 
         $colaborador->tags()->sync($request->tags);
-        $colaborador->save();
         // $titestEditarColaboradorpoDepartamento = $colaborador->obtenerTipoDepartamento();
 
         // if (empty($request->departamento_id)) {
@@ -26,6 +26,7 @@ class UpdateProcessController extends Controller
         //     $colaborador->$association = null;
         //     $colaborador->save();
         // } else {
+
         //     if ($tipoDepartamento) {
         //         $association = $tipoDepartamento.'_id';
         //         $colaborador->$association = null;
@@ -34,7 +35,6 @@ class UpdateProcessController extends Controller
         //     $departamento = Departamento::findOrFail($request->departamento_id);
         //     $colaborador->definirDepartamento($departamento);
         // }
-
 
         return response()->json();
     }

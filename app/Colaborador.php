@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Colaborador extends Model
 {
+    const DESVINCULADO = 'Desvinculado (a)';
+    const RENUNCIA = 'Renuncia';
+    const ACTIVO = 'Activo (a)';
+
     /**
      * The table associated with the model.
      *
@@ -136,12 +140,14 @@ class Colaborador extends Model
                 ->first();
     }
 
-    public function tagsPositivos(){
+    public function tagsPositivos()
+    {
         return $this->tags()
-                ->where('tags.estado',1)
-                ->where('tipo','POSITIVO')
+                ->where('tags.estado', 1)
+                ->where('tipo', 'POSITIVO')
                 ->get();
     }
+
     public function obtenerTipoDepartamento()
     {
         $departamento = '';

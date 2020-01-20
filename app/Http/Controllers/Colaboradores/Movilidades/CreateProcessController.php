@@ -18,12 +18,25 @@ class CreateProcessController extends Controller
                         'fecha_termino' => $request->fecha_termino,
                     ]);
 
-        $movilidad = Movilidad::make([
-            'fecha_inicio' => $request->fecha_inicio,
-            'tipo' => $request->tipo,
-            'observaciones' => $request->observaciones,
-            'estado' => 1,
-        ]);
+        if ($request->tipo == Colaborador::DESVINCULADO || $request->tipo == Colaborador::RENUNCIA) {
+            $movilidad = Movilidad::make([
+                            'fecha_inicio' => $request->fecha_termino,
+                            'tipo' => $request->tipo,
+                            'observaciones' => $request->observaciones,
+                            'estado' => 1,
+                        ]);
+
+            $colaborador->estado = $request->tipo;
+            $colaborador->fecha_inactividad = $request->fecha_termino;
+            $colaborador->save();
+        } else {
+            $movilidad = Movilidad::make([
+                            'fecha_inicio' => $request->fecha_inicio,
+                            'tipo' => $request->tipo,
+                            'observaciones' => $request->observaciones,
+                            'estado' => 1,
+                        ]);
+        }
 
         $movilidad->cargo()->associate($request->cargo_id);
         $movilidad->colaborador()->associate($colaborador);
