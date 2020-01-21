@@ -98,30 +98,30 @@ class CrudTest extends TestCase
                         'apellido_materno' => $colaboradores[1]->apellido_materno,
                         'sexo' => $colaboradores[1]->sexo,
                         'nacionalidad' => $colaboradores[1]->nacionalidad,
-                        'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('d-m-Y'),
+                        'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('Y-m-d'),
                         'edad' => $colaboradores[1]->edad,
                         'email' => $colaboradores[1]->email,
                         'domicilio' => $colaboradores[1]->domicilio,
                         'licencia_b' => $colaboradores[1]->licencia_b,
-                        'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('d-m-Y'),
+                        'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('Y-m-d'),
                         'licencia_d' => $colaboradores[1]->licencia_d,
-                        'vencimiento_licencia_d' => $colaboradores[1]->vencimiento_licencia_d->format('d-m-Y'),
+                        'vencimiento_licencia_d' => $colaboradores[1]->vencimiento_licencia_d->format('Y-m-d'),
                         'carnet_portuario' => $colaboradores[1]->carnet_portuario,
-                        'vencimiento_carnet_portuario' => $colaboradores[1]->vencimiento_carnet_portuario->format('d-m-Y'),
+                        'vencimiento_carnet_portuario' => $colaboradores[1]->vencimiento_carnet_portuario->format('Y-m-d'),
                         'talla_calzado' => $colaboradores[1]->talla_calzado,
                         'talla_chaleco' => $colaboradores[1]->talla_chaleco,
                         'talla_polera' => $colaboradores[1]->talla_polera,
                         'talla_pantalon' => $colaboradores[1]->talla_pantalon,
-                        'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('d-m-Y'),
+                        'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('Y-m-d'),
                         'telefono' => $colaboradores[1]->telefono,
                         'celular' => $colaboradores[1]->celular,
                         'anexo' => $colaboradores[1]->anexo,
                         'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
                         'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
                         'estado' => $colaboradores[1]->estado,
-                        'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('d-m-Y'),
+                        'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('Y-m-d'),
                         'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
-                        'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('d-m-Y'),
+                        'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
                         'nivelEducacion' => $colaboradores[1]->nivelEducacion->only([
                             'id',
                             'nivel_tipo',
@@ -202,7 +202,7 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        dd($response->decodeResponseJson());
+        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();
