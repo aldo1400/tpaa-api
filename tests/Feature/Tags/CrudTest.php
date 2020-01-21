@@ -64,7 +64,6 @@ class CrudTest extends TestCase
         $parameters = [
             'nombre' => $tag->nombre,
             'descripcion' => $tag->descripcion,
-            'permisos' => $tag->permisos,
             'estado' => $tag->estado,
             'tipo' => $tag->tipo,
         ];
@@ -76,7 +75,7 @@ class CrudTest extends TestCase
             'id' => Tag::latest()->first()->id,
             'nombre' => $parameters['nombre'],
             'descripcion' => $parameters['descripcion'],
-            'permisos' => $parameters['permisos'],
+            'permisos' => null,
             'estado' => $parameters['estado'],
             'tipo' => $parameters['tipo'],
         ]);
@@ -95,7 +94,6 @@ class CrudTest extends TestCase
         $parameters = [
             'nombre' => 'EMPATIA',
             'descripcion' =>'PONERSE EN EL LUGAR DE OTRO',
-            'permisos' =>'NO DEFINIDO',
             'estado' => 1,
             'tipo' => Tag::POSITIVO,
         ];
@@ -107,7 +105,7 @@ class CrudTest extends TestCase
             'id' => $tag->id,
             'nombre' => $parameters['nombre'],
             'descripcion' => $parameters['descripcion'],
-            'permisos' => $parameters['permisos'],
+            'permisos' => $tag->permisos,
             'estado' => $parameters['estado'],
             'tipo' => $parameters['tipo'],
         ]);

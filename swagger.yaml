@@ -1922,8 +1922,6 @@ definitions:
         type: string
       descripcion:
         type: string
-      permisos:
-        type: string
       estado:
         type: string
         enum: [0,1]
@@ -1940,8 +1938,6 @@ definitions:
       nombre:
         type: string
       descripcion:
-        type: string
-      permisos:
         type: string
       estado:
         type: string
