@@ -1347,6 +1347,13 @@ definitions:
         type: string
       supervisor_id:
         type: integer
+      area_id:
+        type: integer
+      nivel_jerarquico_id:
+        type: integer
+      estado:
+        type: string
+        enum: [0,1]
   
   CargoUpdateRequest:
     type: object
