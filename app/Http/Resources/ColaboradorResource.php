@@ -21,8 +21,9 @@ class ColaboradorResource extends JsonResource
             if (!(Storage::disk('local')->exists($this->imagen_url))) {
                 $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
                 $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+                
                 Storage::disk('local')
-                        ->put($url, $this->imagen);
+                        ->put($url, base64_decode($this->imagen));
             }
         }
 

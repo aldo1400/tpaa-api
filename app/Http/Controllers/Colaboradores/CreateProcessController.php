@@ -46,12 +46,15 @@ class CreateProcessController extends Controller
 
         $colaborador->rut = $request->rut;
         $colaborador->password = Hash::make($request->password);
-        $imagePath = $request->file('imagen')
-                        ->storeAs(
-                            'public/colaboradores/imagenes',
-                            $request->rut.'.'.$request->file('imagen')->extension()
-                        );
-        $colaborador->imagen_url = url(Storage::url($imagePath));
+        // ImageOptimizer::optimize($request->file('imagen'));
+        if($request->file('imagen')){
+            $imagePath = $request->file('imagen')
+            ->storeAs(
+                'public/colaboradores/imagenes',
+                $request->rut.'.'.$request->file('imagen')->extension()
+            );
+            $colaborador->imagen_url = url(Storage::url($imagePath));
+        }        
 
         return $colaborador;
     }
