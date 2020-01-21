@@ -202,7 +202,7 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+        dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();

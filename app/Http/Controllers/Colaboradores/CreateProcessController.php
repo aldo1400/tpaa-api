@@ -7,8 +7,10 @@ use App\Colaborador;
 use Freshwork\ChileanBundle\Rut;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ColaboradorRequest;
+use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 class CreateProcessController extends Controller
 {
@@ -44,13 +46,11 @@ class CreateProcessController extends Controller
 
         $colaborador->rut = $request->rut;
         $colaborador->password = Hash::make($request->password);
-
         $imagePath = $request->file('imagen')
                         ->storeAs(
                             'public/colaboradores/imagenes',
                             $request->rut.'.'.$request->file('imagen')->extension()
                         );
-
         $colaborador->imagen_url = url(Storage::url($imagePath));
 
         return $colaborador;
