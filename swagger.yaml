@@ -1602,6 +1602,8 @@ definitions:
         format: date
       edad:
         type: integer
+      edad_colaborador:
+        type: string
       email:
         type: string
         format: email

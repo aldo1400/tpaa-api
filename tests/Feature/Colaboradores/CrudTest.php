@@ -22,7 +22,6 @@ class CrudTest extends TestCase
 
         $url = '/api/colaboradores';
         $response = $this->json('GET', $url);
-
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data')
             ->assertJsonStructure([
@@ -39,6 +38,7 @@ class CrudTest extends TestCase
                         'nacionalidad',
                         'fecha_nacimiento',
                         'edad',
+                        'edad_colaborador',
                         'email',
                         'domicilio',
                         'licencia_b',
@@ -100,6 +100,7 @@ class CrudTest extends TestCase
                         'nacionalidad' => $colaboradores[1]->nacionalidad,
                         'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('Y-m-d'),
                         'edad' => $colaboradores[1]->edad,
+                        'edad_colaborador' => $colaboradores[1]->edad_colaborador,
                         'email' => $colaboradores[1]->email,
                         'domicilio' => $colaboradores[1]->domicilio,
                         'licencia_b' => $colaboradores[1]->licencia_b,
@@ -170,7 +171,6 @@ class CrudTest extends TestCase
             'sexo' => $colaborador->sexo,
             'nacionalidad' => $colaborador->nacionalidad,
             'fecha_nacimiento' => $colaborador->fecha_nacimiento->format('Y-m-d'),
-            'edad' => $colaborador->edad,
             'email' => $colaborador->email,
             'domicilio' => $colaborador->domicilio,
             'licencia_b' => $colaborador->licencia_b,
@@ -220,7 +220,7 @@ class CrudTest extends TestCase
             'sexo' => $parameters['sexo'],
             'nacionalidad' => $parameters['nacionalidad'],
             'fecha_nacimiento' => $parameters['fecha_nacimiento'],
-            'edad' => $parameters['edad'],
+            'edad' => null,
             'email' => $parameters['email'],
             'domicilio' => $parameters['domicilio'],
             'licencia_b' => $parameters['licencia_b'],

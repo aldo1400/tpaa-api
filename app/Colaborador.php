@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use App\Helpers\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -88,6 +89,17 @@ class Colaborador extends Model
         'deleted_at',
         'vencimiento_credencial_vigilante',
     ];
+
+    protected $appends = ['edad_colaborador'];
+
+    public function getEdadColaboradorAttribute()
+    {
+        $now = Carbon::now();
+
+        $age = $now->diffInYears($this->fecha_nacimiento);
+
+        return $age;
+    }
 
     /**
      * Get the estado civil for the colaborador.

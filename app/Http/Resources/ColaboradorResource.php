@@ -20,7 +20,12 @@ class ColaboradorResource extends JsonResource
         if ($this->imagen) {
             if (!(Storage::disk('local')->exists($this->imagen_url))) {
                 $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
-                $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+                if($ext){
+                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+                }
+                else{
+                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.jpg';
+                }
                 
                 Storage::disk('local')
                         ->put($url, base64_decode($this->imagen));
@@ -40,6 +45,7 @@ class ColaboradorResource extends JsonResource
             'nacionalidad' => $this->nacionalidad,
             'fecha_nacimiento' => $this->fecha_nacimiento ? $this->fecha_nacimiento->format('Y-m-d') : '',
             'edad' => $this->edad,
+            'edad_colaborador' => $this->fecha_nacimiento ? $this->edad_colaborador : '',
             'email' => $this->email,
             'domicilio' => $this->domicilio,
             'licencia_b' => $this->licencia_b,
