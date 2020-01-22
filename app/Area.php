@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Area extends Model
@@ -41,6 +42,11 @@ class Area extends Model
         return $this->belongsTo('App\Area', 'padre_id');
     }
 
+    public function cargos(): HasMany
+    {
+        return $this->hasMany('App\Cargo');
+    }
+
     /**
      * Get the tipo for area.
      */
@@ -51,7 +57,8 @@ class Area extends Model
 
     public function encontrarAreaInferior()
     {
-        if (self::where('padre_id', $this->id)->first()) {
+        $areasHijos=self::where('padre_id', $this->id)->get();
+        if ($areasHijos->count()){
             return true;
         }
 

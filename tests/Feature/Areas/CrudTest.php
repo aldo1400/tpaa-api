@@ -3,6 +3,7 @@
 namespace Tests\Feature\Areas;
 
 use App\Area;
+use App\Cargo;
 use App\TipoArea;
 use Tests\TestCase;
 use App\Departamento;
@@ -206,7 +207,7 @@ class CrudTest extends TestCase
                     ->assertSeeText('El area tiene hijos.');
     }
 
-    public function testEditarArea()
+    public function testEditarAreaConEstadoActivo()
     {
         $areas=factory(Area::class,2)->create();
         $area = factory(Area::class)
@@ -224,7 +225,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-// dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('areas', [
@@ -240,5 +240,62 @@ class CrudTest extends TestCase
             'padre_id'=>$area->padre_id,
             'estado'=>$area->estado
         ]);
+    }
+
+    public function testNoSePuedeDesactivarUnAreaSiEsPadreDeOtraArea()
+    {
+        $areas=factory(Area::class,2)->create();
+
+        $area = factory(Area::class)
+                        ->create([
+                            'padre_id'=>$areas[0]->id
+                        ]);
+
+        $areaHijo = factory(Area::class)
+                        ->create([
+                            'padre_id'=>$area->id
+                        ]);
+
+        $url = "/api/areas/{$area->id}";
+
+        $parameters = [
+            'nombre' => 'Area de administración de recursos humanos',
+            'padre_id'=>$areas[1]->id,
+            'estado'=>0
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('El area tiene hijos.'));
+        
+    }
+
+    public function testNoSePuedeDesactivarUnAreaSiEstaAsociadaAUnCargo()
+    {
+        $areas=factory(Area::class,2)->create();
+
+        $area = factory(Area::class)
+                        ->create([
+                            'padre_id'=>$areas[0]->id
+                        ]);
+
+        factory(Cargo::class)->create([
+            'area_id'=>$area->id
+        ]);
+
+        $url = "/api/areas/{$area->id}";
+
+        $parameters = [
+            'nombre' => 'Area de administración de recursos humanos',
+            'padre_id'=>$areas[1]->id,
+            'estado'=>0
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('El area esta asociada a cargos.'));
+        
     }
 }

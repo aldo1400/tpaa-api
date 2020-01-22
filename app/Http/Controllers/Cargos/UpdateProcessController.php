@@ -18,6 +18,14 @@ class UpdateProcessController extends Controller
 
         $cargo = Cargo::findOrFail($id);
 
+        if(!$request->estado){
+            $errors=[];
+            $errors=$this->obtenerErrores($area);
+            if(!empty($errors)){
+              return response()->json($errors, 409);
+            }
+          }
+
         $cargo->fill([
             'nombre'=>$request->nombre
         ]);
@@ -26,4 +34,16 @@ class UpdateProcessController extends Controller
 
         return response()->json();
     }
+
+    public function obtenerErrores($area){
+        $errors=[];
+        if ($area->encontrarAreaInferior()) {
+          array_push($errors,"El area tiene hijos.");
+        }
+        
+        if($area->cargos()->count()){
+          array_push($errors,"El area esta asociada a cargos.");
+        }
+        return $errors;
+      }
 }
