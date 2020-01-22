@@ -19,7 +19,6 @@ class UpdateProcessController extends Controller
         }
 
         $administrador->save();
-        // dd($administrador);
         return response()->json();
     }
 }

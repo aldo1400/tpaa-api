@@ -147,4 +147,41 @@ class CrudTest extends TestCase
             'estado' => 1,
         ]);
     }
+
+    public function testEditarMiPerfil()
+    {
+        
+        $token = JWTAuth::fromUser($this->administrador);
+
+        $url = "/api/administradores";
+
+        $parameters = [
+            'nombre' => 'FELIPE BRISEÑO',
+            'username'=>'ADMI-BRISEF',
+            'password'=>'nueva password',
+            'password_confirmation'=>'nueva password',
+            'estado'=>1
+        ];
+
+        $response = $this->withHeaders([
+                        'Authorization' => 'Bearer '.$token,
+                    ])
+                    ->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('administradores', [
+            'id'=>$this->administrador->id,
+            'nombre' => $parameters['nombre'],
+            'username'=>$parameters['username'],
+            'estado' => 1,
+        ]);
+
+        $this->assertDatabaseMissing('administradores', [
+            'id'=>$this->administrador->id,
+            'nombre' => $this->administrador->nombre,
+            'username'=>$this->administrador->username,
+            'estado' => 1,
+        ]);
+    }
 }

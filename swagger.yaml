@@ -10,6 +10,8 @@ host: virtserver.swaggerhub.com
 # basePath: /aldo1400/goplay/1.0.0
 
 tags:
+- name: administradores
+  description: Administrador module
 - name: users
   description: User module
 - name: type-users
@@ -43,6 +45,124 @@ schemes:
 - https
 paths:
   
+  # ---------------------
+  #   Administradores
+  # ---------------------
+  "/administradores":
+    get:
+      tags:
+      - administradores
+      summary: Obtener todos los administradores
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AdministradorResource'
+        401:
+          description: unauthenticated
+
+    post:
+      tags:
+      - administradores
+      summary: Add a administrador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/AdministradorCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+    
+    put:
+      tags:
+      - administradores
+      summary: Editar el perfil del administrador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ProfileUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access 
+   
+  "/administradores/{id}":
+    get:
+      tags:
+      - administradores
+      summary: Obtener un administrador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/AdministradorResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    put:
+      tags:
+      - administradores
+      summary: Editar los datos de un administrador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Administrador ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/AdministradorUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access 
+         
   # ---------------------
   #   Cargas Familiares
   # ---------------------
@@ -638,7 +758,7 @@ paths:
   "/login":
     post:
       tags:
-      - users
+      - administradores
       summary: User authentication
       consumes:
       - application/json
@@ -1894,7 +2014,21 @@ definitions:
       name:
         type: string
       typeUser:
-        $ref: "#/definitions/TypeUserResource"        
+        $ref: "#/definitions/TypeUserResource"    
+    
+  
+  AdministradorResource:
+    type: object
+    properties:
+      id:
+        type: number
+      username:
+        type: string
+      nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
   
   TagResource:
     type: object
@@ -1972,6 +2106,47 @@ definitions:
         type: string
         enum: [0,1]
   
+  AdministradorCreateRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+  
+  AdministradorUpdateRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+  
+  ProfileUpdateRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      password_confirmation:
+        type: string
+      nombre:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+      
   UserCreateRequest:
     type: object
     properties:

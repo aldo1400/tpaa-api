@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('/administradores', 'Administradores\CreateProcessController');
     Route::get('/administradores', 'Administradores\IndexController');
     Route::get('/administradores/{id}', 'Administradores\ShowController');
+    Route::put('/administradores', 'Administradores\UpdateProfileController');
     Route::put('/administradores/{id}', 'Administradores\UpdateProcessController');
 });
 
