@@ -26,7 +26,7 @@ class CrudTest extends TestCase
        
     }
 
-    public function testObtenerAreas()
+    public function testObtenerAdmministradores()
     {
         factory(Administrador::class, 10)
                     ->create();
@@ -50,6 +50,31 @@ class CrudTest extends TestCase
                         'estado',
                         'username'
                     ],
+                ],
+            ]);
+    }
+
+    public function testObtenerUnAdministrador()
+    {
+        $administradores = factory(Administrador::class, 10)
+                            ->create();
+
+        $token = JWTAuth::fromUser($this->administrador);
+
+        $url = '/api/administradores/'.$administradores[1]->id;
+
+        $response = $this->withHeaders([
+                        'Authorization' => 'Bearer '.$token,
+                    ])
+                    ->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $administradores[1]->id,
+                        'nombre' => $administradores[1]->nombre,
+                        'username' => $administradores[1]->username,
+                        'estado' => $administradores[1]->estado,
                 ],
             ]);
     }

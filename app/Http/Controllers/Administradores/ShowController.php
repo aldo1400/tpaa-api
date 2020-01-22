@@ -10,7 +10,7 @@ use App\Http\Resources\AdministradorResource;
 class ShowController extends Controller
 {
     public function __invoke($id){
-        $administrador=Administrador::findOrFail();
+        $administrador=Administrador::findOrFail($id);
         return new AdministradorResource($administrador);
     }
 }
