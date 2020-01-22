@@ -26,6 +26,33 @@ class CrudTest extends TestCase
        
     }
 
+    public function testObtenerAreas()
+    {
+        factory(Administrador::class, 10)
+                    ->create();
+
+        $token = JWTAuth::fromUser($this->administrador);
+        
+        $url = '/api/administradores';
+
+        $response = $this->withHeaders([
+                    'Authorization' => 'Bearer '.$token,
+                ])
+                ->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(11, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'estado',
+                        'username'
+                    ],
+                ],
+            ]);
+    }
 
     public function testCrearAdministrador()
     {
@@ -50,7 +77,6 @@ class CrudTest extends TestCase
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('administradores', [
-            'id' => Administrador::latest()->first()->id,
             'nombre' => $parameters['nombre'],
             'username'=>$parameters['username'],
             'estado' => 1,
