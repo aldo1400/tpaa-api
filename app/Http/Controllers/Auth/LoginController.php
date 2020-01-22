@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\AdministradorResource;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -28,12 +34,74 @@ class LoginController extends Controller
     protected $redirectTo = '/home';
 
     /**
-     * Create a new controller instance.
+     * Attempt to log the user into the application.
      *
-     * @return void
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
      */
-    public function __construct()
+    protected function attemptLogin(Request $request): bool
     {
-        $this->middleware('guest')->except('logout');
+        // config()->set( 'auth.defaults.guard', 'api' );
+        $token = $this->guard()->attempt([
+            'username' => $request->username,
+            'password' => $request->password,
+            ]);
+            
+            // dd($token);
+        if ($token) {
+            $this->guard()->setToken($token);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function sendLoginResponse(Request $request): JsonResponse
+    {
+        $this->clearLoginAttempts($request);
+
+        $token = (string) $this->guard()->getToken();
+        $expiration = $this->guard()->getPayload()->get('exp');
+
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $expiration - time(),
+            'user' => new AdministradorResource(Auth::user()),
+            // auth()->user()->load('typeUser'),
+        ]);
+    }
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username(): string
+    {
+        return 'username';
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        $this->guard()->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
 }
