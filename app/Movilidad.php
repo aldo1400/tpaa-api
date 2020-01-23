@@ -10,6 +10,9 @@ class Movilidad extends Model
 {
     use SoftDeletes;
     const NUEVO='Nuevo';
+    const DESVINCULADO = 'Desvinculado (a)';
+    const RENUNCIA = 'Renuncia';
+    const MOVILIDAD='Movilidad';
     /**
      * The table associated with the model.
      *

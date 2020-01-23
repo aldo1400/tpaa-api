@@ -929,6 +929,30 @@ paths:
           description: Departure has children
   
   "/colaboradores/{id}/movilidades":
+    get:
+      tags:
+      - movilidades
+      summary: Obtener las movilidades de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: colaborador ID
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/MovilidadResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+          
     post:
       tags:
       - movilidades
@@ -1876,6 +1900,32 @@ definitions:
       tipoArea:  
         $ref: "#/definitions/TipoAreaResource"  
   
+  MovilidadResource:
+    type: object
+    properties:
+      fecha_termino:
+        type: string
+        format: date
+      fecha_inicio:
+        type: string
+        format: date
+      tipo:
+        type: string
+        enum: [
+          'Nuevo',
+          'Movilidad',
+          'Renuncia',
+          'Desvinculado (a)'
+          ]
+      observaciones:
+        type: string
+      estado:
+        type: string
+      cargo_id:
+        type: integer
+      colaborador_id:
+        type: integer
+        
   MovilidadCreateRequest:
     type: object
     properties:
@@ -1887,6 +1937,11 @@ definitions:
         format: date
       tipo:
         type: string
+        enum: [
+          'Movilidad',
+          'Renuncia',
+          'Desvinculado (a)'
+          ]
       observaciones:
         type: string
       estado:

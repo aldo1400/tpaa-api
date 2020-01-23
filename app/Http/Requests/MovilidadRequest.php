@@ -26,7 +26,7 @@ class MovilidadRequest extends FormRequest
         return [
             'fecha_termino'=>['required','date','date_format:Y-m-d'],
             'fecha_inicio'=>['required','date','date_format:Y-m-d'],
-            'tipo'=>['required','string'],
+            'tipo'=>['required','in:Nuevo,Desvinculado (a),Renuncia,Movilidad'],
             'observaciones'=>['nullable','string','max:255'],
             'estado'=>['required','boolean'],
             'cargo_id'=>['required','exists:cargos,id']

@@ -33,7 +33,7 @@ class CrudTest extends TestCase
         $parameters=[
             'fecha_termino'=>now()->addDays(1)->format('Y-m-d'),
             'fecha_inicio'=>now()->addDays(2)->format('Y-m-d'),
-            'tipo'=>'MOVILIDAD',
+            'tipo'=>Movilidad::MOVILIDAD,
             'observaciones'=>'',
             'estado'=>1,
             'cargo_id'=>$cargo->id,
@@ -111,4 +111,38 @@ class CrudTest extends TestCase
         ]);
 
     }
+
+    public function testObtenerTpdasLasMovilidadDeUnColaborador()
+    {
+        $cargo=factory(Cargo::class)->create();
+
+        $colaboradores = factory(Colaborador::class, 2)
+                        ->create()
+                        ->each(function ($colaborador) use($cargo) {
+                            $colaborador->movilidades()->saveMany(factory(Movilidad::class, 2)
+                                        ->make([
+                                            'cargo_id' => $cargo->id,
+                                            'tipo'=>Movilidad::MOVILIDAD
+                                        ]));
+                        });
+
+        $url = '/api/colaboradores/'.$colaboradores[0]->id.'/movilidades';
+
+        $response = $this->json('GET', $url);
+// dd($response->decodeResponseJson());
+        $response->assertStatus(200)
+                ->assertJsonCount(2, 'data')
+                    ->assertJsonStructure([
+                        'data' => [
+                            '*' => [
+                                'id',
+                                'tipo',
+                                'cargo_id',
+                                'colaborador_id'
+                            ],
+                        ],
+                    ]);
+    }
+
+   
 }
