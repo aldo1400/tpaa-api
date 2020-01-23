@@ -63,7 +63,7 @@ class Cargo extends Model
     public function encontrarCargoInferior()
     {
         $cargosHijos=self::where('supervisor_id', $this->id)->get();
-        if($cargosHijos->count()){
+        if($cargosHijos->where('estado',1)->count()){
             return true;
         }
 

@@ -173,6 +173,7 @@ class CrudTest extends TestCase
         $cargo = factory(Cargo::class)
                         ->create([
                             'supervisor_id' => $cargoPadre->id,
+                            'estado'=>1
                         ]);
 
         $url = '/api/cargos/'.$cargoPadre->id;
@@ -231,7 +232,8 @@ class CrudTest extends TestCase
                 ->create();
 
         $cargoHijo = factory(Cargo::class)->create([
-            'supervisor_id'=>$cargos[0]->id
+            'supervisor_id'=>$cargos[0]->id,
+            'estado'=>1
         ]);
 
         $url = "/api/cargos/{$cargos[0]->id}";

@@ -58,7 +58,7 @@ class Area extends Model
     public function encontrarAreaInferior()
     {
         $areasHijos=self::where('padre_id', $this->id)->get();
-        if ($areasHijos->count()){
+        if ($areasHijos->where('estado',1)->count()){
             return true;
         }
 

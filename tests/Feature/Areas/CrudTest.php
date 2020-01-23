@@ -197,6 +197,7 @@ class CrudTest extends TestCase
         $area = factory(Area::class)
                         ->create([
                             'padre_id' => $areaPadre->id,
+                            'estado'=>1
                         ]);
 
         $url = '/api/areas/'.$areaPadre->id;
@@ -253,7 +254,8 @@ class CrudTest extends TestCase
 
         $areaHijo = factory(Area::class)
                         ->create([
-                            'padre_id'=>$area->id
+                            'padre_id'=>$area->id,
+                            'estado'=>1
                         ]);
 
         $url = "/api/areas/{$area->id}";
