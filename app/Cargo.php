@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Cargo extends Model
@@ -51,10 +52,18 @@ class Cargo extends Model
         return $this->belongsTo('App\NivelJerarquico');
     }
 
+    /**
+     * Get the nivel jerarquico for the cargo.
+     */
+    public function movilidades(): HasMany
+    {
+        return $this->HasMany('App\Movilidad');
+    }
+
     public function encontrarCargoInferior()
     {
         $cargosHijos=self::where('supervisor_id', $this->id)->get();
-            if($cargoHijos->count()){
+        if($cargosHijos->count()){
             return true;
         }
 

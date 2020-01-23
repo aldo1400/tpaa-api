@@ -4,7 +4,9 @@ namespace Tests\Feature\Cargos;
 
 use App\Area;
 use App\Cargo;
+use App\Movilidad;
 use Tests\TestCase;
+use App\Colaborador;
 use App\NivelJerarquico;
 
 class CrudTest extends TestCase
@@ -214,5 +216,69 @@ class CrudTest extends TestCase
             'nombre' => $cargos[0]->nombre,
             'supervisor_id' => $cargos[0]->supervisor_id,
         ]);
+    }
+
+    public function testNoSePuedeDesactivarCargoSiTieneCargosHijos()
+    {
+        
+        $cargos = factory(Cargo::class, 1)
+                    ->create()
+                    ->each(function ($cargo) {
+                        $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
+                    });
+        
+        $cargoSupervisor=factory(Cargo::class)
+                ->create();
+
+        $cargoHijo = factory(Cargo::class)->create([
+            'supervisor_id'=>$cargos[0]->id
+        ]);
+
+        $url = "/api/cargos/{$cargos[0]->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            'supervisor_id' => $cargoSupervisor->id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+// dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('El cargo tiene hijos.'));
+
+    }
+
+    
+    public function testNoSePuedeDesactivarCargoSiTieneMovilidadActiva()
+    {
+        
+        $colaborador=factory(Colaborador::class)->create();
+        $cargos = factory(Cargo::class, 1)
+                    ->create()
+                    ->each(function ($cargo) {
+                        $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
+                    });
+        
+        $cargoSupervisor=factory(Cargo::class)
+                ->create();
+
+        factory(Movilidad::class)->create([
+            'cargo_id'=>$cargos[0]->id,
+            'estado'=>1,
+            'colaborador_id'=>$colaborador->id,
+            'fecha_inicio'=>now()->format('Y-m-d')
+        ]);
+
+        $url = "/api/cargos/{$cargos[0]->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            'supervisor_id' => $cargoSupervisor->id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('El cargo esta asociada a movilidades.'));
+
     }
 }

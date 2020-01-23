@@ -20,7 +20,7 @@ class UpdateProcessController extends Controller
 
         if(!$request->estado){
             $errors=[];
-            $errors=$this->obtenerErrores($area);
+            $errors=$this->obtenerErrores($cargo);
             if(!empty($errors)){
               return response()->json($errors, 409);
             }
@@ -29,21 +29,23 @@ class UpdateProcessController extends Controller
         $cargo->fill([
             'nombre'=>$request->nombre
         ]);
+
         $cargo->supervisor()->associate($request->supervisor_id);
         $cargo->save();
 
         return response()->json();
     }
 
-    public function obtenerErrores($area){
+    public function obtenerErrores($cargo){
         $errors=[];
-        if ($area->encontrarAreaInferior()) {
-          array_push($errors,"El area tiene hijos.");
+        if ($cargo->encontrarCargoInferior()) {
+          array_push($errors,"El cargo tiene hijos.");
         }
         
-        if($area->cargos()->count()){
-          array_push($errors,"El area esta asociada a cargos.");
+        if($cargo->movilidades()->where('estado',1)->count()){
+          array_push($errors,"El cargo esta asociada a movilidades.");
         }
+
         return $errors;
       }
 }
