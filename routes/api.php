@@ -47,6 +47,7 @@ Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 // Cargos
 Route::get('/cargos', 'Cargos\IndexController');
 Route::get('/cargos/{id}', 'Cargos\ShowController');
+Route::get('/cargos/{id}/relacionados', 'Cargos\GetRelatedController');
 Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
@@ -72,7 +73,6 @@ Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
 Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
 
 Route::delete('/colaboradores/{id}/imagen', 'Colaboradores\DeleteImageController');
-
 
 Route::get('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\IndexController');
 Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');

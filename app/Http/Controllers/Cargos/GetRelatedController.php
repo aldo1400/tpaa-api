@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Areas;
+namespace App\Http\Controllers\Cargos;
 
-use App\Area;
+use App\Cargo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AreaResource;
@@ -10,8 +10,8 @@ use App\Http\Resources\AreaResource;
 class GetRelatedController extends Controller
 {
     public function __invoke($id){
-        $area=Area::findOrFail($id);
-        $areas=$area->obtenerAreasRelacionadas();
+        $cargo=Cargo::findOrFail($id);
+        $areas=$cargo->area->obtenerAreasRelacionadas();
         return AreaResource::collection($areas);
     }
 }
