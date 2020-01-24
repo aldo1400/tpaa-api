@@ -71,6 +71,9 @@ Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
 Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');
 Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
 
+Route::delete('/colaboradores/{id}/imagen', 'Colaboradores\DeleteImageController');
+
+
 Route::get('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\IndexController');
 Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');
 Route::delete('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\DeleteProcessController');

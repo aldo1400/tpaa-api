@@ -263,15 +263,6 @@ class CrudTest extends TestCase
                 'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
 
-        $this->assertDatabaseHas('movilidades', [
-            'fecha_inicio' => $parameters['fecha_inicio'],
-            'colaborador_id' => Colaborador::latest()->first()->id,
-            'cargo_id' => $parameters['cargo_id'],
-            'fecha_termino' => null,
-            'tipo' => Movilidad::NUEVO,
-            'observaciones' => null,
-            'estado' => 1,
-        ]);
     }
 
     /**
@@ -1216,4 +1207,24 @@ class CrudTest extends TestCase
                 ],
         ]);
     }
+
+    public function testDeleteImage()
+    {
+        $user = factory(Colaborador::class)->create();
+        // $token = JWTAuth::fromUser($user);
+
+        Storage::fake('local');
+        // $image = UploadedFile::fake()->create('banner1.jpg');
+        // $imagePath = Storage::putFile('public/banners', $image);
+        // dd($imagePath);
+        // $url =  "/api/colaboradores/{}/imagen";
+        // $response = $this->withHeaders([
+                // 'Authorization' => 'Bearer ' . $token
+            // ])
+        $response = $this->json('DELETE', $url);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+        // Storage::disk('local')->assertMissing('storage/banners/' . $image->hashName());
+    }
+
 }

@@ -27,12 +27,12 @@ class CreateProcessController extends Controller
         $colaborador->save();
 
         if ($request->cargo_id) {
-            $movilidad = Movilidad::make([
-                            'fecha_inicio' => $request->fecha_inicio,
-                        ]);
-            $movilidad->colaborador()->associate($colaborador->id);
-            $movilidad->cargo()->associate($request->cargo_id);
-            $movilidad->save();
+            // $movilidad = Movilidad::make([
+            //                 'fecha_inicio' => $request->fecha_inicio,
+            //             ]);
+            // $movilidad->colaborador()->associate($colaborador->id);
+            // $movilidad->cargo()->associate($request->cargo_id);
+            // $movilidad->save();
         }
 
         $colaborador->tags()->sync($request->tags);
@@ -52,6 +52,7 @@ class CreateProcessController extends Controller
             $finalURL=storage_path().'/app/public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension();
             $imagenReducida=Image::make(file_get_contents($request->file('imagen')->getRealPath()))
                             ->save($finalURL,75);
+            // dd(Storage::url('public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension()));
             $colaborador->imagen_url = url(Storage::url('public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension()));
         }        
 
