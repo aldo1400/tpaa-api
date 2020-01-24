@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Area;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -63,5 +64,33 @@ class Area extends Model
         }
 
         return false;
+    }
+
+    public function obtenerAreasRelacionadas(){
+        
+        $arregloAreas = collect();
+        $areaEditar = Area::where('id', $this->id)->first();
+       
+        $padre_id = $areaEditar->padre_id;
+        $padre = $areaEditar->padre;
+
+        if($padre_id != null){
+            $flag = 0;
+        }
+        else
+        {
+            $flag = 1;
+        }
+
+        while($flag == 0){
+            if(isset($padre_id)){
+                $area= Area::where('id', $padre_id)->first();
+                $arregloAreas->push($area);
+                $padre_id = $area->padre_id;
+            }else{
+                $flag=1;
+            }
+        }
+        return $arregloAreas;
     }
 }

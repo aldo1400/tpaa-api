@@ -40,6 +40,7 @@ Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 Route::get('/areas', 'Areas\IndexController');
 Route::post('/areas', 'Areas\CreateProcessController');
 Route::get('/areas/{id}', 'Areas\ShowController');
+Route::get('/areas/{id}/relacionados', 'Areas\GetRelatedController');
 Route::patch('/areas/{id}', 'Areas\UpdateProcessController');
 Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 

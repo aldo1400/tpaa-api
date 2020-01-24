@@ -20,7 +20,7 @@ class AreaResource extends JsonResource
             'nombre' => $this->nombre,
             'padre_id' => $this->padre_id,
             'estado' => $this->estado,
-            'tipoArea' => new TipoAreaResource($this->tipoArea),
+            // 'tipoArea' => new TipoAreaResource($this->tipoArea),
         ];
     }
 }

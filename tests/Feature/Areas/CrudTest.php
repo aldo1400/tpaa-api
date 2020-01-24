@@ -300,4 +300,38 @@ class CrudTest extends TestCase
                 ->assertSeeText(json_encode('El area esta asociada a cargos.'));
         
     }
+
+    public function testObtenerTodosLosPadresDeArea(){
+        $areaAbuelo=factory(Area::class)
+                    ->create();
+
+        $areaPadre=factory(Area::class)
+                    ->create([
+                        'padre_id'=>$areaAbuelo->id
+                    ]);
+
+
+        $area = factory(Area::class)
+                        ->create([
+                            'padre_id'=>$areaPadre->id
+                        ]);
+
+
+        $url = "/api/areas/{$area->id}/relacionados";
+
+        $response = $this->json('GET', $url);
+// dd($response->decodeResponseJson());
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'padre_id',
+                        'estado',
+                    ],
+                ],
+            ]);
+    }
 }
