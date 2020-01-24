@@ -322,4 +322,21 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+
+    public function testObtenerTodosLosPadresDeAreaDeUnCargoEnCasoElAreaNoTengaHijos(){
+
+        $area = factory(Area::class)
+                        ->create();
+
+        $cargo=factory(Cargo::class)
+                ->create([
+                    'area_id'=>$area->id
+                ]);
+
+        $url = "/api/cargos/{$cargo->id}/relacionados";
+
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
 }

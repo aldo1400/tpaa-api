@@ -334,4 +334,17 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+
+    public function testObtenerTodosLosPadresDeUnAreaEnCasoNoHayaPadres(){
+        
+        $area = factory(Area::class)
+                        ->create();
+
+        $url = "/api/areas/{$area->id}/relacionados";
+
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+           
+    }
 }
