@@ -36,7 +36,7 @@ class CrudTest extends TestCase
                         'area' => [
                             'id',
                             'nombre',
-                            'estado'
+                            'estado',
                         ],
                     ],
                 ],
@@ -66,7 +66,7 @@ class CrudTest extends TestCase
                                 'nivel_nombre',
                                 'estado',
                             ]),
-                            'area'=> $cargos[1]->area->only([
+                            'area' => $cargos[1]->area->only([
                                 'id',
                                 'nombre',
                                 'estado',
@@ -103,7 +103,7 @@ class CrudTest extends TestCase
         ]);
     }
 
-     public function testCrearCargoConSupervisor()
+    public function testCrearCargoConSupervisor()
     {
         $cargoSupervisor = factory(Cargo::class)->create();
         $cargo = factory(Cargo::class)->make();
@@ -173,7 +173,7 @@ class CrudTest extends TestCase
         $cargo = factory(Cargo::class)
                         ->create([
                             'supervisor_id' => $cargoPadre->id,
-                            'estado'=>1
+                            'estado' => 1,
                         ]);
 
         $url = '/api/cargos/'.$cargoPadre->id;
@@ -221,19 +221,18 @@ class CrudTest extends TestCase
 
     public function testNoSePuedeDesactivarCargoSiTieneCargosHijos()
     {
-        
         $cargos = factory(Cargo::class, 1)
                     ->create()
                     ->each(function ($cargo) {
                         $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
                     });
-        
-        $cargoSupervisor=factory(Cargo::class)
+
+        $cargoSupervisor = factory(Cargo::class)
                 ->create();
 
         $cargoHijo = factory(Cargo::class)->create([
-            'supervisor_id'=>$cargos[0]->id,
-            'estado'=>1
+            'supervisor_id' => $cargos[0]->id,
+            'estado' => 1,
         ]);
 
         $url = "/api/cargos/{$cargos[0]->id}";
@@ -244,31 +243,28 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-// dd($response->decodeResponseJson());
+        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El cargo tiene hijos.'));
-
     }
 
-    
     public function testNoSePuedeDesactivarCargoSiTieneMovilidadActiva()
     {
-        
-        $colaborador=factory(Colaborador::class)->create();
+        $colaborador = factory(Colaborador::class)->create();
         $cargos = factory(Cargo::class, 1)
                     ->create()
                     ->each(function ($cargo) {
                         $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
                     });
-        
-        $cargoSupervisor=factory(Cargo::class)
+
+        $cargoSupervisor = factory(Cargo::class)
                 ->create();
 
         factory(Movilidad::class)->create([
-            'cargo_id'=>$cargos[0]->id,
-            'estado'=>1,
-            'colaborador_id'=>$colaborador->id,
-            'fecha_inicio'=>now()->format('Y-m-d')
+            'cargo_id' => $cargos[0]->id,
+            'estado' => 1,
+            'colaborador_id' => $colaborador->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
         ]);
 
         $url = "/api/cargos/{$cargos[0]->id}";
@@ -281,34 +277,32 @@ class CrudTest extends TestCase
         $response = $this->json('PATCH', $url, $parameters);
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El cargo esta asociada a movilidades.'));
-
     }
 
-    public function testObtenerTodosLosPadresDeAreaDeUnCargo(){
-
-        $areaAbuelo=factory(Area::class)
+    public function testObtenerTodosLosPadresDeAreaDeUnCargo()
+    {
+        $areaAbuelo = factory(Area::class)
                     ->create();
 
-        $areaPadre=factory(Area::class)
+        $areaPadre = factory(Area::class)
                     ->create([
-                        'padre_id'=>$areaAbuelo->id
+                        'padre_id' => $areaAbuelo->id,
                     ]);
-
 
         $area = factory(Area::class)
                         ->create([
-                            'padre_id'=>$areaPadre->id
+                            'padre_id' => $areaPadre->id,
                         ]);
 
-        $cargo=factory(Cargo::class)
+        $cargo = factory(Cargo::class)
                 ->create([
-                    'area_id'=>$area->id
+                    'area_id' => $area->id,
                 ]);
 
         $url = "/api/cargos/{$cargo->id}/relacionados";
 
         $response = $this->json('GET', $url);
-// dd($response->decodeResponseJson());
+        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data')
             ->assertJsonStructure([
@@ -318,19 +312,20 @@ class CrudTest extends TestCase
                         'nombre',
                         'padre_id',
                         'estado',
+                        'tipoArea',
                     ],
                 ],
             ]);
     }
 
-    public function testObtenerTodosLosPadresDeAreaDeUnCargoEnCasoElAreaNoTengaHijos(){
-
+    public function testObtenerTodosLosPadresDeAreaDeUnCargoEnCasoElAreaNoTengaHijos()
+    {
         $area = factory(Area::class)
                         ->create();
 
-        $cargo=factory(Cargo::class)
+        $cargo = factory(Cargo::class)
                 ->create([
-                    'area_id'=>$area->id
+                    'area_id' => $area->id,
                 ]);
 
         $url = "/api/cargos/{$cargo->id}/relacionados";

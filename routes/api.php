@@ -32,8 +32,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('/administradores/{id}', 'Administradores\UpdateProcessController');
 });
 
-
-
 Route::get('/colaboradores1/{rut}', 'Colaboradores\Testing');
 Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 
@@ -54,6 +52,8 @@ Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 
 // TipoCarga
 Route::get('/tipo-cargas', 'TipoCargas\IndexController');
+
+Route::get('/tipo-movilidades', 'TipoMovilidades\IndexController');
 
 Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
 Route::get('/estado-civiles', 'EstadoCiviles\IndexController');
