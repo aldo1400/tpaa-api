@@ -17,7 +17,7 @@ class CrudTest extends TestCase
         $response = $this->json('GET', $url);
 
         $response->assertStatus(200)
-            ->assertJsonCount(10, 'data')
+            ->assertJsonCount(13, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
@@ -46,12 +46,12 @@ class CrudTest extends TestCase
         $response->assertStatus(200)
                 ->assertJson([
                     'data' => [
-                        'id'=>$tags[1]->id,
-                        'nombre'=>$tags[1]->nombre,
-                        'descripcion'=>$tags[1]->descripcion,
-                        'permisos'=>$tags[1]->permisos,
-                        'estado'=>$tags[1]->estado,
-                        'tipo'=>$tags[1]->tipo,
+                        'id' => $tags[1]->id,
+                        'nombre' => $tags[1]->nombre,
+                        'descripcion' => $tags[1]->descripcion,
+                        'permisos' => $tags[1]->permisos,
+                        'estado' => $tags[1]->estado,
+                        'tipo' => $tags[1]->tipo,
                     ],
                 ]);
     }
@@ -86,14 +86,14 @@ class CrudTest extends TestCase
         $tag = factory(Tag::class)
                     ->state('activo')
                     ->create([
-                        'tipo'=>Tag::NEGATIVO
+                        'tipo' => Tag::NEGATIVO,
                     ]);
 
         $url = '/api/tags/'.$tag->id;
 
         $parameters = [
             'nombre' => 'EMPATIA',
-            'descripcion' =>'PONERSE EN EL LUGAR DE OTRO',
+            'descripcion' => 'PONERSE EN EL LUGAR DE OTRO',
             'estado' => 1,
             'tipo' => Tag::POSITIVO,
         ];
@@ -119,7 +119,6 @@ class CrudTest extends TestCase
             'tipo' => $tag->tipo,
         ]);
     }
-
 
     public function testEliminarTag()
     {

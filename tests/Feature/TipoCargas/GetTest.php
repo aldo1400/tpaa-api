@@ -16,7 +16,7 @@ class GetTest extends TestCase
         $response = $this->json('GET', $url);
 
         $response->assertStatus(200)
-            ->assertJsonCount(10, 'data')
+            ->assertJsonCount(14, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [

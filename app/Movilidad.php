@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Movilidad extends Model
 {
     use SoftDeletes;
-    const NUEVO='Nuevo';
-    const DESVINCULADO = 'Desvinculado (a)';
-    const RENUNCIA = 'Renuncia';
-    const MOVILIDAD='Movilidad';
+
     /**
      * The table associated with the model.
      *
@@ -28,7 +25,6 @@ class Movilidad extends Model
     protected $fillable = [
         'fecha_inicio',
         'fecha_termino',
-        'tipo',
         'observaciones',
         'estado',
     ];
@@ -58,5 +54,13 @@ class Movilidad extends Model
     public function cargo(): BelongsTo
     {
         return $this->belongsTo('App\Cargo');
+    }
+
+    /**
+     * Get the tipo  for the movilidad.
+     */
+    public function tipoMovilidad(): BelongsTo
+    {
+        return $this->belongsTo('App\TipoMovilidad');
     }
 }

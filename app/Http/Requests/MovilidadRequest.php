@@ -24,12 +24,12 @@ class MovilidadRequest extends FormRequest
     public function rules()
     {
         return [
-            'fecha_termino'=>['required','date','date_format:Y-m-d'],
-            'fecha_inicio'=>['required','date','date_format:Y-m-d'],
-            'tipo'=>['required','in:Nuevo,Desvinculado (a),Renuncia,Movilidad'],
-            'observaciones'=>['nullable','string','max:255'],
-            'estado'=>['required','boolean'],
-            'cargo_id'=>['required','exists:cargos,id']
+            'fecha_termino' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'fecha_inicio' => ['required', 'date', 'date_format:Y-m-d'],
+            'observaciones' => ['nullable', 'string', 'max:255'],
+            'estado' => ['required', 'boolean'],
+            'cargo_id' => ['required', 'exists:cargos,id'],
+            'tipo_movilidad_id' => ['required', 'exists:tipo_movilidades,id'],
         ];
     }
 }

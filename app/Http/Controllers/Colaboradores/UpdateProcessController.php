@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Colaboradores;
 
 use App\Colaborador;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ColaboradorRequest;
 
 class UpdateProcessController extends Controller
