@@ -3,8 +3,6 @@
 namespace Tests\Feature\Colaboradores;
 
 use App\Tag;
-use App\Cargo;
-use App\Movilidad;
 use Tests\TestCase;
 use App\Colaborador;
 use App\EstadoCivil;
@@ -72,7 +70,7 @@ class CrudTest extends TestCase
                         'cargoActual',
                         'credencial_vigilante',
                         'vencimiento_credencial_vigilante',
-                        'imagen_url'
+                        'imagen_url',
                     ],
                 ],
             ]);
@@ -205,7 +203,6 @@ class CrudTest extends TestCase
         $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();
         Storage::disk('local')->assertExists($imageUrl);
 
-
         $this->assertDatabaseHas('colaboradores', [
             'id' => Colaborador::latest()->first()->id,
             'rut' => $parameters['rut'],
@@ -242,7 +239,7 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
             'credencial_vigilante' => $parameters['credencial_vigilante'],
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
-            'imagen_url'=>url(Storage::url($imageUrl))
+            'imagen_url' => url(Storage::url($imageUrl)),
         ]);
 
         $this->assertDatabaseHas('colaborador_tag', [
@@ -259,7 +256,6 @@ class CrudTest extends TestCase
                 'tag_id' => $tags[2]->id,
                 'colaborador_id' => Colaborador::latest()->first()->id,
             ]);
-
     }
 
     /**
@@ -638,7 +634,7 @@ class CrudTest extends TestCase
         $nuevosTags = factory(Tag::class, 2)->create();
         $estadoCivil = factory(EstadoCivil::class)->create();
         $nivelEducacion = factory(NivelEducacion::class)->create();
-        
+
         Storage::fake('local');
         $nuevaImagen = UploadedFile::fake()->image('banner2.jpg', 1200, 750);
 
@@ -707,7 +703,8 @@ class CrudTest extends TestCase
             'sexo' => $parameters['sexo'],
             'nacionalidad' => $parameters['nacionalidad'],
             'fecha_nacimiento' => $parameters['fecha_nacimiento'],
-            'edad' => $parameters['edad'],
+            'edad' => $parameters['edad'
+        ],
             'email' => $parameters['email'],
             'domicilio' => $parameters['domicilio'],
             'licencia_b' => $parameters['licencia_b'],
@@ -732,7 +729,7 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
             'credencial_vigilante' => $parameters['credencial_vigilante'],
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
-            'imagen_url'=>url(Storage::url($imageUrl))
+            'imagen_url' => url(Storage::url($imageUrl)),
         ]);
 
         $this->assertDatabaseMissing('colaboradores', [
@@ -742,8 +739,8 @@ class CrudTest extends TestCase
                 'primer_nombre' => $colaboradores[0]->primer_nombre,
                 'segundo_nombre' => $colaboradores[0]->segundo_nombre,
                 'apellido_paterno' => $colaboradores[0]->apellido_paterno,
-                'imagen_url'=>null,
-                'imagen'=>null,
+                'imagen_url' => null,
+                'imagen' => null,
                 // 'apellido_materno' => null,
                 // 'sexo' => $parameters['sexo'],
                 // 'nacionalidad' => $parameters['nacionalidad'],
@@ -796,6 +793,339 @@ class CrudTest extends TestCase
             ]);
     }
 
+    /**
+     * A basic test example.
+     */
+    public function testEditarColaboradorMenosLaFoto()
+    {
+        $anterioresTags = factory(Tag::class, 2)->create();
+        $nuevosTags = factory(Tag::class, 2)->create();
+        $estadoCivil = factory(EstadoCivil::class)->create();
+        $nivelEducacion = factory(NivelEducacion::class)->create();
+
+        Storage::fake('local');
+
+        $colaboradores = factory(Colaborador::class, 1)
+                        ->create()
+                        ->each(function ($colaborador) use ($anterioresTags) {
+                            $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
+                        });
+
+        $url = '/api/colaboradores/'.$colaboradores[0]->id;
+
+        $parameters = [
+            'rut' => 'RUT-1234578',
+            'usuario' => $colaboradores[0]->usuario,
+            'primer_nombre' => 'MIKE',
+            'segundo_nombre' => '',
+            'apellido_materno' => '',
+            'apellido_paterno' => 'SHINODA',
+            'sexo' => $colaboradores[0]->sexo,
+            'nacionalidad' => 'ESTADOUNIDENSE',
+            'fecha_nacimiento' => '1997-05-02',
+            'edad' => '22',
+            'email' => 'achoque1400@gmail.com',
+            'domicilio' => $colaboradores[0]->domicilio,
+            'licencia_b' => $colaboradores[0]->licencia_b,
+            'vencimiento_licencia_b' => $colaboradores[0]->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaboradores[0]->licencia_d,
+            'vencimiento_licencia_d' => $colaboradores[0]->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => '',
+            'vencimiento_carnet_portuario' => $colaboradores[0]->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => '41',
+            'talla_chaleco' => 'S',
+            'talla_polera' => 'S',
+            'talla_pantalon' => '30',
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'telefono' => '00000123',
+            'celular' => '931245655',
+            'anexo' => $colaboradores[0]->anexo,
+            'contacto_emergencia_nombre' => $colaboradores[0]->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaboradores[0]->contacto_emergencia_telefono,
+            'estado' => 'Renuncia',
+            'fecha_inactividad' => '2000-01-01',
+            'estado_civil_id' => $estadoCivil->id,
+            'nivel_educacion_id' => $nivelEducacion->id,
+            'tags' => $nuevosTags->pluck('id'),
+            'imagen' => '',
+            'imagen_url'=>'',
+            'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
+            'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaboradores[0]->id,
+            'rut' => $colaboradores[0]->rut,
+            'usuario' => $parameters['usuario'],
+            'primer_nombre' => $parameters['primer_nombre'],
+            'segundo_nombre' => null,
+            'apellido_paterno' => $parameters['apellido_paterno'],
+            'apellido_materno' => null,
+            'sexo' => $parameters['sexo'],
+            'nacionalidad' => $parameters['nacionalidad'],
+            'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+            'edad' => $parameters['edad'],
+            'email' => $parameters['email'],
+            'domicilio' => $parameters['domicilio'],
+            'licencia_b' => $parameters['licencia_b'],
+            'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+            'licencia_d' => $parameters['licencia_d'],
+            'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+            'carnet_portuario' => null,
+            'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+            'talla_calzado' => $parameters['talla_calzado'],
+            'talla_chaleco' => $parameters['talla_chaleco'],
+            'talla_polera' => $parameters['talla_polera'],
+            'talla_pantalon' => $parameters['talla_pantalon'],
+            'fecha_ingreso' => $parameters['fecha_ingreso'],
+            'telefono' => $parameters['telefono'],
+            'celular' => $parameters['celular'],
+            'anexo' => $parameters['anexo'],
+            'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+            'estado' => $colaboradores[0]->estado,
+            'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
+            'estado_civil_id' => $parameters['estado_civil_id'],
+            'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            'credencial_vigilante' => $parameters['credencial_vigilante'],
+            'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+            'imagen_url' => null,
+            'imagen'=>'',
+        ]);
+
+        $this->assertDatabaseMissing('colaboradores', [
+                'id' => $colaboradores[0]->id,
+                'rut' => $colaboradores[0]->rut,
+                'usuario' => $colaboradores[0]->usuario,
+                'primer_nombre' => $colaboradores[0]->primer_nombre,
+                'segundo_nombre' => $colaboradores[0]->segundo_nombre,
+                'apellido_paterno' => $colaboradores[0]->apellido_paterno,
+                'imagen_url' => null,
+                'imagen' => null,
+                // 'apellido_materno' => null,
+                // 'sexo' => $parameters['sexo'],
+                // 'nacionalidad' => $parameters['nacionalidad'],
+                // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+                // 'edad' => $parameters['edad'],
+                // 'email' => $parameters['email'],
+                // 'domicilio' => $parameters['domicilio'],
+                // 'licencia_b' => $parameters['licencia_b'],
+                // 'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+                // 'licencia_d' => $parameters['licencia_d'],
+                // 'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+                // 'carnet_portuario' => $parameters['carnet_portuario'],
+                // 'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+                // 'talla_calzado' => $parameters['talla_calzado'],
+                // 'talla_chaleco' => $parameters['talla_chaleco'],
+                // 'talla_polera' => $parameters['talla_polera'],
+                // 'talla_pantalon' => $parameters['talla_pantalon'],
+                // 'fecha_ingreso' => $parameters['fecha_ingreso'],
+                // 'telefono' => $parameters['telefono'],
+                // 'celular' => $parameters['celular'],
+                // 'anexo' => $parameters['anexo'],
+                // 'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+                // 'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+                // 'estado' => $colaboradores[0]->estado,
+                // 'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
+                // 'estado_civil_id' => $parameters['estado_civil_id'],
+                // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+                // 'credencial_vigilante' => $parameters['credencial_vigilante'],
+                // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+                ]);
+
+        $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $nuevosTags[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+        $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $nuevosTags[1]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+        $this->assertDatabaseMissing('colaborador_tag', [
+                'tag_id' => $anterioresTags[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+        $this->assertDatabaseMissing('colaborador_tag', [
+                'tag_id' => $anterioresTags[1]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarColaboradorConFotoASinFoto()
+    {
+        $anterioresTags = factory(Tag::class, 2)->create();
+        $nuevosTags = factory(Tag::class, 2)->create();
+        $estadoCivil = factory(EstadoCivil::class)->create();
+        $nivelEducacion = factory(NivelEducacion::class)->create();
+
+        Storage::fake('local');
+
+        $fotoColaborador = UploadedFile::fake()->image('banner2.jpg', 1200, 750);
+
+        $colaboradores = factory(Colaborador::class, 1)
+                        ->create()
+                        ->each(function ($colaborador) use ($anterioresTags) {
+                            $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
+                        });
+
+        $urlFoto=Storage::put('public/colaboradores/imagenes/'.$colaboradores[0]->rut.'.jpg',$fotoColaborador);
+        $colaboradores[0]->imagen=$fotoColaborador;
+        $colaboradores[0]->imagen_url=url(Storage::url($urlFoto));
+        
+        $url = '/api/colaboradores/'.$colaboradores[0]->id;
+
+        $parameters = [
+            'rut' => 'RUT-1234578',
+            'usuario' => $colaboradores[0]->usuario,
+            'primer_nombre' => 'MIKE',
+            'segundo_nombre' => '',
+            'apellido_materno' => '',
+            'apellido_paterno' => 'SHINODA',
+            'sexo' => $colaboradores[0]->sexo,
+            'nacionalidad' => 'ESTADOUNIDENSE',
+            'fecha_nacimiento' => '1997-05-02',
+            'edad' => '22',
+            'email' => 'achoque1400@gmail.com',
+            'domicilio' => $colaboradores[0]->domicilio,
+            'licencia_b' => $colaboradores[0]->licencia_b,
+            'vencimiento_licencia_b' => $colaboradores[0]->vencimiento_licencia_b->format('Y-m-d'),
+            'licencia_d' => $colaboradores[0]->licencia_d,
+            'vencimiento_licencia_d' => $colaboradores[0]->vencimiento_licencia_d->format('Y-m-d'),
+            'carnet_portuario' => '',
+            'vencimiento_carnet_portuario' => $colaboradores[0]->vencimiento_carnet_portuario->format('Y-m-d'),
+            'talla_calzado' => '41',
+            'talla_chaleco' => 'S',
+            'talla_polera' => 'S',
+            'talla_pantalon' => '30',
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'telefono' => '00000123',
+            'celular' => '931245655',
+            'anexo' => $colaboradores[0]->anexo,
+            'contacto_emergencia_nombre' => $colaboradores[0]->contacto_emergencia_nombre,
+            'contacto_emergencia_telefono' => $colaboradores[0]->contacto_emergencia_telefono,
+            'estado' => 'Renuncia',
+            'fecha_inactividad' => '2000-01-01',
+            'estado_civil_id' => $estadoCivil->id,
+            'nivel_educacion_id' => $nivelEducacion->id,
+            'tags' => $nuevosTags->pluck('id'),
+            'imagen' => '',
+            'imagen_url'=>'',
+            'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
+            'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaboradores[0]->id,
+            'rut' => $colaboradores[0]->rut,
+            'usuario' => $parameters['usuario'],
+            'primer_nombre' => $parameters['primer_nombre'],
+            'segundo_nombre' => null,
+            'apellido_paterno' => $parameters['apellido_paterno'],
+            'apellido_materno' => null,
+            'sexo' => $parameters['sexo'],
+            'nacionalidad' => $parameters['nacionalidad'],
+            'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+            'edad' => $parameters['edad'],
+            'email' => $parameters['email'],
+            'domicilio' => $parameters['domicilio'],
+            'licencia_b' => $parameters['licencia_b'],
+            'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+            'licencia_d' => $parameters['licencia_d'],
+            'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+            'carnet_portuario' => null,
+            'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+            'talla_calzado' => $parameters['talla_calzado'],
+            'talla_chaleco' => $parameters['talla_chaleco'],
+            'talla_polera' => $parameters['talla_polera'],
+            'talla_pantalon' => $parameters['talla_pantalon'],
+            'fecha_ingreso' => $parameters['fecha_ingreso'],
+            'telefono' => $parameters['telefono'],
+            'celular' => $parameters['celular'],
+            'anexo' => $parameters['anexo'],
+            'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+            'estado' => $colaboradores[0]->estado,
+            'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
+            'estado_civil_id' => $parameters['estado_civil_id'],
+            'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            'credencial_vigilante' => $parameters['credencial_vigilante'],
+            'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+            'imagen_url' => null,
+            'imagen'=>'',
+        ]);
+
+        $this->assertDatabaseMissing('colaboradores', [
+                'id' => $colaboradores[0]->id,
+                'rut' => $colaboradores[0]->rut,
+                'usuario' => $colaboradores[0]->usuario,
+                'primer_nombre' => $colaboradores[0]->primer_nombre,
+                'segundo_nombre' => $colaboradores[0]->segundo_nombre,
+                'apellido_paterno' => $colaboradores[0]->apellido_paterno,
+                'imagen_url' => $colaboradores[0]->imagen_url,
+                'imagen' => $colaboradores[0]->imagen,
+                // 'apellido_materno' => null,
+                // 'sexo' => $parameters['sexo'],
+                // 'nacionalidad' => $parameters['nacionalidad'],
+                // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+                // 'edad' => $parameters['edad'],
+                // 'email' => $parameters['email'],
+                // 'domicilio' => $parameters['domicilio'],
+                // 'licencia_b' => $parameters['licencia_b'],
+                // 'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
+                // 'licencia_d' => $parameters['licencia_d'],
+                // 'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
+                // 'carnet_portuario' => $parameters['carnet_portuario'],
+                // 'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
+                // 'talla_calzado' => $parameters['talla_calzado'],
+                // 'talla_chaleco' => $parameters['talla_chaleco'],
+                // 'talla_polera' => $parameters['talla_polera'],
+                // 'talla_pantalon' => $parameters['talla_pantalon'],
+                // 'fecha_ingreso' => $parameters['fecha_ingreso'],
+                // 'telefono' => $parameters['telefono'],
+                // 'celular' => $parameters['celular'],
+                // 'anexo' => $parameters['anexo'],
+                // 'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
+                // 'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
+                // 'estado' => $colaboradores[0]->estado,
+                // 'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
+                // 'estado_civil_id' => $parameters['estado_civil_id'],
+                // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+                // 'credencial_vigilante' => $parameters['credencial_vigilante'],
+                // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+                ]);
+
+        $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $nuevosTags[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+        $this->assertDatabaseHas('colaborador_tag', [
+                'tag_id' => $nuevosTags[1]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+        $this->assertDatabaseMissing('colaborador_tag', [
+                'tag_id' => $anterioresTags[0]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+
+        $this->assertDatabaseMissing('colaborador_tag', [
+                'tag_id' => $anterioresTags[1]->id,
+                'colaborador_id' => $colaboradores[0]->id,
+            ]);
+    }
     /**
      * A basic test example.
      */
@@ -1216,12 +1546,11 @@ class CrudTest extends TestCase
         // dd($imagePath);
         // $url =  "/api/colaboradores/{}/imagen";
         // $response = $this->withHeaders([
-                // 'Authorization' => 'Bearer ' . $token
-            // ])
+        // 'Authorization' => 'Bearer ' . $token
+        // ])
         $response = $this->json('DELETE', $url);
         // dd($response->decodeResponseJson());
         $response->assertStatus(200);
         // Storage::disk('local')->assertMissing('storage/banners/' . $image->hashName());
     }
-
 }
