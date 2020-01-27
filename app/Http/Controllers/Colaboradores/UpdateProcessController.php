@@ -17,9 +17,9 @@ class UpdateProcessController extends Controller
         if ($request->imagen) {
             $colaborador->imagen_url = $colaborador->saveImage($request);
         } else {
-            if ($request->image_url) {
-                $colaborador->imagen_url = $colaborador->imagen_url;
-            } else {
+            if (!$request->image_url && $colaborador->imagen_url) {
+                // $colaborador->imagen_url = $colaborador->imagen_url;
+                // } else {
                 $ext = pathinfo($colaborador->imagen_url, PATHINFO_EXTENSION);
 
                 $urlPath = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$ext;
