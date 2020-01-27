@@ -111,10 +111,12 @@ class CrudTest extends TestCase
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
 
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+
         $movilidades = factory(Movilidad::class, 3)->create([
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
-            'tipo' => 'MOVILIDAD',
+            'tipo_movilidad_id' => $tipoMovilidad->id,
             'estado' => 0,
         ]);
 

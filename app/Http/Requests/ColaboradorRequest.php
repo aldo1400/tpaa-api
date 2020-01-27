@@ -58,7 +58,6 @@ class ColaboradorRequest extends FormRequest
             'tags' => ['nullable', 'array'],
             'tags.*' => ['nullable', 'distinct', 'exists:tags,id'],
             'imagen' => ['nullable', 'image'],
-            'cargo_id' => ['nullable', 'exists:cargos,id'],
             'fecha_inicio' => ['nullable', 'date', 'date_format:Y-m-d'],
             'credencial_vigilante' => ['nullable', 'string', 'in:SI,NO,N/A'],
             'vencimiento_credencial_vigilante' => ['nullable', 'date', 'date_format:Y-m-d'],

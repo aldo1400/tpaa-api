@@ -144,8 +144,6 @@ class CrudTest extends TestCase
     {
         $colaborador = factory(Colaborador::class)->make();
 
-        $cargo = factory(Cargo::class)->create();
-
         $nivelEducacion = factory(NivelEducacion::class)
                         ->state('activo')
                         ->create();
@@ -195,7 +193,6 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $nivelEducacion->id,
             'tags' => $tags->pluck('id'),
             'imagen' => $image,
-            'cargo_id' => $cargo->id,
             'fecha_inicio' => now()->format('Y-m-d'),
             'credencial_vigilante' => $colaborador->credencial_vigilante,
             'vencimiento_credencial_vigilante' => $colaborador->vencimiento_credencial_vigilante->format('Y-m-d'),
