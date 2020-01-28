@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Helpers\Image;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +21,10 @@ class Cargo extends Model
     protected $fillable = [
         'nombre',
         'estado',
+        'descriptor',
+        'descriptor_url',
+        'organigrama',
+        'organigrama_url'
     ];
 
     /**
@@ -60,6 +66,16 @@ class Cargo extends Model
         return $this->HasMany('App\Movilidad');
     }
 
+    public function setDescriptorAttribute($descriptor)
+    {
+        $this->attributes['descriptor'] = $descriptor ? Image::convertImage($descriptor) : '';
+    }
+
+    public function setOrganigramaAttribute($organigrama)
+    {
+        $this->attributes['organigrama'] = $organigrama ? Image::convertImage($organigrama) : '';
+    }
+
     public function encontrarCargoInferior()
     {
         $cargosHijos=self::where('supervisor_id', $this->id)->get();
@@ -68,5 +84,31 @@ class Cargo extends Model
         }
 
         return false;
+    }
+
+    public function saveFile($file,$tipo)
+    {
+        $filePath = $file->storeAs(
+                    'public/cargos',
+                    $this->id.'_'.$this->nombre.'_'.$tipo.'.'.$file->extension()
+                );
+        return $filePath;
+    }
+
+    public function actualizarArchivo($request,$tipo)
+    {
+        $tipoUrl=$tipo.'_url';
+
+        if ($request->file($tipo)) {
+            $this->$tipoUrl = $this->saveFile($request->file($tipo),$tipo);
+        } else {
+            dd($tipoUrl,$this);
+            if (!$request->$tipoUrl && $this->$tipoUrl) {
+                dd($tipoUrl);
+                Storage::delete($this->$tipoUrl);
+                $this->$tipo = null;
+                $this->$tipoUrl = null;
+            }
+        }
     }
 }

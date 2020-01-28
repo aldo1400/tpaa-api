@@ -29,6 +29,8 @@ class CargoRequest extends FormRequest
             'supervisor_id' => ['nullable', 'exists:cargos,id'],
             'area_id' => ['required', 'exists:areas,id'],
             'nivel_jerarquico_id' => ['required', 'exists:niveles_jerarquico,id'],
+            'descriptor'=>['nullable','file'],
+            'organigrama'=>['nullable','file']
         ];
     }
 }

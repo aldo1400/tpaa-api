@@ -8,6 +8,8 @@ use App\Movilidad;
 use Tests\TestCase;
 use App\Colaborador;
 use App\NivelJerarquico;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class CrudTest extends TestCase
 {
@@ -32,6 +34,8 @@ class CrudTest extends TestCase
                             'nivel_nombre',
                             'estado',
                         ],
+                        'organigrama_url',
+                        'descriptor_url',
                         'estado',
                         'area' => [
                             'id',
@@ -80,6 +84,11 @@ class CrudTest extends TestCase
         $cargo = factory(Cargo::class)->make();
         $nivelJerarquico = factory(NivelJerarquico::class)->create();
         $area = factory(Area::class)->create();
+        
+        Storage::fake('local');
+
+        $descriptor = UploadedFile::fake()->create('descriptor.pdf');
+        $organigrama = UploadedFile::fake()->create('organigrama.pdf');
 
         $url = '/api/cargos';
         $parameters = [
@@ -88,10 +97,20 @@ class CrudTest extends TestCase
             'supervisor_id' => '',
             'nivel_jerarquico_id' => $nivelJerarquico->id,
             'area_id' => $area->id,
+            'descriptor'=>$descriptor,
+            'organigrama'=>$organigrama
         ];
 
         $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
+
+        $cargoCreado=Cargo::latest()->first();
+        $descriptorUrl='public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_descriptor'.'.'.$descriptor->extension();
+        $organigramaUrl='public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_organigrama'.'.'.$organigrama->extension();
+// dd($organigramaUrl,$descriptorUrl);
+        Storage::disk('local')->assertExists($descriptorUrl);
+        Storage::disk('local')->assertExists($organigramaUrl);
 
         $this->assertDatabaseHas('cargos', [
             'id' => Cargo::latest()->first()->id,
@@ -100,7 +119,11 @@ class CrudTest extends TestCase
             'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
             'area_id' => $parameters['area_id'],
             'estado' => $parameters['estado'],
+            'organigrama_url'=>$organigramaUrl,
+            'descriptor_url'=>$descriptorUrl
         ]);
+
+
     }
 
     public function testCrearCargoConSupervisor()
@@ -184,7 +207,7 @@ class CrudTest extends TestCase
                     ->assertSeeText('El cargo tiene hijos.');
     }
 
-    public function testEditarCargo()
+    public function testEditarCargoSinOrganigramaAOrganigrama()
     {
         $cargos = factory(Cargo::class, 1)
                     ->create()
@@ -194,28 +217,176 @@ class CrudTest extends TestCase
 
         $supervisor = factory(Cargo::class)->create();
 
+        Storage::fake('local');
+
+        $organigrama = UploadedFile::fake()->create('organigrama123.pdf');
+        $descriptor = UploadedFile::fake()->create('descriptor123.pdf');
+
         $url = "/api/cargos/{$cargos[0]->id}";
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
             // 'nivel_jerarquico' => Cargo::EJECUCION,
             'supervisor_id' => $supervisor->id,
+            'organigrama'=>$organigrama,
+            'descriptor'=>$descriptor,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-
+        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
+
+        $descriptorUrl='public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
+        $organigramaUrl='public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_organigrama'.'.'.$organigrama->extension();
+        
+        Storage::disk('local')->assertExists($descriptorUrl);
+        Storage::disk('local')->assertExists($organigramaUrl);
 
         $this->assertDatabaseHas('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $parameters['nombre'],
             'supervisor_id' => $parameters['supervisor_id'],
+            'descriptor_url'=>$descriptorUrl,
+            'organigrama_url'=>$organigramaUrl
         ]);
 
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $cargos[0]->nombre,
             'supervisor_id' => $cargos[0]->supervisor_id,
+            'organigrama'=>null,
+            'organigrama_url'=>null,
+            'descriptor'=>null,
+            'descriptor_url'=>null
+        ]);
+    }
+
+    public function testEditarCargoConOrganigramaAOtroOrganigrama()
+    {
+        $supervisor = factory(Cargo::class)->create();
+        $cargos = factory(Cargo::class, 1)
+                    ->create()
+                    ->each(function ($cargo) {
+                        $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
+                    });
+
+        Storage::fake('local');
+
+        $organigramaAnterior = UploadedFile::fake()->create('organigrama123.pdf');
+        $organigrama = UploadedFile::fake()->create('organigrama123.pdf');
+        $descriptorAnterior = UploadedFile::fake()->create('descriptor123.pdf');
+        $descriptor = UploadedFile::fake()->create('descriptor123.pdf');
+
+        $cargos[0]->organigrama=$organigramaAnterior;
+        $cargos[0]->organigrama_url=$cargos[0]->saveFile($organigramaAnterior,'organigrama');
+        $cargos[0]->descriptor=$descriptorAnterior;
+        $cargos[0]->descriptor_url=$cargos[0]->saveFile($descriptorAnterior,'descriptor');;
+
+        $url = "/api/cargos/{$cargos[0]->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            // 'nivel_jerarquico' => Cargo::EJECUCION,
+            'supervisor_id' => $supervisor->id,
+            'organigrama'=>$organigrama,
+            'descriptor'=>$descriptor,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $descriptorUrl='public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
+        $organigramaUrl='public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_organigrama'.'.'.$organigrama->extension();
+        
+        Storage::disk('local')->assertExists($descriptorUrl);
+        Storage::disk('local')->assertExists($organigramaUrl);
+
+        $this->assertDatabaseHas('cargos', [
+            'id' => $cargos[0]->id,
+            'nombre' => $parameters['nombre'],
+            'supervisor_id' => $parameters['supervisor_id'],
+            'descriptor_url'=>$descriptorUrl,
+            'organigrama_url'=>$organigramaUrl
+        ]);
+
+        $this->assertDatabaseMissing('cargos', [
+            'id' => $cargos[0]->id,
+            'nombre' => $cargos[0]->nombre,
+            'supervisor_id' => $cargos[0]->supervisor_id,
+            'organigrama'=>$cargos[0]->organigrama,
+            'organigrama_url'=>$cargos[0]->orgranigrama_url,
+            'descriptor'=>$cargos[0]->descriptor,
+            'descriptor_url'=>$cargos[0]->descriptor_url
+        ]);
+    }
+
+
+    public function testEditarCargoConOrganigramaASinOrganigrama()
+    {
+        $supervisor = factory(Cargo::class)->create();
+        $cargos = factory(Cargo::class)
+                    ->create();
+                    // ->each(function ($cargo) {
+                        // $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
+                    // });
+
+        Storage::fake('local');
+
+        $organigramaAnterior = UploadedFile::fake()->create('organigrama123.pdf');
+        $organigrama = UploadedFile::fake()->create('organigrama123.pdf');
+        $descriptorAnterior = UploadedFile::fake()->create('descriptor123.pdf');
+        $descriptor = UploadedFile::fake()->create('descriptor123.pdf');
+
+        // $cargos[0]->organigrama=$organigramaAnterior;
+        // $cargos[0]->organigrama_url=$cargos[0]->saveFile($organigramaAnterior,'organigrama');
+        // $cargos[0]->descriptor=$descriptorAnterior;
+        // $cargos[0]->descriptor_url=$cargos[0]->saveFile($descriptorAnterior,'descriptor');
+        $cargos->update([
+            'organigrama'=>$organigramaAnterior,
+            'organigrama_url'=>$cargos->saveFile($organigramaAnterior,'organigrama'),
+            'descriptor'=>$descriptorAnterior,
+            'descriptor_url'=>$cargos->saveFile($descriptorAnterior,'descriptor')
+        ]);
+        // dd($cargos[0]->descriptor_url);
+        $organigramaUrl=$cargos[0]->organigrama_url;
+        $descriptorUrl=$cargos[0]->descriptor_url;
+
+        $url = "/api/cargos/{$cargos[0]->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            // 'nivel_jerarquico' => Cargo::EJECUCION,
+            'supervisor_id' => $supervisor->id,
+            'organigrama'=>'',
+            'organigrama_url'=>'',
+            'descriptor'=>'',
+            'descriptor_url'=>'',
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        Storage::disk('local')->assertMissing($descriptorUrl);
+        Storage::disk('local')->assertMissing($organigramaUrl);
+
+        $this->assertDatabaseHas('cargos', [
+            'id' => $cargos[0]->id,
+            'nombre' => $parameters['nombre'],
+            'supervisor_id' => $parameters['supervisor_id'],
+            // 'descriptor_url'=>$descriptorUrl,
+            // 'organigrama_url'=>$organigramaUrl
+        ]);
+
+        $this->assertDatabaseMissing('cargos', [
+            'id' => $cargos[0]->id,
+            'nombre' => $cargos[0]->nombre,
+            'supervisor_id' => $cargos[0]->supervisor_id,
+            // 'organigrama'=>$cargos[0]->organigrama,
+            // 'organigrama_url'=>$cargos[0]->orgranigrama_url,
+            // 'descriptor'=>$cargos[0]->descriptor,
+            // 'descriptor_url'=>$cargos[0]->descriptor_url
         ]);
     }
 

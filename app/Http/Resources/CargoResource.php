@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CargoResource extends JsonResource
@@ -22,6 +23,8 @@ class CargoResource extends JsonResource
             'estado' => $this->estado,
             'nivelJerarquico' => new NivelJerarquicoResource($this->nivelJerarquico),
             'area' => new AreaResource($this->area),
+            'organigrama_url'=> $this->organigrama_url ? url(Storage::url($this->organigrama_url)) : '',
+            'descriptor_url'=> $this->descriptor_url ? url(Storage::url($this->descriptor_url)) : ''
         ];
     }
 }
