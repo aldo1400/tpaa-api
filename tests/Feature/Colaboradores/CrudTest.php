@@ -8,6 +8,7 @@ use App\Colaborador;
 use App\EstadoCivil;
 use App\Departamento;
 use App\NivelEducacion;
+use Freshwork\ChileanBundle\Rut;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -1552,5 +1553,25 @@ class CrudTest extends TestCase
         // dd($response->decodeResponseJson());
         $response->assertStatus(200);
         // Storage::disk('local')->assertMissing('storage/banners/' . $image->hashName());
+    }
+
+    public function testValidarRutSiYaExiste(){
+        $random_number = rand(1000000, 25000000);
+        $rut = new Rut($random_number);
+
+        $colaborador=factory(Colaborador::class)->create([
+            'rut'=>$rut->fix()->format()
+        ]);
+        
+        $url="/api/colaboradores/validacion-rut";
+        
+        $parameters=[
+            'rut'=>$rut->fix()->format()
+        ];
+
+        $response = $this->json('GET', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('El rut es inválido.'));
     }
 }

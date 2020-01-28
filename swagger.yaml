@@ -40,6 +40,8 @@ tags:
   description: Everything about tipo de cargas
 - name: tipos area
   description: Everything about tipo de area
+- name: tipo movilidades
+  description: Everything about tipo de movilidades
 
 schemes:
 - https
@@ -426,6 +428,25 @@ paths:
           description: Unauthenticated
         403:
           description: Forbidden access
+  
+  "/colaboradores/validacion-rut":
+    get:
+      tags:
+      - colaboradores
+      summary: Validar RUT
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: rut
+        type: string
+      responses:
+        200:
+          description: Rut valido
+        409:
+          description: RUT INVALIDO
   
   "/colaboradores/{id}":
     patch:
@@ -1334,6 +1355,27 @@ paths:
         401:
           description: unauthenticated 
   
+  # ---------------------
+  #   Tipo movilidades
+  # ---------------------
+  "/tipo-movilidades":
+    get:
+      tags:
+      - tipo movilidades
+      summary: Obtener todos los tipos de movilidades
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TipoMovilidadResource'
+        401:
+          description: unauthenticated
   
   "/user":
     get:
@@ -1986,23 +2028,19 @@ definitions:
       fecha_inicio:
         type: string
         format: date
-      tipo:
-        type: string
-        enum: [
-          'Nuevo',
-          'Movilidad',
-          'Renuncia',
-          'Desvinculado (a)'
-          ]
       observaciones:
         type: string
       estado:
         type: string
       cargo_id:
         type: integer
+      cargo_nombre:
+        type: string
       colaborador_id:
         type: integer
-        
+      tipoMovilidad:
+        $ref: "#/definitions/TipoMovilidadResource" 
+      
   MovilidadCreateRequest:
     type: object
     properties:
@@ -2012,13 +2050,8 @@ definitions:
       fecha_inicio:
         type: string
         format: date
-      tipo:
-        type: string
-        enum: [
-          'Movilidad',
-          'Renuncia',
-          'Desvinculado (a)'
-          ]
+      tipo_movilidad_id:
+        type: integer
       observaciones:
         type: string
       estado:
@@ -2228,6 +2261,17 @@ definitions:
         type: string
   
   TipoCargaResource:
+    type: object
+    properties:
+      id:
+        type: string
+      tipo:
+        type: string
+      estado:
+        type: string
+        enum: [0,1]
+        
+  TipoMovilidadResource:
     type: object
     properties:
       id:

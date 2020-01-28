@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Colaboradores;
 
+use App\Colaborador;
 use Illuminate\Http\Request;
 use Freshwork\ChileanBundle\Rut;
 use App\Http\Controllers\Controller;
@@ -15,6 +16,10 @@ class ValidateRutController extends Controller
         ]);
 
         if (!(Rut::parse($request->rut)->quiet()->validate())) {
+            return response()->json(['message' => 'El rut es inválido.'], 409);
+        }
+
+        if (Colaborador::where('rut',$request->rut)->get()->count()) {
             return response()->json(['message' => 'El rut es inválido.'], 409);
         }
 
