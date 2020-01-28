@@ -25,7 +25,7 @@ class TagRequest extends FormRequest
     {
         return [
             'nombre' => ['required','string'],
-            'descripcion' => ['required','string'],
+            'descripcion' => ['nullable','string'],
             'permisos' => ['nullable','string'],
             'estado' => ['nullable','boolean'],
             'tipo' => ['required','string'],

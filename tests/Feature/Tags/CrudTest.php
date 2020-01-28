@@ -137,13 +137,13 @@ class CrudTest extends TestCase
 
         $response = $this->json('GET', '/api/tags');
         $response->assertStatus(200)
-            ->assertJsonCount(4, 'data')
+            ->assertJsonCount(7, 'data')
             ->assertJson([
                 'data' => [
-                    '0' => ['id' => $tags[1]->id],
-                    '1' => ['id' => $tags[2]->id],
-                    '2' => ['id' => $tags[3]->id],
-                    '3' => ['id' => $tags[4]->id],
+                    '3' => ['id' => $tags[1]->id],
+                    '4' => ['id' => $tags[2]->id],
+                    '5' => ['id' => $tags[3]->id],
+                    '6' => ['id' => $tags[4]->id],
                 ],
             ]);
     }
