@@ -102,9 +102,7 @@ class Cargo extends Model
         if ($request->file($tipo)) {
             $this->$tipoUrl = $this->saveFile($request->file($tipo),$tipo);
         } else {
-            dd($tipoUrl,$this);
             if (!$request->$tipoUrl && $this->$tipoUrl) {
-                dd($tipoUrl);
                 Storage::delete($this->$tipoUrl);
                 $this->$tipo = null;
                 $this->$tipoUrl = null;

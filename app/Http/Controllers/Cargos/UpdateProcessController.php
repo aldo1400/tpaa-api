@@ -13,7 +13,11 @@ class UpdateProcessController extends Controller
     {
         $this->validate($request,[
             'nombre'=>'required|string',
-            'supervisor_id'=>'required|exists:cargos,id'
+            'supervisor_id'=>'required|exists:cargos,id',
+            'descriptor'=>'nullable|file',
+            'descriptor_url'=>'nullable|string',
+            'organigrama'=>'nullable|file',
+            'organigrama_url'=>'nullable|string'
         ]);
 
         $cargo = Cargo::findOrFail($id);
@@ -26,26 +30,10 @@ class UpdateProcessController extends Controller
             }
           }
 
-          
-        //   if ($request->imagen) {
-        //     $colaborador->imagen_url = $colaborador->saveImage($request);
-        // } else {
-        //     if (!$request->imagen_url && $colaborador->imagen_url) {
-        //         $ext = pathinfo($colaborador->imagen_url, PATHINFO_EXTENSION);
-
-        //         $urlPath = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$ext;
-
-        //         Storage::delete($urlPath);
-        //         $colaborador->imagen = null;
-        //         $colaborador->imagen_url = null;
-        //     }
-        // }
-
         $cargo->fill([
             'nombre'=>$request->nombre
         ]);
 
-        dd($cargo->descriptor_url);
         $cargo->actualizarArchivo($request,'descriptor');
         $cargo->actualizarArchivo($request,'organigrama');
 
