@@ -1602,7 +1602,11 @@ definitions:
         $ref: "#/definitions/NivelJerarquicoResource"
       area:
         $ref: "#/definitions/AreaResource"
-  
+      descriptor_url:
+        type: string
+      organigrama_url:
+        type: string
+      
   CargoCreateRequest:
     type: object
     properties:
@@ -1617,6 +1621,10 @@ definitions:
       estado:
         type: string
         enum: [0,1]
+      descriptor:
+        type: string
+      organigrama:
+        type: string
   
   CargoUpdateRequest:
     type: object
@@ -1625,7 +1633,14 @@ definitions:
         type: string
       supervisor_id:
         type: integer
-  
+      organigrama_url:
+        type: string
+      organigrama:
+        type: string
+      descriptor_url:
+        type: string
+      descriptor:
+        type: string
   
   ColaboradorCreateRequest:
     type: object

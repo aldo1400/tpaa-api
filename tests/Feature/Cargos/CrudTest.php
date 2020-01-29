@@ -63,7 +63,7 @@ class CrudTest extends TestCase
                     'data' => [
                             'id' => $cargos[1]->id,
                             'nombre' => $cargos[1]->nombre,
-                            'supervisor_id' => null,
+                            'supervisor_id' =>'',
                             'estado' => $cargos[1]->estado,
                             'nivelJerarquico' => $cargos[1]->nivelJerarquico->only([
                                 'id',
@@ -75,6 +75,8 @@ class CrudTest extends TestCase
                                 'nombre',
                                 'estado',
                             ]),
+                            'organigrama_url'=>'',
+                            'descriptor_url'=>''
                     ],
                 ]);
     }
@@ -354,7 +356,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
-            'supervisor_id' => $supervisor->id,
+            'supervisor_id' => '',
             'organigrama'=>'',
             'organigrama_url'=>'',
             'descriptor'=>'',
@@ -362,7 +364,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         Storage::disk('local')->assertMissing($descriptorUrl);
@@ -371,7 +372,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
-            'supervisor_id' => $parameters['supervisor_id'],
+            'supervisor_id' => null,
             'descriptor_url'=>null,
             'descriptor'=>'',
             'organigrama_url'=>null,

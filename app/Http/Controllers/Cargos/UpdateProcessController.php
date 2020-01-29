@@ -13,7 +13,7 @@ class UpdateProcessController extends Controller
     {
         $this->validate($request,[
             'nombre'=>'required|string',
-            'supervisor_id'=>'required|exists:cargos,id',
+            'supervisor_id'=>'nullable|exists:cargos,id',
             'descriptor'=>'nullable|file',
             'descriptor_url'=>'nullable|string',
             'organigrama'=>'nullable|file',
