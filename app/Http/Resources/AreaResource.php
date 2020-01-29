@@ -21,6 +21,8 @@ class AreaResource extends JsonResource
             'padre_id' => $this->padre_id,
             'estado' => $this->estado,
             'tipoArea' => new TipoAreaResource($this->tipoArea),
+            'hijos' => $this->encontrarAreaInferior() ? true : false,
+            'cargos' => $this->cargos()->count() ? true : false,
         ];
     }
 }
