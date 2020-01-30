@@ -19,12 +19,13 @@ class CargoResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
-            'supervisor_id' => $this->supervisor_id ? $this->supervisor_id :'',
+            'supervisor_id' => $this->supervisor_id ? $this->supervisor_id : '',
             'estado' => $this->estado,
             'nivelJerarquico' => new NivelJerarquicoResource($this->nivelJerarquico),
             'area' => new AreaResource($this->area),
-            'organigrama_url'=> $this->organigrama_url ? url(Storage::url($this->organigrama_url)) : '',
-            'descriptor_url'=> $this->descriptor_url ? url(Storage::url($this->descriptor_url)) : ''
+            'organigrama_url' => $this->organigrama_url ? url(Storage::url($this->organigrama_url)) : '',
+            'descriptor_url' => $this->descriptor_url ? url(Storage::url($this->descriptor_url)) : '',
+            'hijos' => $this->encontrarCargoInferior() ? true : false,
         ];
     }
 }

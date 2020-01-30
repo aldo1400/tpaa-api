@@ -11,8 +11,8 @@ class GetRelatedController extends Controller
     public function __invoke($id)
     {
         $cargo = Cargo::findOrFail($id);
-        $areas = $cargo->area->obtenerAreasRelacionadas();
 
+        $areas = $cargo->area->obtenerAreasRelacionadas();
         $areas->push($cargo->area);
 
         return AreaResource::collection($areas);
