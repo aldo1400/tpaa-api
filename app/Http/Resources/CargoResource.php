@@ -26,6 +26,7 @@ class CargoResource extends JsonResource
             'organigrama_url' => $this->organigrama_url ? url(Storage::url($this->organigrama_url)) : '',
             'descriptor_url' => $this->descriptor_url ? url(Storage::url($this->descriptor_url)) : '',
             'hijos' => $this->encontrarCargoInferior() ? true : false,
+            'movilidades'=> $this->movilidades()->where('estado', 1)->count() ? true : false
         ];
     }
 }
