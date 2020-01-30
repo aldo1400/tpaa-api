@@ -63,7 +63,7 @@ class CrudTest extends TestCase
                     'data' => [
                             'id' => $cargos[1]->id,
                             'nombre' => $cargos[1]->nombre,
-                            'supervisor_id' =>'',
+                            'supervisor_id' => '',
                             'estado' => $cargos[1]->estado,
                             'nivelJerarquico' => $cargos[1]->nivelJerarquico->only([
                                 'id',
@@ -75,8 +75,8 @@ class CrudTest extends TestCase
                                 'nombre',
                                 'estado',
                             ]),
-                            'organigrama_url'=>'',
-                            'descriptor_url'=>''
+                            'organigrama_url' => '',
+                            'descriptor_url' => '',
                     ],
                 ]);
     }
@@ -86,7 +86,7 @@ class CrudTest extends TestCase
         $cargo = factory(Cargo::class)->make();
         $nivelJerarquico = factory(NivelJerarquico::class)->create();
         $area = factory(Area::class)->create();
-        
+
         Storage::fake('local');
 
         $descriptor = UploadedFile::fake()->create('descriptor.pdf');
@@ -99,18 +99,18 @@ class CrudTest extends TestCase
             'supervisor_id' => '',
             'nivel_jerarquico_id' => $nivelJerarquico->id,
             'area_id' => $area->id,
-            'descriptor'=>$descriptor,
-            'organigrama'=>$organigrama
+            'descriptor' => $descriptor,
+            'organigrama' => $organigrama,
         ];
 
         $response = $this->json('POST', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
-        $cargoCreado=Cargo::latest()->first();
-        $descriptorUrl='public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_descriptor'.'.'.$descriptor->extension();
-        $organigramaUrl='public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_organigrama'.'.'.$organigrama->extension();
-// dd($organigramaUrl,$descriptorUrl);
+        $cargoCreado = Cargo::latest()->first();
+        $descriptorUrl = 'public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_descriptor'.'.'.$descriptor->extension();
+        $organigramaUrl = 'public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_organigrama'.'.'.$organigrama->extension();
+        // dd($organigramaUrl,$descriptorUrl);
         Storage::disk('local')->assertExists($descriptorUrl);
         Storage::disk('local')->assertExists($organigramaUrl);
 
@@ -121,11 +121,9 @@ class CrudTest extends TestCase
             'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
             'area_id' => $parameters['area_id'],
             'estado' => $parameters['estado'],
-            'organigrama_url'=>$organigramaUrl,
-            'descriptor_url'=>$descriptorUrl
+            'organigrama_url' => $organigramaUrl,
+            'descriptor_url' => $descriptorUrl,
         ]);
-
-
     }
 
     public function testCrearCargoConSupervisor()
@@ -228,19 +226,21 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
-            // 'nivel_jerarquico' => Cargo::EJECUCION,
             'supervisor_id' => $supervisor->id,
-            'organigrama'=>$organigrama,
-            'descriptor'=>$descriptor,
+            'organigrama' => $organigrama,
+            'descriptor' => $descriptor,
+            'area_id' => $cargos[0]->area_id,
+            'nivel_jerarquico_id' => $cargos[0]->nivel_jerarquico_id,
+            'estado' => 1,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
-        $descriptorUrl='public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
-        $organigramaUrl='public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_organigrama'.'.'.$organigrama->extension();
-        
+        $descriptorUrl = 'public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
+        $organigramaUrl = 'public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_organigrama'.'.'.$organigrama->extension();
+
         Storage::disk('local')->assertExists($descriptorUrl);
         Storage::disk('local')->assertExists($organigramaUrl);
 
@@ -248,18 +248,24 @@ class CrudTest extends TestCase
             'id' => $cargos[0]->id,
             'nombre' => $parameters['nombre'],
             'supervisor_id' => $parameters['supervisor_id'],
-            'descriptor_url'=>$descriptorUrl,
-            'organigrama_url'=>$organigramaUrl
+            'descriptor_url' => $descriptorUrl,
+            'organigrama_url' => $organigramaUrl,
+            'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
+            'area_id' => $parameters['area_id'],
+            'estado' => $parameters['estado'],
         ]);
 
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $cargos[0]->nombre,
             'supervisor_id' => $cargos[0]->supervisor_id,
-            'organigrama'=>null,
-            'organigrama_url'=>null,
-            'descriptor'=>null,
-            'descriptor_url'=>null
+            'organigrama' => null,
+            'organigrama_url' => null,
+            'descriptor' => null,
+            'descriptor_url' => null,
+            'nivel_jerarquico_id' => $cargos[0]->nivel_jerarquico_id,
+            'area_id' => $cargos[0]->area_id,
+            'estado' => $cargos[0]->estado,
         ]);
     }
 
@@ -267,10 +273,10 @@ class CrudTest extends TestCase
     {
         $supervisor = factory(Cargo::class)->create();
         $cargoPrincipal = factory(Cargo::class)->create();
-       
+
         $cargo = factory(Cargo::class)
                     ->make([
-                        'supervisor_id'=>$cargoPrincipal->id
+                        'supervisor_id' => $cargoPrincipal->id,
                     ]);
 
         Storage::fake('local');
@@ -280,29 +286,31 @@ class CrudTest extends TestCase
         $descriptorAnterior = UploadedFile::fake()->create('descriptor123.pdf');
         $descriptor = UploadedFile::fake()->create('descriptor123.pdf');
 
-        $cargo->organigrama=$organigramaAnterior;
-        $cargo->organigrama_url=$cargo->saveFile($organigramaAnterior,'organigrama');
-        $cargo->descriptor=$descriptorAnterior;
-        $cargo->descriptor_url=$cargo->saveFile($descriptorAnterior,'descriptor');;
+        $cargo->organigrama = $organigramaAnterior;
+        $cargo->organigrama_url = $cargo->saveFile($organigramaAnterior, 'organigrama');
+        $cargo->descriptor = $descriptorAnterior;
+        $cargo->descriptor_url = $cargo->saveFile($descriptorAnterior, 'descriptor');
         $cargo->save();
 
         $url = "/api/cargos/{$cargo->id}";
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
-            // 'nivel_jerarquico' => Cargo::EJECUCION,
             'supervisor_id' => $supervisor->id,
-            'organigrama'=>$organigrama,
-            'descriptor'=>$descriptor,
+            'organigrama' => $organigrama,
+            'descriptor' => $descriptor,
+            'area_id' => $cargo->area_id,
+            'nivel_jerarquico_id' => $cargo->nivel_jerarquico_id,
+            'estado' => 1,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
-        $descriptorUrl='public/cargos/'.$cargo->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
-        $organigramaUrl='public/cargos/'.$cargo->id.'_'.$parameters['nombre'].'_organigrama'.'.'.$organigrama->extension();
-        
+        $descriptorUrl = 'public/cargos/'.$cargo->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
+        $organigramaUrl = 'public/cargos/'.$cargo->id.'_'.$parameters['nombre'].'_organigrama'.'.'.$organigrama->extension();
+
         Storage::disk('local')->assertExists($descriptorUrl);
         Storage::disk('local')->assertExists($organigramaUrl);
 
@@ -310,21 +318,26 @@ class CrudTest extends TestCase
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
             'supervisor_id' => $parameters['supervisor_id'],
-            'descriptor_url'=>$descriptorUrl,
-            'organigrama_url'=>$organigramaUrl
+            'descriptor_url' => $descriptorUrl,
+            'organigrama_url' => $organigramaUrl,
+            'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
+            'area_id' => $parameters['area_id'],
+            'estado' => $parameters['estado'],
         ]);
 
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargo->id,
             'nombre' => $cargo->nombre,
             'supervisor_id' => $cargo->supervisor_id,
-            'organigrama'=>$cargo->organigrama,
-            'organigrama_url'=>$cargo->orgranigrama_url,
-            'descriptor'=>$cargo->descriptor,
-            'descriptor_url'=>$cargo->descriptor_url
+            'organigrama' => $cargo->organigrama,
+            'organigrama_url' => $cargo->orgranigrama_url,
+            'descriptor' => $cargo->descriptor,
+            'descriptor_url' => $cargo->descriptor_url,
+            'nivel_jerarquico_id' => $cargo->nivel_jerarquico_id,
+            'area_id' => $cargo->area_id,
+            'estado' => $cargo->estado,
         ]);
     }
-
 
     public function testEditarCargoConOrganigramaASinOrganigrama()
     {
@@ -332,7 +345,7 @@ class CrudTest extends TestCase
         $cargoPrincipal = factory(Cargo::class)->create();
         $cargo = factory(Cargo::class)
                     ->create([
-                        'supervisor_id'=>$cargoPrincipal->id
+                        'supervisor_id' => null,
                     ]);
 
         Storage::fake('local');
@@ -341,26 +354,30 @@ class CrudTest extends TestCase
         $organigrama = UploadedFile::fake()->create('organigrama123.pdf');
         $descriptorAnterior = UploadedFile::fake()->create('descriptor123.pdf');
         $descriptor = UploadedFile::fake()->create('descriptor123.pdf');
-       
+
         $cargo->update([
-            'organigrama'=>$organigramaAnterior,
-            'organigrama_url'=>$cargo->saveFile($organigramaAnterior,'organigrama'),
-            'descriptor'=>$descriptorAnterior,
-            'descriptor_url'=>$cargo->saveFile($descriptorAnterior,'descriptor')
+            'organigrama' => $organigramaAnterior,
+            'organigrama_url' => $cargo->saveFile($organigramaAnterior, 'organigrama'),
+            'descriptor' => $descriptorAnterior,
+            'descriptor_url' => $cargo->saveFile($descriptorAnterior, 'descriptor'),
         ]);
-        
-        $organigramaUrl=$cargo->organigrama_url;
-        $descriptorUrl=$cargo->descriptor_url;
+
+        $organigramaUrl = $cargo->organigrama_url;
+        $descriptorUrl = $cargo->descriptor_url;
 
         $url = "/api/cargos/{$cargo->id}";
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
             'supervisor_id' => '',
-            'organigrama'=>'',
-            'organigrama_url'=>'',
-            'descriptor'=>'',
-            'descriptor_url'=>'',
+            'organigrama' => '',
+            'organigrama_url' => '',
+            'descriptor' => '',
+            'descriptor_url' => '',
+            'supervisor_id' => $cargoPrincipal->id,
+            'area_id' => $cargo->area_id,
+            'nivel_jerarquico_id' => $cargo->nivel_jerarquico_id,
+            'estado' => 1,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -372,25 +389,27 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
-            'supervisor_id' => null,
-            'descriptor_url'=>null,
-            'descriptor'=>'',
-            'organigrama_url'=>null,
-            'organigrama'=>''
+            'descriptor_url' => null,
+            'descriptor' => '',
+            'organigrama_url' => null,
+            'organigrama' => '',
+            'supervisor_id' => $parameters['supervisor_id'],
+            'area_id' => $parameters['area_id'],
+            'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
         ]);
 
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargo->id,
             'nombre' => $cargo->nombre,
-            'supervisor_id' => $cargo->supervisor_id,
-            'organigrama'=>$cargo->organigrama,
-            'organigrama_url'=>$cargo->orgranigrama_url,
-            'descriptor'=>$cargo->descriptor,
-            'descriptor_url'=>$cargo->descriptor_url
+            'organigrama' => $cargo->organigrama,
+            'organigrama_url' => $cargo->orgranigrama_url,
+            'descriptor' => $cargo->descriptor,
+            'descriptor_url' => $cargo->descriptor_url,
+            'supervisor_id' => null,
         ]);
     }
 
-    public function testNoSePuedeDesactivarCargoSiTieneCargosHijos()
+    public function testNoSePuedeCambiarDeSupervisorSiElCargoTieneHijos()
     {
         $cargos = factory(Cargo::class, 1)
                     ->create()
@@ -411,6 +430,104 @@ class CrudTest extends TestCase
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
             'supervisor_id' => $cargoSupervisor->id,
+            'area_id' => $cargos[0]->area_id,
+            'nivel_jerarquico_id' => $cargos[0]->nivel_jerarquico_id,
+            'estado' => 1,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('El cargo tiene hijos.'));
+    }
+
+    public function testSePuedeCambiarElAreaDeUnCargoConHijos()
+    {
+        
+        $cargoSupervisor = factory(Cargo::class)
+                            ->create();
+
+        $cargo = factory(Cargo::class)
+                    ->create([
+                        'supervisor_id'=>$cargoSupervisor->id
+                    ]);
+
+        $cargoHijo = factory(Cargo::class)->create([
+            'supervisor_id' => $cargo->id,
+            'estado' => 1,
+        ]);
+
+        $area=factory(Area::class)
+                ->create();
+        
+        $nivelJerarquico=factory(NivelJerarquico::class)
+                        ->create();
+
+        $url = "/api/cargos/{$cargo->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            'supervisor_id' => $cargo->supervisor_id,
+            'area_id' => $area->id,
+            'nivel_jerarquico_id' => $nivelJerarquico->id,
+            'estado' => 1,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+    
+        $this->assertDatabaseHas('cargos', [
+            'id' => $cargo->id,
+            'nombre' => $parameters['nombre'],
+            'supervisor_id' => $parameters['supervisor_id'],
+            // 'descriptor_url' => null,
+            // 'descriptor' => '',
+            // 'organigrama_url' => null,
+            // 'organigrama' => '',
+            'area_id' => $parameters['area_id'],
+            'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
+        ]);
+
+        $this->assertDatabaseMissing('cargos', [
+            'id' => $cargo->id,
+            'nombre' => $cargo->nombre,
+            'supervisor_id' => $cargo->supervisor_id,
+            'organigrama' => $cargo->organigrama,
+            'organigrama_url' => $cargo->orgranigrama_url,
+            'descriptor' => $cargo->descriptor,
+            'descriptor_url' => $cargo->descriptor_url,
+            'area_id'=>$cargo->area_id,
+            'nivel_jerarquico_id'=>$cargo->nivel_jerarquico_id
+        ]);
+    }
+
+    public function testNoSePuedeDesactivarCargoSiTieneCargosHijos()
+    {
+        $cargos = factory(Cargo::class,1)
+                    ->create()
+                    ->each(function ($cargo) {
+                        $cargo->supervisor()->associate(factory(Cargo::class)->create());
+                        $cargo->save();
+                    });
+
+        
+        $cargoSupervisor = factory(Cargo::class)
+                ->create();
+
+        $cargoHijo = factory(Cargo::class)->create([
+            'supervisor_id' => $cargos[0]->id,
+            'estado' => 1,
+        ]);
+
+        $url = "/api/cargos/{$cargos[0]->id}";
+
+        $parameters = [
+            'nombre' => 'Administrador de recursos humanos',
+            'supervisor_id' => $cargoSupervisor->id,
+            'estado'=>0,
+            'area_id'=>$cargos[0]->area_id,
+            'nivel_jerarquico_id'=>$cargos[0]->nivel_jerarquico_id
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -425,7 +542,8 @@ class CrudTest extends TestCase
         $cargos = factory(Cargo::class, 1)
                     ->create()
                     ->each(function ($cargo) {
-                        $cargo->supervisor()->associate(factory(Cargo::class, 1)->make());
+                        $cargo->supervisor()->associate(factory(Cargo::class)->create());
+                        $cargo->save();
                     });
 
         $cargoSupervisor = factory(Cargo::class)
@@ -443,6 +561,9 @@ class CrudTest extends TestCase
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
             'supervisor_id' => $cargoSupervisor->id,
+            'estado'=>0,
+            'area_id'=>$cargos[0]->area_id,
+            'nivel_jerarquico_id'=>$cargos[0]->nivel_jerarquico_id
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -473,9 +594,8 @@ class CrudTest extends TestCase
         $url = "/api/cargos/{$cargo->id}/relacionados";
 
         $response = $this->json('GET', $url);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
-            ->assertJsonCount(2, 'data')
+            ->assertJsonCount(3, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
@@ -503,6 +623,6 @@ class CrudTest extends TestCase
 
         $response = $this->json('GET', $url);
         $response->assertStatus(200)
-            ->assertJsonCount(0, 'data');
+            ->assertJsonCount(1, 'data');
     }
 }
