@@ -6,7 +6,6 @@ use App\Area;
 use App\Cargo;
 use App\TipoArea;
 use Tests\TestCase;
-use App\Departamento;
 
 class CrudTest extends TestCase
 {
@@ -69,15 +68,15 @@ class CrudTest extends TestCase
     public function testCrearAreaSinPadre()
     {
         $area = factory(Area::class)->make();
-        
-        $tipoArea=TipoArea::first();
+
+        $tipoArea = TipoArea::first();
         $url = '/api/areas';
 
         $parameters = [
             'nombre' => $area->nombre,
             'padre_id' => '',
-            'tipo_area_id'=>$tipoArea->id,
-            'estado'=>1
+            'tipo_area_id' => $tipoArea->id,
+            'estado' => 1,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -88,7 +87,7 @@ class CrudTest extends TestCase
             'nombre' => $parameters['nombre'],
             'estado' => 1,
             'padre_id' => null,
-            'tipo_area_id'=>$parameters['tipo_area_id']
+            'tipo_area_id' => $parameters['tipo_area_id'],
         ]);
     }
 
@@ -97,10 +96,10 @@ class CrudTest extends TestCase
         $area = factory(Area::class)->make();
         $url = '/api/areas';
         $parameters = [
-            'estado'=>'',
+            'estado' => '',
             'nombre' => '',
             'padre_id' => '',
-            'tipo_area_id'=>''
+            'tipo_area_id' => '',
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -109,13 +108,13 @@ class CrudTest extends TestCase
             ->assertJsonValidationErrors([
                 'nombre',
                 'estado',
-                'tipo_area_id'
+                'tipo_area_id',
             ]);
 
         $parameters = [
                 'nombre' => $area->nombre,
                 'padre_id' => '99999',
-                'tipo_area_id'=>'99999'
+                'tipo_area_id' => '99999',
             ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -124,7 +123,7 @@ class CrudTest extends TestCase
                 ->assertJsonValidationErrors([
                     'padre_id',
                     'tipo_area_id',
-                    'estado'
+                    'estado',
                 ]);
     }
 
@@ -132,15 +131,15 @@ class CrudTest extends TestCase
     {
         $areaPadre = factory(Area::class)->create();
         $area = factory(Area::class)->make();
-        $tipoArea=TipoArea::first();
+        $tipoArea = TipoArea::first();
         $url = '/api/areas';
 
         $parameters = [
             'tipo' => $area->tipo,
             'nombre' => $area->nombre,
-            'estado'=>$area->estado,
+            'estado' => $area->estado,
             'padre_id' => $areaPadre->id,
-            'tipo_area_id'=>$tipoArea->id
+            'tipo_area_id' => $tipoArea->id,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -151,7 +150,7 @@ class CrudTest extends TestCase
             'nombre' => $parameters['nombre'],
             'estado' => $parameters['estado'],
             'padre_id' => $parameters['padre_id'],
-            'tipo_area_id'=>$parameters['tipo_area_id']
+            'tipo_area_id' => $parameters['tipo_area_id'],
         ]);
     }
 
@@ -197,7 +196,7 @@ class CrudTest extends TestCase
         $area = factory(Area::class)
                         ->create([
                             'padre_id' => $areaPadre->id,
-                            'estado'=>1
+                            'estado' => 1,
                         ]);
 
         $url = '/api/areas/'.$areaPadre->id;
@@ -210,19 +209,22 @@ class CrudTest extends TestCase
 
     public function testEditarAreaConEstadoActivo()
     {
-        $areas=factory(Area::class,2)->create();
+        $areas = factory(Area::class, 2)->create();
         $area = factory(Area::class)
                         ->create([
-                            'padre_id'=>$areas[0]->id
+                            'padre_id' => $areas[0]->id,
+                            'tipo_area_id' => 4,
                         ]);
 
+        $tipoArea = TipoArea::where('tipo_nombre', 'Subgerencia')->first();
 
         $url = "/api/areas/{$area->id}";
 
         $parameters = [
             'nombre' => 'Area de administración de recursos humanos',
-            'padre_id'=>$areas[1]->id,
-            'estado'=>1
+            'padre_id' => $areas[1]->id,
+            'estado' => 1,
+            'tipo_area_id' => $tipoArea->id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -231,96 +233,189 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('areas', [
             'id' => $area->id,
             'nombre' => $parameters['nombre'],
-            'padre_id'=>$parameters['padre_id'],
-            'estado'=>$parameters['estado']
+            'padre_id' => $parameters['padre_id'],
+            'estado' => $parameters['estado'],
+            'tipo_area_id' => $parameters['tipo_area_id'],
         ]);
 
         $this->assertDatabaseMissing('areas', [
             'id' => $area->id,
             'nombre' => $area->nombre,
-            'padre_id'=>$area->padre_id,
-            'estado'=>$area->estado
+            'padre_id' => $area->padre_id,
+            'estado' => $area->estado,
+            'tipo_area_id' => $area->tipo_area_id,
         ]);
     }
 
-    public function testNoSePuedeDesactivarUnAreaSiEsPadreDeOtraArea()
+    public function testEditarAreaSinHijosAEstadoInactivo()
     {
-        $areas=factory(Area::class,2)->create();
-
+        $areas = factory(Area::class, 2)->create();
         $area = factory(Area::class)
                         ->create([
-                            'padre_id'=>$areas[0]->id
+                            'padre_id' => $areas[0]->id,
+                            'tipo_area_id' => 4,
                         ]);
 
-        $areaHijo = factory(Area::class)
-                        ->create([
-                            'padre_id'=>$area->id,
-                            'estado'=>1
-                        ]);
+        $tipoArea = TipoArea::where('tipo_nombre', 'Subgerencia')->first();
 
         $url = "/api/areas/{$area->id}";
 
         $parameters = [
             'nombre' => 'Area de administración de recursos humanos',
-            'padre_id'=>$areas[1]->id,
-            'estado'=>0
+            'padre_id' => $areas[1]->id,
+            'estado' => 0,
+            'tipo_area_id' => $tipoArea->id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('areas', [
+            'id' => $area->id,
+            'nombre' => $parameters['nombre'],
+            'padre_id' => $parameters['padre_id'],
+            'estado' => $parameters['estado'],
+            'tipo_area_id' => $parameters['tipo_area_id'],
+        ]);
+
+        $this->assertDatabaseMissing('areas', [
+            'id' => $area->id,
+            'nombre' => $area->nombre,
+            'padre_id' => $area->padre_id,
+            'estado' => $area->estado,
+            'tipo_area_id' => $area->tipo_area_id,
+        ]);
+    }
+
+    public function testEditarAreaConHijos()
+    {
+        $areas = factory(Area::class, 2)->create();
+        $area = factory(Area::class)
+                        ->create([
+                            'padre_id' => $areas[0]->id,
+                            'tipo_area_id' => 4,
+                        ]);
+
+        $areaHijo = factory(Area::class)
+                        ->create([
+                            'padre_id' => $area->id,
+                            'estado' => 1,
+                            'tipo_area_id' => 5,
+                        ]);
+
+        $tipoArea = TipoArea::where('tipo_nombre', 'Subgerencia')->first();
+
+        $url = "/api/areas/{$area->id}";
+
+        $parameters = [
+            'nombre' => 'Area de administración de recursos humanos',
+            'padre_id' => $areas[1]->id,
+            'estado' => 1,
+            'tipo_area_id' => $area->tipo_area_id,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('areas', [
+            'id' => $area->id,
+            'nombre' => $parameters['nombre'],
+            'padre_id' => $parameters['padre_id'],
+            'estado' => $parameters['estado'],
+            'tipo_area_id' => $parameters['tipo_area_id'],
+        ]);
+
+        $this->assertDatabaseMissing('areas', [
+            'id' => $area->id,
+            'nombre' => $area->nombre,
+            'padre_id' => $area->padre_id,
+            'estado' => $area->estado,
+            'tipo_area_id' => $area->tipo_area_id,
+        ]);
+    }
+
+    public function testNoSePuedeDesactivarUnAreaSiEsPadreDeOtraArea()
+    {
+        $areas = factory(Area::class, 2)->create();
+
+        $area = factory(Area::class)
+                        ->create([
+                            'padre_id' => $areas[0]->id,
+                            'tipo_area_id' => 4,
+                        ]);
+
+        $areaHijo = factory(Area::class)
+                        ->create([
+                            'padre_id' => $area->id,
+                            'estado' => 1,
+                            'tipo_area_id' => 5,
+                        ]);
+
+        $tipoArea = TipoArea::where('tipo_nombre', 'Subgerencia')->first();
+
+        $url = "/api/areas/{$area->id}";
+
+        $parameters = [
+            'nombre' => 'Area de administración de recursos humanos',
+            'padre_id' => $areas[1]->id,
+            'estado' => 0,
+            'tipo_area_id' => $tipoArea->id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El area tiene hijos.'));
-        
     }
 
     public function testNoSePuedeDesactivarUnAreaSiEstaAsociadaAUnCargo()
     {
-        $areas=factory(Area::class,2)->create();
+        $areas = factory(Area::class, 2)->create();
 
         $area = factory(Area::class)
                         ->create([
-                            'padre_id'=>$areas[0]->id
+                            'padre_id' => $areas[0]->id,
                         ]);
 
         factory(Cargo::class)->create([
-            'area_id'=>$area->id
+            'area_id' => $area->id,
         ]);
 
         $url = "/api/areas/{$area->id}";
 
         $parameters = [
             'nombre' => 'Area de administración de recursos humanos',
-            'padre_id'=>$areas[1]->id,
-            'estado'=>0
+            'padre_id' => $areas[1]->id,
+            'estado' => 0,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El area esta asociada a cargos.'));
-        
     }
 
-    public function testObtenerTodosLosPadresDeArea(){
-        $areaAbuelo=factory(Area::class)
+    public function testObtenerTodosLosPadresDeArea()
+    {
+        $areaAbuelo = factory(Area::class)
                     ->create();
 
-        $areaPadre=factory(Area::class)
+        $areaPadre = factory(Area::class)
                     ->create([
-                        'padre_id'=>$areaAbuelo->id
+                        'padre_id' => $areaAbuelo->id,
                     ]);
-
 
         $area = factory(Area::class)
                         ->create([
-                            'padre_id'=>$areaPadre->id
+                            'padre_id' => $areaPadre->id,
                         ]);
-
 
         $url = "/api/areas/{$area->id}/relacionados";
 
         $response = $this->json('GET', $url);
-// dd($response->decodeResponseJson());
+        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data')
             ->assertJsonStructure([
@@ -335,8 +430,8 @@ class CrudTest extends TestCase
             ]);
     }
 
-    public function testObtenerTodosLosPadresDeUnAreaEnCasoNoHayaPadres(){
-        
+    public function testObtenerTodosLosPadresDeUnAreaEnCasoNoHayaPadres()
+    {
         $area = factory(Area::class)
                         ->create();
 
@@ -345,6 +440,5 @@ class CrudTest extends TestCase
         $response = $this->json('GET', $url);
         $response->assertStatus(200)
             ->assertJsonCount(0, 'data');
-           
     }
 }
