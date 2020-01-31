@@ -19,7 +19,6 @@ class UpdateProcessController extends Controller
             'estado' => $request->estado,
         ]);
 
-        $cargaFamiliar->colaborador()->associate($request->colaborador_id);
         $cargaFamiliar->tipoCarga()->associate($request->tipo_carga_id);
         $cargaFamiliar->save();
 

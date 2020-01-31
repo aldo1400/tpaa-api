@@ -119,7 +119,7 @@ class CrudTest extends TestCase
             'fecha_nacimiento' => '1997-05-02',
             'estado' => 1,
             'tipo_carga_id' => $tipoCarga->id,
-            'colaborador_id' => $colaborador->id
+            // 'colaborador_id' => $colaborador->id
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
