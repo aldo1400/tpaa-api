@@ -10,6 +10,44 @@ use App\TipoMovilidad;
 
 class CrudTest extends TestCase
 {
+    public function testObtenerUnaArea()
+    {
+        $cargo=factory(Cargo::class)->create();
+
+        $colaborador=factory(Colaborador::class)->create();
+        
+        $tipoMovilidad=TipoMovilidad::first();
+
+        $movilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => $tipoMovilidad,
+            'estado'=>1
+        ]);
+
+        $url = '/api/movilidades/'.$movilidad->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $movilidad->id,
+                        'fecha_inicio' => $movilidad->fecha_inicio->format('Y-m-d'),
+                        'fecha_termino' =>'',
+                        'estado' => $movilidad->estado,
+                        'tipoMovilidad' => $movilidad->tipoMovilidad->only([
+                            'id',
+                            'tipo',
+                        ]),
+                        'observaciones'=>$movilidad->observaciones,
+                        'cargo_id'=>$movilidad->cargo->id,
+                        'cargo_nombre'=>$movilidad->cargo->nombre,
+                        'colaborador_id'=>$movilidad->colaborador->id
+                ],
+            ]);
+    }
     /**
      * A basic test example.
      */

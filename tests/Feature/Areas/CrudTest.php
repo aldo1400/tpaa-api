@@ -38,7 +38,7 @@ class CrudTest extends TestCase
             ]);
     }
 
-    public function testObtenerUnDepartamento()
+    public function testObtenerUnaArea()
     {
         $areas = factory(Area::class, 10)
                     ->create([
