@@ -13,7 +13,7 @@ class GetRelatedController extends Controller
         $cargo = Cargo::findOrFail($id);
 
         $areas = $cargo->area->obtenerAreasRelacionadas();
-        $areas->push($cargo->area);
+        $areas=$areas->push($cargo->area)->sortBy('tipo_area_id');
 
         return AreaResource::collection($areas);
     }

@@ -270,6 +270,58 @@ class CrudTest extends TestCase
         ]);
     }
 
+     /**
+     * A basic test example.
+     */
+    public function testEditarMovilidadActivaDeUnColaborador()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargo = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+
+        $movilidades = factory(Movilidad::class, 2)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'estado' => 0,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'fecha_inicio'=>now()->format('Y-m-d'),
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'estado' => 1,
+            'fecha_termino'=>null
+        ]);
+
+        $parameters = [
+            'fecha_termino' => '',
+            'fecha_inicio' => now()->addDays(3)->format('Y-m-d'),
+            // 'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' =>$cargoNuevo->id,
+        ];
+
+        $url = '/api/movilidades/'.$movilidad->id;
+
+        $response = $this->json('PUT', $url,$parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $movilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $parameters['cargo_id'],
+            'estado' => 1,
+            'fecha_termino' => null,
+            'fecha_inicio'=>$parameters['fecha_inicio'],
+            'tipo_movilidad_id'=>$movilidad->tipoMovilidad->id
+        ]);
+    }
+
     public function testObtenerTodasLasMovilidadDeUnColaborador()
     {
         $cargo = factory(Cargo::class)->create();

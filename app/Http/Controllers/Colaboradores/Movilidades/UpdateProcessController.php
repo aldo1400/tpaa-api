@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Colaboradores\Movilidades;
 
+use App\Movilidad;
+use App\TipoMovilidad;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class UpdateProcessController extends Controller
 {
-    public function __invoke($id){
+    public function __invoke(Request $request,$id){
         $movilidad=Movilidad::findOrFail($id);
-        
+        // dd($request->fecha_inicio);
         $movilidad->fill([
             'fecha_inicio'=>$request->fecha_inicio,
             'observaciones'=>$request->observaciones
