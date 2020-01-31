@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\AdministradorResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,10 @@ Route::group(['middleware' => ['auth:api']], function () {
         'Auth\LoginController@logout'
     );
 
+    Route::get('/administrador', function (Request $request) {
+        return new AdministradorResource(Auth::user());
+    });
+    
     Route::post('/administradores', 'Administradores\CreateProcessController');
     Route::get('/administradores', 'Administradores\IndexController');
     Route::get('/administradores/{id}', 'Administradores\ShowController');
