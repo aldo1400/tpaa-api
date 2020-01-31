@@ -23,7 +23,7 @@ class CargaFamiliarResource extends JsonResource
             'fecha_nacimiento' => $this->fecha_nacimiento ? $this->fecha_nacimiento->format('Y-m-d') : '',
             'estado' => $this->estado,
             'tipoCarga' => new TipoCargaResource($this->tipoCarga),
-            // 'colaborador' => new ColaboradorResource($this->colaborador),
+            'colaborador_id' => $this->colaborador->id,
         ];
     }
 }

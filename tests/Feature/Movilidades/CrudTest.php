@@ -18,14 +18,14 @@ class CrudTest extends TestCase
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
 
-        $tipoMovilidad = TipoMovilidad::first();
+        $tipoMovilidad = TipoMovilidad::first();//Nuevo (a)
 
         $parameters = [
             'fecha_termino' => '',
             'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
             'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'NINGUNA OBSERVACION',
-            'estado' => 1,
+            // 'estado' => 1,
             'cargo_id' => $cargo->id,
         ];
 
@@ -45,6 +45,30 @@ class CrudTest extends TestCase
             'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
             'observaciones' => $parameters['observaciones'],
         ]);
+    }
+
+    public function testLaPrimeraMovilidadDeUnColaboradorDebeSerSiempreNuevo()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo','Movilidad')->first();
+
+        $parameters = [
+            'fecha_termino' => '',
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'NINGUNA OBSERVACION',
+            'cargo_id' => $cargo->id,
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
+
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('El tipo de movilidad es inválido.'));
     }
 
     /**
@@ -71,7 +95,6 @@ class CrudTest extends TestCase
             'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
             'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'SUBIO DE GRADO',
-            'estado' => 1,
             'cargo_id' => $cargoNuevo->id,
         ];
 
@@ -103,6 +126,107 @@ class CrudTest extends TestCase
         ]);
     }
 
+     /**
+     * A basic test example.
+     */
+    public function testCrearSegundaMovilidadAUnColaboradorDeTipoRenuncia()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+                            'estado'=>1
+                        ]);
+
+        $cargoAnterior = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => now()->addDays(1)->format('Y-m-d'),
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' =>'',
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $primeraMovilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'estado' => 0,
+            'fecha_inicio' => $primeraMovilidad->fecha_inicio,
+            'fecha_termino' => $parameters['fecha_termino'],
+            'observaciones' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $this->assertDatabaseHas('movilidades', [
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => null,
+            'estado' => 1,
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
+            'observaciones' => $parameters['observaciones'],
+        ]);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaborador->id,
+            'estado'=>0
+        ]);
+    }
+
+      /**
+     * A basic test example.
+     */
+    public function testNoSePuedeCrearSegundaMovilidadAUnColaboradorDeTipoRenunciaSiEnviaCargoID()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+                            'estado'=>1
+                        ]);
+
+        $cargoAnterior = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => now()->addDays(1)->format('Y-m-d'),
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' =>$cargoNuevo->id,
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('El cargo es inválido.'));
+    }
+
     /**
      * A basic test example.
      */
@@ -123,7 +247,7 @@ class CrudTest extends TestCase
         $movilidad = factory(Movilidad::class)->create([
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
-            'tipo' => 'MOVILIDAD',
+            'tipo_movilidad_id' => $tipoMovilidad->id,
             'estado' => 1,
         ]);
 
@@ -146,7 +270,7 @@ class CrudTest extends TestCase
         ]);
     }
 
-    public function testObtenerTpdasLasMovilidadDeUnColaborador()
+    public function testObtenerTodasLasMovilidadDeUnColaborador()
     {
         $cargo = factory(Cargo::class)->create();
 
