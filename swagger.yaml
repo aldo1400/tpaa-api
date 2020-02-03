@@ -22,6 +22,8 @@ tags:
   description: Everything about cargas familiares
 - name: colaboradores
   description: Everything about colaboradores
+- name: comentarios
+  description: Everything about comentarios
 - name: cursos
   description: Everything about cursos
 - name: areas
@@ -40,6 +42,8 @@ tags:
   description: Everything about tipo de cargas
 - name: tipos area
   description: Everything about tipo de area
+- name: tipo comentarios
+  description: Everything about tipo comentarios
 - name: tipo movilidades
   description: Everything about tipo de movilidades
 
@@ -549,6 +553,124 @@ paths:
           description: Unauthenticated
         403:
           description: Forbidden access
+  
+  # ---------------------
+  #   Comentarios
+  # ---------------------
+  "/comentarios":
+    get:
+      tags:
+      - comentarios
+      summary: Obtener todos los comentarios
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComentarioResource'
+        401:
+          description: unauthenticated  
+    
+    post:
+      tags:
+      - comentarios
+      summary: Añadir un comentario
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/ComentarioCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+  
+  "/comentarios/{id}":
+    get:
+      tags:
+      - comentarios
+      summary: Obtener un comentario
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Comentario ID
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/ComentarioResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+    
+    put:
+      tags:
+      - comentarios
+      summary: Editar nombre de un comentario
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: Comentario ID
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ComentarioUpdateRequest'
+      responses:
+        200:
+          description: Data modified succesfully
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden Access  
+    
+    delete:
+      tags:
+      - comentarios
+      summary: Eliminar comentario
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Comentario deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children        
   
   # ---------------------
   #   Cursos
@@ -1410,6 +1532,28 @@ paths:
           description: unauthenticated 
   
   # ---------------------
+  #   Tipo Comentarios
+  # ---------------------
+  "/tipo-comentarios":
+    get:
+      tags:
+      - tipo comentarios
+      summary: Obtener todos los tipos de comentarios
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TipoComentarioResource'
+        401:
+          description: unauthenticated 
+  
+  # ---------------------
   #   Tipo movilidades
   # ---------------------
   "/tipo-movilidades":
@@ -2021,6 +2165,75 @@ definitions:
         type: string
         format: date
       imagen_url:
+        type: string
+  
+  ComentarioResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      texto_libre:
+        type: string
+      publico:
+        type: string
+        enum: [0,1]
+      fecha:
+        type: string
+        format: date
+      estado:
+        type: string
+        enum: [0,1]
+      tipoComentario:
+        $ref: "#/definitions/TipoComentarioResource"
+  
+  ComentarioCreateRequest:
+    type: object
+    properties:
+      texto_libre:
+        type: string
+      publico:
+        type: string
+        enum: [0,1]
+      fecha:
+        type: string
+        format: date
+      estado:
+        type: string
+        enum: [0,1]
+      tipo_comentario_id:
+        type: integer
+      colaborador_id:
+        type: integer
+      colaborador_autor_id:
+        type: integer
+      
+  ComentarioUpdateRequest:
+    type: object
+    properties:
+      texto_libre:
+        type: string
+      publico:
+        type: string
+        enum: [0,1]
+      fecha:
+        type: string
+        format: date
+      estado:
+        type: string
+        enum: [0,1]
+      tipo_comentario_id:
+        type: integer
+      colaborador_id:
+        type: integer
+      colaborador_autor_id:
+        type: integer
+  
+  TipoComentarioResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      tipo:
         type: string
   
   CursoResource:
