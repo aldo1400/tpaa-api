@@ -19,14 +19,21 @@ class Comentario extends Model
         'estado',
     ];
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['fecha'];
+
     public function tipoComentario(): BelongsTo
     {
         return $this->belongsTo('App\TipoComentario');
     }
 
-    public function colaborador(): BelongsTo
+    public function receptor(): BelongsTo
     {
-        return $this->belongsTo('App\Colaborador');
+        return $this->belongsTo('App\Colaborador', 'colaborador_id');
     }
 
     public function autor(): BelongsTo

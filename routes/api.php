@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/administrador', function (Request $request) {
         return new AdministradorResource(Auth::user());
     });
-    
+
     Route::post('/administradores', 'Administradores\CreateProcessController');
     Route::get('/administradores', 'Administradores\IndexController');
     Route::get('/administradores/{id}', 'Administradores\ShowController');
@@ -123,3 +123,4 @@ Route::delete('/tipos-area/{id}', 'TipoAreas\DeleteProcessController');
 
 Route::get('/tipo-comentarios', 'TipoComentarios\IndexController');
 Route::post('/comentarios', 'Comentarios\CreateProcessController');
+Route::put('/comentarios/{id}', 'Comentarios\UpdateProcessController');
