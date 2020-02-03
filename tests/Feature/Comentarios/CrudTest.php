@@ -118,4 +118,32 @@ class CrudTest extends TestCase
                 ],
             ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testObtenerUnComentario()
+    {
+        $comentarios = factory(Comentario::class, 10)
+                        ->create();
+
+        $url = '/api/comentarios/'.$comentarios[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'data' => [
+                        'id'=>$comentarios[1]->id,
+                        'texto_libre'=>$comentarios[1]->texto_libre,
+                        'publico'=>$comentarios[1]->publico,
+                        'fecha'=>$comentarios[1]->fecha->format('Y-m-d'),
+                        'estado'=>$comentarios[1]->estado,
+                        'tipoComentario' => $comentarios[1]->tipoComentario->only([
+                            'id',
+                            'tipo',
+                            'estado',
+                        ]),
+                    ],
+                ]);
+    }
 }

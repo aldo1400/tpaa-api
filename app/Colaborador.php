@@ -172,7 +172,7 @@ class Colaborador extends Model
                 ->first();
 
         if ($movilidad) {
-            return $movilidad->cargo();
+            return $movilidad->cargo;
         }
 
         return $movilidad;

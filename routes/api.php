@@ -124,4 +124,5 @@ Route::delete('/tipos-area/{id}', 'TipoAreas\DeleteProcessController');
 Route::get('/tipo-comentarios', 'TipoComentarios\IndexController');
 Route::post('/comentarios', 'Comentarios\CreateProcessController');
 Route::get('/comentarios', 'Comentarios\IndexController');
+Route::get('/comentarios/{id}', 'Comentarios\ShowController');
 Route::put('/comentarios/{id}', 'Comentarios\UpdateProcessController');
