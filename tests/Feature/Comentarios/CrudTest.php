@@ -91,4 +91,31 @@ class CrudTest extends TestCase
             'tipo_comentario_id' => $comentario->tipo_comentario_id,
         ]);
     }
+
+    public function testObtenerTodosLosComentarios()
+    {
+        factory(Comentario::class, 10)->create();
+
+        $url = '/api/comentarios';
+        $response = $this->json('GET', $url);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'texto_libre',
+                        'publico',
+                        'fecha',
+                        'estado',
+                        'tipoComentario' => [
+                            'id',
+                            'tipo',
+                        ],
+                    ],
+                ],
+            ]);
+    }
 }

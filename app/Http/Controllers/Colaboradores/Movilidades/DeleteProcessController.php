@@ -15,7 +15,7 @@ class DeleteProcessController extends Controller
             return response()->json(['message' => 'El colaborador no tiene un cargo activo.'], 409);
         }
 
-        $colaborador->cargoActual()
+        $colaborador->movilidadActual()
                 ->delete();
 
         $movilidad = $colaborador->movilidades()

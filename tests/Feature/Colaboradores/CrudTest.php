@@ -67,6 +67,7 @@ class CrudTest extends TestCase
                             'estado',
                         ],
                         'cargoActual',
+                        'movilidadActual',
                         'credencial_vigilante',
                         'vencimiento_credencial_vigilante',
                         'imagen_url',
@@ -137,8 +138,8 @@ class CrudTest extends TestCase
     {
         $colaboradores = factory(Colaborador::class, 10)
                         ->create([
-                            'nivel_educacion_id'=>null,
-                            'estado_civil_id'=>null,
+                            'nivel_educacion_id' => null,
+                            'estado_civil_id' => null,
                         ]);
 
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
@@ -181,7 +182,7 @@ class CrudTest extends TestCase
                         'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
                         'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
                         'nivelEducacion' => '',
-                        'estadoCivil' => ''
+                        'estadoCivil' => '',
                 ],
             ]);
     }
@@ -814,8 +815,8 @@ class CrudTest extends TestCase
 
         $colaboradores = factory(Colaborador::class, 1)
                         ->create([
-                            'nivel_educacion_id'=>null,
-                            'estado_civil_id'=>null
+                            'nivel_educacion_id' => null,
+                            'estado_civil_id' => null,
                         ])
                         ->each(function ($colaborador) use ($anterioresTags) {
                             $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
@@ -1024,7 +1025,7 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => '',
             'tags' => $nuevosTags->pluck('id'),
             'imagen' => '',
-            'imagen_url'=>'',
+            'imagen_url' => '',
             'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
             'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
         ];
@@ -1069,7 +1070,7 @@ class CrudTest extends TestCase
             'credencial_vigilante' => $parameters['credencial_vigilante'],
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
             'imagen_url' => null,
-            'imagen'=>'',
+            'imagen' => '',
         ]);
 
         $this->assertDatabaseMissing('colaboradores', [
@@ -1153,10 +1154,10 @@ class CrudTest extends TestCase
                             $colaborador->tags()->sync($anterioresTags->pluck('id')->toArray());
                         });
 
-        $urlFoto=Storage::put('public/colaboradores/imagenes/'.$colaboradores[0]->rut.'.jpg',$fotoColaborador);
-        $colaboradores[0]->imagen=$fotoColaborador;
-        $colaboradores[0]->imagen_url=url(Storage::url($urlFoto));
-        
+        $urlFoto = Storage::put('public/colaboradores/imagenes/'.$colaboradores[0]->rut.'.jpg', $fotoColaborador);
+        $colaboradores[0]->imagen = $fotoColaborador;
+        $colaboradores[0]->imagen_url = url(Storage::url($urlFoto));
+
         $url = '/api/colaboradores/'.$colaboradores[0]->id;
 
         $parameters = [
@@ -1194,7 +1195,7 @@ class CrudTest extends TestCase
             'nivel_educacion_id' => $nivelEducacion->id,
             'tags' => $nuevosTags->pluck('id'),
             'imagen' => '',
-            'imagen_url'=>'',
+            'imagen_url' => '',
             'credencial_vigilante' => $colaboradores[0]->credencial_vigilante,
             'vencimiento_credencial_vigilante' => $colaboradores[0]->vencimiento_credencial_vigilante->format('Y-m-d'),
         ];
@@ -1239,7 +1240,7 @@ class CrudTest extends TestCase
             'credencial_vigilante' => $parameters['credencial_vigilante'],
             'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
             'imagen_url' => null,
-            'imagen'=>'',
+            'imagen' => '',
         ]);
 
         $this->assertDatabaseMissing('colaboradores', [
@@ -1302,6 +1303,7 @@ class CrudTest extends TestCase
                 'colaborador_id' => $colaboradores[0]->id,
             ]);
     }
+
     /**
      * A basic test example.
      */
@@ -1730,18 +1732,19 @@ class CrudTest extends TestCase
         // Storage::disk('local')->assertMissing('storage/banners/' . $image->hashName());
     }
 
-    public function testValidarRutSiYaExiste(){
+    public function testValidarRutSiYaExiste()
+    {
         $random_number = rand(1000000, 25000000);
         $rut = new Rut($random_number);
 
-        $colaborador=factory(Colaborador::class)->create([
-            'rut'=>$rut->fix()->format()
+        $colaborador = factory(Colaborador::class)->create([
+            'rut' => $rut->fix()->format(),
         ]);
-        
-        $url="/api/colaboradores/validacion-rut";
-        
-        $parameters=[
-            'rut'=>$rut->fix()->format()
+
+        $url = '/api/colaboradores/validacion-rut';
+
+        $parameters = [
+            'rut' => $rut->fix()->format(),
         ];
 
         $response = $this->json('GET', $url, $parameters);

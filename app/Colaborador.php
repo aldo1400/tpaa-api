@@ -144,6 +144,7 @@ class Colaborador extends Model
                     'public/colaboradores/imagenes',
                     $this->rut.'.'.$request->file('imagen')->extension()
                 );
+
         return url(Storage::url($imagePath));
     }
 
@@ -157,11 +158,24 @@ class Colaborador extends Model
                 ->withTimestamps();
     }
 
-    public function cargoActual()
+    public function movilidadActual()
     {
         return $this->movilidades()
                 ->where('estado', 1)
                 ->first();
+    }
+
+    public function cargoActual()
+    {
+        $movilidad = $this->movilidades()
+                ->where('estado', 1)
+                ->first();
+
+        if ($movilidad) {
+            return $movilidad->cargo();
+        }
+
+        return $movilidad;
     }
 
     public function tagsPositivos()
