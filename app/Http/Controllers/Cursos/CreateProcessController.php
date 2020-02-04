@@ -10,7 +10,9 @@ class CreateProcessController extends Controller
 {
     public function __invoke(CursoRequest $request)
     {
-        Curso::create($request->validated());
+        $curso=Curso::make($request->validated());
+        $curso->tipoCurso()->associate($request->tipo_curso_id);
+        $curso->save();
 
         return response()->json(null, 201);
     }
