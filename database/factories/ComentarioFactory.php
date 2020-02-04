@@ -25,5 +25,9 @@ $factory->define(App\Comentario::class, function (Faker $faker) {
             'tipo_comentario_id' => function () {
                 return factory(TipoComentario::class)->create()->id;
             },
+            'positivo' => $faker->randomElement([
+                0,
+                1,
+            ]),
     ];
 });

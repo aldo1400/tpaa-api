@@ -24,8 +24,9 @@ class ComentarioResource extends JsonResource
             'fecha' => $this->fecha->format('Y-m-d'),
             'estado' => $this->estado,
             'tipoComentario' => new TipoComentarioResource($this->tipoComentario),
-            // 'receptor' => new ColaboradorResource($this->receptor),
-            // 'autor'=>
+            'positivo'=> $this->positivo,
+            'receptor' => new ColaboradorResource($this->receptor),
+            'autor'=>new ColaboradorResource($this->autor),
         ];
     }
 }

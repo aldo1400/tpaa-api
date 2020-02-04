@@ -25,6 +25,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $colaboradorReceptor->id,
             'colaborador_autor_id' => $colaboradorAutor->id,
             'tipo_comentario_id' => $tipoComentario->id,
+            'positivo'=>1
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -40,6 +41,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $parameters['colaborador_id'],
             'colaborador_autor_id' => $parameters['colaborador_autor_id'],
             'tipo_comentario_id' => $parameters['tipo_comentario_id'],
+            'positivo'=>$parameters['positivo']
         ]);
     }
 
@@ -63,6 +65,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $colaboradorReceptor->id,
             'colaborador_autor_id' => $colaboradorAutor->id,
             'tipo_comentario_id' => $tipoComentario->id,
+            'positivo'=>1
         ];
 
         $response = $this->json('PUT', $url, $parameters);
@@ -78,6 +81,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $parameters['colaborador_id'],
             'colaborador_autor_id' => $parameters['colaborador_autor_id'],
             'tipo_comentario_id' => $parameters['tipo_comentario_id'],
+            'positivo'=>$parameters['positivo']
         ]);
 
         $this->assertDatabaseMissing('comentarios', [
@@ -89,6 +93,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $comentario->colaborador_id,
             'colaborador_autor_id' => $comentario->colaborador_autor_id,
             'tipo_comentario_id' => $comentario->tipo_comentario_id,
+            'positivo'=>$comentario->positivo
         ]);
     }
 
@@ -114,6 +119,7 @@ class CrudTest extends TestCase
                             'id',
                             'tipo',
                         ],
+                        'positivo'
                     ],
                 ],
             ]);
@@ -143,6 +149,7 @@ class CrudTest extends TestCase
                             'tipo',
                             'estado',
                         ]),
+                        'positivo'=>$comentarios[1]->positivo
                     ],
                 ]);
     }

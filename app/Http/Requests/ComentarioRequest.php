@@ -31,6 +31,7 @@ class ComentarioRequest extends FormRequest
             'colaborador_id' => ['required', 'exists:colaboradores,id'],
             'colaborador_autor_id' => ['required', 'exists:colaboradores,id'],
             'tipo_comentario_id' => ['required', 'exists:tipos_comentario,id'],
+            'positivo'=>['required','boolean']
         ];
     }
 }

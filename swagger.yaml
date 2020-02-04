@@ -44,6 +44,8 @@ tags:
   description: Everything about tipo de area
 - name: tipo comentarios
   description: Everything about tipo comentarios
+- name: tipo cursos
+  description: Everything about tipo cursos
 - name: tipo movilidades
   description: Everything about tipo de movilidades
 
@@ -1554,6 +1556,28 @@ paths:
           description: unauthenticated 
   
   # ---------------------
+  #   Tipo Cursos
+  # ---------------------
+  "/tipo-cursos":
+    get:
+      tags:
+      - tipo cursos
+      summary: Obtener todos los tipos de comentarios
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TipoCursoResource'
+        401:
+          description: unauthenticated 
+  
+  # ---------------------
   #   Tipo movilidades
   # ---------------------
   "/tipo-movilidades":
@@ -2185,6 +2209,9 @@ definitions:
         enum: [0,1]
       tipoComentario:
         $ref: "#/definitions/TipoComentarioResource"
+      positivo:
+        type: string
+        enum: [0,1]
   
   ComentarioCreateRequest:
     type: object
@@ -2206,6 +2233,9 @@ definitions:
         type: integer
       colaborador_autor_id:
         type: integer
+      positivo:
+        type: string
+        enum: [0,1]
       
   ComentarioUpdateRequest:
     type: object
@@ -2227,6 +2257,9 @@ definitions:
         type: integer
       colaborador_autor_id:
         type: integer
+      positivo:
+        type: string
+        enum: [0,1]
   
   TipoComentarioResource:
     type: object
@@ -2234,6 +2267,16 @@ definitions:
       id:
         type: integer
       tipo:
+        type: string
+      estado:
+        type: string
+  
+  TipoCursoResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      categoria:
         type: string
   
   CursoResource:
@@ -2243,24 +2286,52 @@ definitions:
         type: integer
       nombre:
         type: string
-      tipo:
+      titulo:
+        type: string
+      realizado:
+        type: string
+      fecha_inicio:
+        type: string
+        format: date
+      fecha_termino:
+        type: string
+        format: date
+      anio:
+        type: string
+      interno:
         type: string
         enum: [0,1]
       estado:
         type: string
         enum: [0,1]
+      tipoCurso:
+        $ref: "#/definitions/TipoCursoResource"  
   
   CursoCreateRequest:
     type: object
     properties:
       nombre:
         type: string
-      tipo:
+      titulo:
+        type: string
+      realizado:
+        type: string
+      fecha_inicio:
+        type: string
+        format: date
+      fecha_termino:
+        type: string
+        format: date
+      anio:
+        type: string
+      interno:
         type: string
         enum: [0,1]
       estado:
         type: string
-        enum: [0,1]   
+        enum: [0,1]
+      tipo_curso_id:
+        type: integer
   
   CursoUpdateRequest:
     type: object

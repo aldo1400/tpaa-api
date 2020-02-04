@@ -22,7 +22,7 @@ class MovilidadResource extends JsonResource
             'observaciones' => $this->observaciones,
             'estado' => $this->estado,
             'cargo_id' => $this->cargo_id,
-            'cargo_nombre' => $this->cargo->nombre,
+            'cargo_nombre' => $this->cargo ? $this->cargo->nombre : '',
             'colaborador_id' => $this->colaborador_id,
             'tipoMovilidad' => new TipoMovilidadResource($this->tipoMovilidad),
         ];

@@ -17,6 +17,7 @@ class Comentario extends Model
         'publico',
         'fecha',
         'estado',
+        'positivo'
     ];
 
     /**
