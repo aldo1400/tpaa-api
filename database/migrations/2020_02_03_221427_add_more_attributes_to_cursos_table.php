@@ -14,7 +14,7 @@ class AddMoreAttributesToCursosTable extends Migration
     public function up()
     {
         Schema::table('cursos', function (Blueprint $table) {
-            $table->string('title');
+            $table->string('titulo');
             $table->integer('horas_cronologicas')->nullable();
             $table->text('realizado')->nullable();
             $table->string('anio');
@@ -37,7 +37,7 @@ class AddMoreAttributesToCursosTable extends Migration
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         
         Schema::table('cursos', function (Blueprint $table) {
-            $table->dropColumn('title');
+            $table->dropColumn('titulo');
             $table->dropColumn('horas_cronologicas');
             $table->dropColumn('realizado');
             $table->dropColumn('anio');

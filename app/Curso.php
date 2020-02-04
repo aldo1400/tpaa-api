@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Curso extends Model
 {
@@ -16,8 +17,14 @@ class Curso extends Model
      */
     protected $fillable = [
         'nombre',
-        'tipo',
+        'titulo',
+        'horas_cronologicas',
+        'realizado',
+        'fecha_inicio',
+        'fecha_termino',
         'estado',
+        'anio',
+        'interno',
     ];
 
     /**
@@ -25,10 +32,23 @@ class Curso extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = [
+        'deleted_at',
+        'fecha_inicio',
+        'fecha_termino',
+    ];
 
     public function colaboradores(): HasMany
     {
         return $this->hasMany('App\CursoColaborador');
     }
+
+     /**
+     * Get the tipo for the cursp.
+     */
+    public function tipoCurso(): BelongsTo
+    {
+        return $this->belongsTo('App\TipoCurso');
+    }
+
 }
