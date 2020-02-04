@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class CrudTest extends TestCase
 {
-    public function testObtenerAreas()
+    public function testObtenerTodasAreas()
     {
         factory(Area::class, 10)
                     ->create([
@@ -21,6 +21,78 @@ class CrudTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'estado',
+                        'tipoArea' => [
+                            'id',
+                            'tipo_nombre',
+                            'nivel',
+                            'estado',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerAreasActivas()
+    {
+        factory(Area::class, 5)
+                    ->create([
+                        'tipo_area_id' => 1,
+                        'estado'=>1
+                    ]);
+
+        factory(Area::class, 3)
+                    ->create([
+                        'tipo_area_id' => 1,
+                        'estado'=>0
+                    ]);
+
+        $url = '/api/areas?estado=true';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(5, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'estado',
+                        'tipoArea' => [
+                            'id',
+                            'tipo_nombre',
+                            'nivel',
+                            'estado',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerAreasInactivas()
+    {
+        factory(Area::class, 5)
+                    ->create([
+                        'tipo_area_id' => 1,
+                        'estado'=>1
+                    ]);
+
+        factory(Area::class, 3)
+                    ->create([
+                        'tipo_area_id' => 1,
+                        'estado'=>0
+                    ]);
+
+        $url = '/api/areas?estado=false';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(3, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
