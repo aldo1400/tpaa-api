@@ -126,3 +126,5 @@ Route::post('/comentarios', 'Comentarios\CreateProcessController');
 Route::get('/comentarios', 'Comentarios\IndexController');
 Route::get('/comentarios/{id}', 'Comentarios\ShowController');
 Route::put('/comentarios/{id}', 'Comentarios\UpdateProcessController');
+
+// Route::get('/tipo-cursos', 'TipoCursos\IndexController');

@@ -44,9 +44,6 @@ class AddRegistersToTiposComentarioTable extends Migration
      */
     public function down()
     {
-        Schema::table('tipos_comentario', function (Blueprint $table) {
-            $table->dropColumn('positivo');
-        });
 
         $tipoComentarios = array('Amonestación', 'Felicitación', 'Razón de despido', 'Otro');
         DB::table('tipos_comentario')->whereIn('tipo', $tipoComentarios)->delete();

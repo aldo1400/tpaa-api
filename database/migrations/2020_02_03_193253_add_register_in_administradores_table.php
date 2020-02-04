@@ -32,8 +32,7 @@ class AddRegisterInAdministradoresTable extends Migration
      */
     public function down()
     {
-        // Schema::table('administradores', function (Blueprint $table) {
-            //
-        // });
+        $username = array('admin');
+        DB::table('administradores')->whereIn('username', $username)->delete();
     }
 }

@@ -11,6 +11,6 @@ class IndexController extends Controller
 {
     public function __invoke($id){
         $colaborador=Colaborador::findOrFail($id);
-        return MovilidadResource::collection($colaborador->movilidades);
+        return MovilidadResource::collection($colaborador->movilidades->sortBy('id'));
     }
 }
