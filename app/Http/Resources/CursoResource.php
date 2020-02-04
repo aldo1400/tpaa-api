@@ -18,8 +18,15 @@ class CursoResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
-            'tipo'=>$this->tipo,
+            'titulo'=>$this->titulo,
+            'horas_cronologicas'=>$this->horas_cronologicas,
+            'realizado'=>$this->realizado,
+            'fecha_inicio'=>$this->fecha_inicio ? $this->fecha_inicio->format('Y-m-d'):'',
+            'fecha_termino'=>$this->fecha_termino ? $this->fecha_termino->format('Y-m-d') :'',
+            'anio'=>$this->anio,
             'estado' => $this->estado,
+            'interno'=>$this->interno,
+            'tipoCurso'=>new TipoCursoResource($this->tipoCurso)
         ];
     }
 }

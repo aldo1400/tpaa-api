@@ -13,7 +13,7 @@ class TipoCurso extends Model
      * @var array
      */
     protected $fillable = [
-        'tipo',
+        'categoria',
         'estado'
     ];
 

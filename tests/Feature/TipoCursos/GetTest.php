@@ -24,8 +24,7 @@ class GetTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'tipo',
-                        'estado',
+                        'categoria',
                     ],
                 ],
             ]);

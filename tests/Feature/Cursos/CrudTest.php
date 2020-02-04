@@ -21,8 +21,19 @@ class CrudTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'tipo',
+                        'nombre',
+                        'titulo',
+                        'horas_cronologicas',
+                        'realizado',
+                        'fecha_inicio',
+                        'fecha_termino',
                         'estado',
+                        'anio',
+                        'interno',
+                        'tipoCurso'=>[
+                            'id',
+                            'categoria'
+                        ]
                     ],
                 ],
             ]);
