@@ -57,8 +57,18 @@ class CrudTest extends TestCase
                     'data' => [
                             'id' => $cursos[1]->id,
                             'nombre' => $cursos[1]->nombre,
-                            'tipo' => $cursos[1]->tipo,
+                            'titulo'=>$cursos[1]->titulo,
+                            'horas_cronologicas'=>$cursos[1]->horas_cronologicas,
+                            'realizado'=>$cursos[1]->realizado,
+                            'fecha_inicio'=>$cursos[1]->fecha_inicio->format('Y-m-d'),
+                            'fecha_termino'=>$cursos[1]->fecha_termino->format('Y-m-d'),
                             'estado' => $cursos[1]->estado,
+                            'anio'=>$cursos[1]->anio,
+                            'interno'=>$cursos[1]->interno,
+                            'tipoCurso'=>$cursos[1]->tipoCurso->only([
+                                'id',
+                                'categoria'
+                            ])
                     ],
                 ]);
     }

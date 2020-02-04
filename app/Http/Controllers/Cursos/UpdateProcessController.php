@@ -11,7 +11,9 @@ class UpdateProcessController extends Controller
     public function __invoke(CursoRequest $request, $id)
     {
         $curso = Curso::findOrFail($id);
-        $curso->update($request->validated());
+        $curso->fill($request->validated());
+        $curso->tipoCurso()->associate($request->tipo_curso_id);
+        $curso->save();
 
         return response()->json();
     }
