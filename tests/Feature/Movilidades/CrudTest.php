@@ -289,10 +289,10 @@ class CrudTest extends TestCase
             'estado' => 1,
         ]);
 
-        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+        $url = '/api/movilidades/'.$movilidad->id;
 
         $response = $this->json('DELETE', $url);
-        // dd($response->decodeResponseJson());
+        
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('movilidades', [

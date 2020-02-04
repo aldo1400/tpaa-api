@@ -90,7 +90,8 @@ Route::put('/movilidades/{id}', 'Colaboradores\Movilidades\UpdateProcessControll
 Route::get('/movilidades/{id}', 'Movilidades\ShowController');
 Route::get('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\IndexController');
 Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');
-Route::delete('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\DeleteProcessController');
+Route::delete('/movilidades/{id}', 'Colaboradores\Movilidades\DeleteProcessController');
+// Route::delete('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\DeleteProcessController');
 
 Route::get('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\IndexController');
 Route::post('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\CreateProcessController');

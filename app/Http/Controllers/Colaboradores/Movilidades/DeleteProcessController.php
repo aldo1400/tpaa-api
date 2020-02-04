@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Colaboradores\Movilidades;
 
+use App\Movilidad;
 use App\Colaborador;
 use App\Http\Controllers\Controller;
 
@@ -9,8 +10,9 @@ class DeleteProcessController extends Controller
 {
     public function __invoke($id)
     {
-        $colaborador = Colaborador::findOrFail($id);
-
+        $movilidad = Movilidad::findOrFail($id);
+        $colaborador = $movilidad->colaborador;
+       
         if (!$colaborador->cargoActual()) {
             return response()->json(['message' => 'El colaborador no tiene un cargo activo.'], 409);
         }
