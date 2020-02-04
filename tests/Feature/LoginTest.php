@@ -13,9 +13,11 @@ class LoginTest extends TestCase
      /**
      * A basic feature test example.
      */
-    public function testLoginUser()
+    public function testLoginAdministradorActivo()
     {
-        $admin = factory(Administrador::class)->create();
+        $admin = factory(Administrador::class)->create([
+            'estado'=>1
+        ]);
         // $admin = factory(User::class)->create();
 
         $url = '/api/login/';
@@ -34,6 +36,26 @@ class LoginTest extends TestCase
                         'expires_in',
                         'user',
             ]);
+    }
+
+ /**
+     * A basic feature test example.
+     */
+    public function testLoginAdministradorInactivo()
+    {
+        $admin = factory(Administrador::class)->create([
+            'estado'=>0
+        ]);
+
+        $url = '/api/login/';
+
+        $parameters = [
+            'username' => $admin->username,
+            'password' => 'secret',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+        $response->assertStatus(422);
     }
 
 }

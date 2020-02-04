@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Administrador;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -43,17 +44,28 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request): bool
     {
         // config()->set( 'auth.defaults.guard', 'api' );
+        $user=Administrador::where('username',$request->username)
+                ->first();
+                
+        if(!$user){
+            return false;
+        }
+
+        if(!$user->estado){
+           return false; 
+        }
+
         $token = $this->guard()->attempt([
             'username' => $request->username,
             'password' => $request->password,
             ]);
             
-            // dd($token);
         if ($token) {
             $this->guard()->setToken($token);
 
             return true;
         }
+
 
         return false;
     }

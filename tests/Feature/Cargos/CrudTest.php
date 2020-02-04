@@ -47,6 +47,88 @@ class CrudTest extends TestCase
             ]);
     }
 
+    public function testObtenerCargosActivos()
+    {
+        factory(Cargo::class, 10)
+                    ->create([
+                        'estado'=>0
+                    ]);
+        
+        factory(Cargo::class, 2)
+                    ->create([
+                        'estado'=>1
+                    ]);
+
+        $url = '/api/cargos?estado=true';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'supervisor_id',
+                        'nivelJerarquico' => [
+                            'id',
+                            'nivel_nombre',
+                            'estado',
+                        ],
+                        'organigrama_url',
+                        'descriptor_url',
+                        'estado',
+                        'area' => [
+                            'id',
+                            'nombre',
+                            'estado',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerCargosInactivos()
+    {
+        factory(Cargo::class, 7)
+                    ->create([
+                        'estado'=>0
+                    ]);
+        
+        factory(Cargo::class, 2)
+                    ->create([
+                        'estado'=>1
+                    ]);
+
+        $url = '/api/cargos?estado=false';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(7, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'supervisor_id',
+                        'nivelJerarquico' => [
+                            'id',
+                            'nivel_nombre',
+                            'estado',
+                        ],
+                        'organigrama_url',
+                        'descriptor_url',
+                        'estado',
+                        'area' => [
+                            'id',
+                            'nombre',
+                            'estado',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
     /**
      * A basic test example.
      */
