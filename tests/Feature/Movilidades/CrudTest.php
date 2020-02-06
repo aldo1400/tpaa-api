@@ -10,7 +10,7 @@ use App\TipoMovilidad;
 
 class CrudTest extends TestCase
 {
-    public function testObtenerUnaArea()
+    public function testObtenerUnaMovilidad()
     {
         $cargo=factory(Cargo::class)->create();
 

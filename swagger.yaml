@@ -2338,12 +2338,26 @@ definitions:
     properties:
       nombre:
         type: string
-      tipo:
+      titulo:
+        type: string
+      realizado:
+        type: string
+      fecha_inicio:
+        type: string
+        format: date
+      fecha_termino:
+        type: string
+        format: date
+      anio:
+        type: string
+      interno:
         type: string
         enum: [0,1]
       estado:
         type: string
-        enum: [0,1]   
+        enum: [0,1]
+      tipo_curso_id:
+        type: integer 
     
   AreaCreateRequest:
     type: object

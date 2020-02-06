@@ -3,11 +3,13 @@
 namespace Tests\Feature\Colaboradores;
 
 use App\Tag;
+use App\Curso;
 use Tests\TestCase;
 use App\Colaborador;
 use App\EstadoCivil;
 use App\Departamento;
 use App\NivelEducacion;
+use App\CursoColaborador;
 use Freshwork\ChileanBundle\Rut;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -1751,5 +1753,49 @@ class CrudTest extends TestCase
         // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El rut es inválido.'));
+    }
+
+    public function testObtenerTodosLasCapacitacionesDeUnColaborador()
+    {
+        $curso=factory(Curso::class)->create();
+        $colaborador = factory(Colaborador::class,1)
+                    ->create()
+                    ->each(function ($colaborador) use ($curso){
+                        $colaborador->capacitaciones()->saveMany(factory(CursoColaborador::class, 4)
+                                    ->make([
+                                        'colaborador_id'=>'',
+                                        'curso_id'=>$curso->id
+                                    ]));
+                    });
+
+        // dd($colaborador[0]->capacitaciones()->count());
+        $url = '/api/colaboradores/'.$colaborador[0]->id.'/capacitaciones';
+
+        $response = $this->json('GET', $url);
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    0 => [
+                        'id' => $colaborador[0]->capacitaciones[0]->id,
+                        'curso_id' => $colaborador[0]->capacitaciones[0]->curso_id,
+                        'colaborador_id' => $colaborador[0]->capacitaciones[0]->colaborador_id,
+                    ],
+                    1 => [
+                        'id' => $colaborador[0]->capacitaciones[1]->id,
+                        'curso_id' => $colaborador[0]->capacitaciones[1]->curso_id,
+                        'colaborador_id' => $colaborador[0]->capacitaciones[1]->colaborador_id,
+                    ],
+                    2 => [
+                        'id' => $colaborador[0]->capacitaciones[2]->id,
+                        'curso_id' => $colaborador[0]->capacitaciones[2]->curso_id,
+                        'colaborador_id' => $colaborador[0]->capacitaciones[2]->colaborador_id,
+                    ],
+                    3 => [
+                        'id' => $colaborador[0]->capacitaciones[3]->id,
+                        'curso_id' => $colaborador[0]->capacitaciones[3]->curso_id,
+                        'colaborador_id' => $colaborador[0]->capacitaciones[3]->colaborador_id,
+                    ],
+                ],
+        ]);
     }
 }

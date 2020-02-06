@@ -23,10 +23,12 @@ class CargoResource extends JsonResource
             'estado' => $this->estado,
             'nivelJerarquico' => new NivelJerarquicoResource($this->nivelJerarquico),
             'area' => new AreaResource($this->area),
-            'organigrama_url' => $this->organigrama_url ? url(Storage::url($this->organigrama_url)) : '',
-            'descriptor_url' => $this->descriptor_url ? url(Storage::url($this->descriptor_url)) : '',
+            'organigrama_url' => $this->organigrama_url ? $this->organigrama_url : '',
+            'organigrama_path' => $this->organigrama_url ? url(Storage::url($this->organigrama_url)) : '',
+            'descriptor_url' => $this->descriptor_url ? $this->descriptor_url : '',
+            'descriptor_path' => $this->descriptor_url ? url(Storage::url($this->descriptor_url)) : '',
             'hijos' => $this->encontrarCargoInferior() ? true : false,
-            'movilidades'=> $this->movilidades()->where('estado', 1)->count() ? true : false
+            'movilidades' => $this->movilidades()->where('estado', 1)->count() ? true : false,
         ];
     }
 }

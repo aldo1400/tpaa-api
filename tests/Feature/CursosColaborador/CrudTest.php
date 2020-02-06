@@ -25,12 +25,8 @@ class CrudTest extends TestCase
         // $image = UploadedFile::fake()->image('banner1.jpg', 1200, 750);
 
         $parameters = [
-            // 'fecha' => $cursoColaborador->fecha->format('Y-m-d'),
             'diploma' => $image,
-            // 'estado' => 1,
-            // 'curso_id' => $curso->id,
             'colaborador_id' => $colaborador->id,
-            // 'tipo_archivo' => 'aldo',
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -41,9 +37,6 @@ class CrudTest extends TestCase
 
         $this->assertDatabaseHas('cursos_colaborador', [
             'id' => CursoColaborador::latest()->first()->id,
-            // 'fecha' => $parameters['fecha'],
-            // 'diploma' => $parameters['tipo'],
-            // 'estado' => $parameters['estado'],
             'curso_id' => $curso->id,
             'colaborador_id' => $parameters['colaborador_id'],
             'url_diploma' => $diplomaUrl,
