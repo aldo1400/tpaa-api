@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CursoColaborador extends Model
 {
-    // use ImageTrait; 
-      /**
+    // use ImageTrait;
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -22,9 +22,7 @@ class CursoColaborador extends Model
      */
     protected $fillable = [
         'diploma',
-        'tipo_archivo',
-        'fecha',
-        'estado',
+        'url_diploma',
     ];
 
     /**
@@ -33,7 +31,6 @@ class CursoColaborador extends Model
      * @var array
      */
     protected $dates = [
-        'fecha',
         'deleted_at',
     ];
 

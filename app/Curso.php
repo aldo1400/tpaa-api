@@ -43,7 +43,7 @@ class Curso extends Model
         return $this->hasMany('App\CursoColaborador');
     }
 
-     /**
+    /**
      * Get the tipo for the cursp.
      */
     public function tipoCurso(): BelongsTo
@@ -51,4 +51,17 @@ class Curso extends Model
         return $this->belongsTo('App\TipoCurso');
     }
 
+    public function guardarColaboradores()
+    {
+    }
+
+    public function saveFile($file)
+    {
+        $filePath = $file->storeAs(
+                    'public/diplomas',
+                    $this->id.'_'.$this->nombre.'.'.$file->extension()
+                );
+
+        return $filePath;
+    }
 }

@@ -32,10 +32,10 @@ class CrudTest extends TestCase
                         'estado',
                         'anio',
                         'interno',
-                        'tipoCurso'=>[
+                        'tipoCurso' => [
                             'id',
-                            'categoria'
-                        ]
+                            'categoria',
+                        ],
                     ],
                 ],
             ]);
@@ -57,18 +57,18 @@ class CrudTest extends TestCase
                     'data' => [
                             'id' => $cursos[1]->id,
                             'nombre' => $cursos[1]->nombre,
-                            'titulo'=>$cursos[1]->titulo,
-                            'horas_cronologicas'=>$cursos[1]->horas_cronologicas,
-                            'realizado'=>$cursos[1]->realizado,
-                            'fecha_inicio'=>$cursos[1]->fecha_inicio->format('Y-m-d'),
-                            'fecha_termino'=>$cursos[1]->fecha_termino->format('Y-m-d'),
+                            'titulo' => $cursos[1]->titulo,
+                            'horas_cronologicas' => $cursos[1]->horas_cronologicas,
+                            'realizado' => $cursos[1]->realizado,
+                            'fecha_inicio' => $cursos[1]->fecha_inicio->format('Y-m-d'),
+                            'fecha_termino' => $cursos[1]->fecha_termino->format('Y-m-d'),
                             'estado' => $cursos[1]->estado,
-                            'anio'=>$cursos[1]->anio,
-                            'interno'=>$cursos[1]->interno,
-                            'tipoCurso'=>$cursos[1]->tipoCurso->only([
+                            'anio' => $cursos[1]->anio,
+                            'interno' => $cursos[1]->interno,
+                            'tipoCurso' => $cursos[1]->tipoCurso->only([
                                 'id',
-                                'categoria'
-                            ])
+                                'categoria',
+                            ]),
                     ],
                 ]);
     }
@@ -76,37 +76,37 @@ class CrudTest extends TestCase
     public function testCrearCurso()
     {
         $curso = factory(Curso::class)->make();
-        $tipoCurso=factory(TipoCurso::class)->create();
+        $tipoCurso = factory(TipoCurso::class)->create();
         $url = '/api/cursos';
 
         $parameters = [
             'nombre' => $curso->nombre,
             'titulo' => $curso->titulo,
-            'horas_cronologicas'=>$curso->horas_cronologicas,
-            'realizado'=>$curso->realizado,
-            'fecha_inicio'=>Carbon::createFromDate('2018','02','10')->format('Y-m-d'),
-            'fecha_termino'=>now()->format('Y-m-d'),
-            'tipo_curso_id'=>$tipoCurso->id,
-            'estado' =>1,
-            'interno'=>1,
-            'anio'=>'2018'
+            'horas_cronologicas' => $curso->horas_cronologicas,
+            'realizado' => $curso->realizado,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '10')->format('Y-m-d'),
+            'fecha_termino' => now()->format('Y-m-d'),
+            'tipo_curso_id' => $tipoCurso->id,
+            'estado' => 1,
+            'interno' => 1,
+            'anio' => '2018',
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        
+
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('cursos', [
             'id' => Curso::latest()->first()->id,
             'nombre' => $parameters['nombre'],
-            'titulo'=>$parameters['titulo'],
-            'horas_cronologicas'=>$parameters['horas_cronologicas'],
-            'realizado'=>$parameters['realizado'],
-            'fecha_inicio'=>$parameters['fecha_inicio'],
-            'fecha_termino'=>$parameters['fecha_termino'],
-            'tipo_curso_id'=>$parameters['tipo_curso_id'],
-            'interno'=>$parameters['interno'],
-            'anio'=>$parameters['anio'],
+            'titulo' => $parameters['titulo'],
+            'horas_cronologicas' => $parameters['horas_cronologicas'],
+            'realizado' => $parameters['realizado'],
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'fecha_termino' => $parameters['fecha_termino'],
+            'tipo_curso_id' => $parameters['tipo_curso_id'],
+            'interno' => $parameters['interno'],
+            'anio' => $parameters['anio'],
             'estado' => $parameters['estado'],
         ]);
     }
@@ -117,12 +117,22 @@ class CrudTest extends TestCase
             'estado' => 1,
         ]);
 
+        $tipoCurso = factory(TipoCurso::class)
+                    ->create();
+
         $url = '/api/cursos/'.$curso->id;
 
         $parameters = [
             'nombre' => 'NUEVO CURSO DE BIOLOGIA',
-            'tipo' => 1,
+            'titulo' => 'BIOLOGIA 2020',
+            'horas_cronologicas' => $curso->horas_cronologicas,
+            'realizado' => $curso->realizado,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '01')->format('Y-m-d'),
+            'fecha_termino' => now()->format('Y-m-d'),
+            'tipo_curso_id' => $tipoCurso->id,
             'estado' => 1,
+            'interno' => 1,
+            'anio' => '2020',
         ];
 
         $response = $this->json('PUT', $url, $parameters);
@@ -131,14 +141,28 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cursos', [
             'id' => $curso->id,
             'nombre' => $parameters['nombre'],
-            'tipo' => $parameters['tipo'],
+            'titulo' => $parameters['titulo'],
+            'horas_cronologicas' => $parameters['horas_cronologicas'],
+            'realizado' => $parameters['realizado'],
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'fecha_termino' => $parameters['fecha_termino'],
+            'tipo_curso_id' => $parameters['tipo_curso_id'],
+            'interno' => $parameters['interno'],
+            'anio' => $parameters['anio'],
             'estado' => $parameters['estado'],
         ]);
 
         $this->assertDatabaseMissing('cursos', [
             'id' => $curso->id,
             'nombre' => $curso->nombre,
-            'tipo' => $curso->tipo,
+            'titulo' => $curso->titulo,
+            'horas_cronologicas' => $curso->horas_cronologicas,
+            'realizado' => $curso->realizado,
+            'fecha_inicio' => $curso->fecha_inicio,
+            'fecha_termino' => $curso->fecha_termino,
+            'tipo_curso_id' => $curso->tipo_curso_id,
+            'interno' => $curso->interno,
+            'anio' => $curso->anio,
             'estado' => $curso->estado,
         ]);
     }

@@ -99,7 +99,9 @@ Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');
 Route::delete('/cargas-familiares/{id}', 'CargasFamiliares\DeleteProcessController');
 Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessController');
 
-Route::post('/cursos-colaborador', 'CursosColaborador\CreateProcessController');
+// Route::post('/cursos-colaborador', 'CursosColaborador\CreateProcessController');
+
+Route::post('/cursos/{id}/colaboradores', 'CursosColaborador\CreateProcessController');
 
 Route::get('/niveles-jerarquico', 'NivelesJerarquico\IndexController');
 Route::post('/niveles-jerarquico', 'NivelesJerarquico\CreateProcessController');

@@ -24,12 +24,13 @@ class CursoColaboradorRequest extends FormRequest
     public function rules()
     {
         return [
-            'fecha'=>['required','date','date_format:Y-m-d'],
-            'tipo_archivo'=>['required','string'],
-            'estado'=>['required','boolean'],
-            'diploma'=>['required','image','mimes:jpeg,bmp,png'],
-            'curso_id'=>['required','exists:cursos,id'],
-            'colaborador_id'=>['required','exists:colaboradores,id']
+            // 'fecha'=>['required','date','date_format:Y-m-d'],
+            // 'tipo_archivo'=>['required','string'],
+            // 'estado'=>['required','boolean'],
+            'diploma' => ['required', 'image', 'mimes:jpeg,bmp,png'],
+            // 'url_diploma'=>['required','string'],
+            // 'curso_id'=>['required','exists:cursos,id'],
+            'colaborador_id' => ['required', 'exists:colaboradores,id'],
         ];
     }
 }
