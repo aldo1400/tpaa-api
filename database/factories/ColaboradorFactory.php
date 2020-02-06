@@ -53,9 +53,8 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
         'contacto_emergencia_nombre' => $faker->name,
         'contacto_emergencia_telefono' => $faker->tollFreePhoneNumber,
         'estado' => $faker->randomElement([
-            'Activo (a)',
-            'Desvinculado (a)',
-            'Renuncia',
+            '1',
+            '0'
         ]),
         'fecha_inactividad' => $faker->dateTime($max = 'now', $timezone = null),
         'credencial_vigilante' => $faker->randomElement([

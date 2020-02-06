@@ -58,7 +58,7 @@ class Curso extends Model
             'diploma' => Image::convertImage($file),
         ]);
 
-        $cursoColaborador->url_diploma = $this->saveFile($file);
+        $cursoColaborador->url_diploma = $this->saveFile($file,$colaborador);
 
         $cursoColaborador->curso()->associate($this->id);
         $cursoColaborador->colaborador()->associate($colaborador);
@@ -67,11 +67,12 @@ class Curso extends Model
         return true;
     }
 
-    public function saveFile($file)
+    public function saveFile($file,$colaborador)
     {
+        $colaborador=Colaborador::findOrFail($colaborador);
         $filePath = $file->storeAs(
                     'public/diplomas',
-                    $this->id.'_'.$this->nombre.'.'.$file->extension()
+                    $this->nombre.'_'.$colaborador->rut.'.'.$file->extension()
                 );
 
         return $filePath;

@@ -66,7 +66,7 @@ class ColaboradorRequest extends FormRequest
         if (!$this->route('id')) {
             $rules['rut'] = 'required|unique:colaboradores,rut|max:255';
             $rules['fecha_inactividad'] = 'nullable|date|date_format:Y-m-d';
-            $rules['estado'] = 'nullable|in:Activo (a),Desvinculado (a),Renuncia';
+            $rules['estado'] = 'nullable|in:1,0';
         }
 
         return $rules;

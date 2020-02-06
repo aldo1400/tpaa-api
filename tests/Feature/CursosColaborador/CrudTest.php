@@ -35,7 +35,7 @@ class CrudTest extends TestCase
         // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
-        $diplomaUrl = 'public/diplomas/'.$curso->id.'_'.$curso->nombre.'.'.$image->extension();
+        $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.'.$image->extension();
 
         $this->assertDatabaseHas('cursos_colaborador', [
             'id' => CursoColaborador::latest()->first()->id,

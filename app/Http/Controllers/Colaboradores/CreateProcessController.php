@@ -34,7 +34,9 @@ class CreateProcessController extends Controller
         $colaborador = Colaborador::make($request->validated());
 
         $colaborador->rut = $request->rut;
-        $colaborador->password = Hash::make($request->password);
+       
+        $colaborador->password = $request->password ? Hash::make($request->password) : '';
+
         $colaborador->estado = 1;
 
         if ($request->file('imagen')) {
