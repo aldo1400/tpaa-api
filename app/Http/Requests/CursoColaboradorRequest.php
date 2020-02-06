@@ -30,7 +30,8 @@ class CursoColaboradorRequest extends FormRequest
             'diploma' => ['required', 'image', 'mimes:jpeg,bmp,png'],
             // 'url_diploma'=>['required','string'],
             // 'curso_id'=>['required','exists:cursos,id'],
-            'colaborador_id' => ['required', 'exists:colaboradores,id'],
+            'colaboradores' => ['nullable', 'array'],
+            'colaboradores.*' => ['nullable', 'distinct', 'exists:colaboradores,id'],
         ];
     }
 }

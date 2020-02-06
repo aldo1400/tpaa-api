@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -51,8 +52,19 @@ class Curso extends Model
         return $this->belongsTo('App\TipoCurso');
     }
 
-    public function guardarColaboradores()
+    public function crearCapacitacion($colaborador, $file)
     {
+        $cursoColaborador = CursoColaborador::make([
+            'diploma' => Image::convertImage($file),
+        ]);
+
+        $cursoColaborador->url_diploma = $this->saveFile($file);
+
+        $cursoColaborador->curso()->associate($this->id);
+        $cursoColaborador->colaborador()->associate($colaborador);
+        $cursoColaborador->save();
+
+        return true;
     }
 
     public function saveFile($file)

@@ -26,7 +26,9 @@ class CrudTest extends TestCase
 
         $parameters = [
             'diploma' => $image,
-            'colaborador_id' => $colaborador->id,
+            'colaboradores' => [
+                $colaborador->id,
+            ],
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -38,7 +40,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cursos_colaborador', [
             'id' => CursoColaborador::latest()->first()->id,
             'curso_id' => $curso->id,
-            'colaborador_id' => $parameters['colaborador_id'],
+            'colaborador_id' => $parameters['colaboradores'][0],
             'url_diploma' => $diplomaUrl,
         ]);
     }
@@ -50,26 +52,25 @@ class CrudTest extends TestCase
     {
         $curso = factory(Curso::class)
                     ->create();
-        
-        $colaborador = factory(Colaborador::class,1)
+
+        $colaborador = factory(Colaborador::class, 1)
                     ->create()
-                    ->each(function ($colaborador) use ($curso){
+                    ->each(function ($colaborador) use ($curso) {
                         $colaborador->capacitaciones()->saveMany(factory(CursoColaborador::class, 4)
                                     ->make([
-                                        'colaborador_id'=>'',
-                                        'curso_id'=>$curso->id
+                                        'colaborador_id' => '',
+                                        'curso_id' => $curso->id,
                                     ]));
                     });
-
 
         $url = '/api/capacitaciones/'.$colaborador[0]->capacitaciones[0]->id;
 
         $response = $this->json('DELETE', $url);
-// dd($response->decodeResponseJson());
+        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
-        $this->assertDatabaseMissing('cursos_colaborador', [
-            'id' => $colaborador[0]->capacitaciones[0]->id
+        $this->assertSoftDeleted('cursos_colaborador', [
+            'id' => $colaborador[0]->capacitaciones[0]->id,
         ]);
 
         // $response = $this->json('GET', '/api/cursos');

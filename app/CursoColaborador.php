@@ -4,10 +4,12 @@ namespace App;
 
 use App\Http\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CursoColaborador extends Model
 {
+    use SoftDeletes;
     // use ImageTrait;
     /**
      * The table associated with the model.

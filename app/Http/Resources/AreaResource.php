@@ -23,6 +23,7 @@ class AreaResource extends JsonResource
             'tipoArea' => new TipoAreaResource($this->tipoArea),
             'hijos' => $this->encontrarAreaInferior() ? true : false,
             'cargos' => $this->cargos()->count() ? true : false,
+            'updated_at' => $this->updated_at->format('d/m/Y'),
         ];
     }
 }

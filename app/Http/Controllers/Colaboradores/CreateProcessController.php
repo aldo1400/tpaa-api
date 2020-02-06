@@ -35,7 +35,7 @@ class CreateProcessController extends Controller
 
         $colaborador->rut = $request->rut;
         $colaborador->password = Hash::make($request->password);
-        $colaborador->estado=1;
+        $colaborador->estado = 1;
 
         if ($request->file('imagen')) {
             $finalURL = storage_path().'/app/public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension();
