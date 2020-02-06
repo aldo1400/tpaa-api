@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\CursosColaborador;
+namespace App\Http\Controllers\Capacitaciones;
 
 use App\Curso;
 use App\Helpers\Image;
 use App\CursoColaborador;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CursoColaboradorRequest;
 

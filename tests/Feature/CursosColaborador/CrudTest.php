@@ -42,4 +42,46 @@ class CrudTest extends TestCase
             'url_diploma' => $diplomaUrl,
         ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarCursoColaborador()
+    {
+        $curso = factory(Curso::class)
+                    ->create();
+        
+        $colaborador = factory(Colaborador::class,1)
+                    ->create()
+                    ->each(function ($colaborador) use ($curso){
+                        $colaborador->capacitaciones()->saveMany(factory(CursoColaborador::class, 4)
+                                    ->make([
+                                        'colaborador_id'=>'',
+                                        'curso_id'=>$curso->id
+                                    ]));
+                    });
+
+
+        $url = '/api/capacitaciones/'.$colaborador[0]->capacitaciones[0]->id;
+
+        $response = $this->json('DELETE', $url);
+// dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('cursos_colaborador', [
+            'id' => $colaborador[0]->capacitaciones[0]->id
+        ]);
+
+        // $response = $this->json('GET', '/api/cursos');
+        // $response->assertStatus(200)
+        //     ->assertJsonCount(4, 'data')
+        //     ->assertJson([
+        //         'data' => [
+        //             '0' => ['id' => $cursos[1]->id],
+        //             '1' => ['id' => $cursos[2]->id],
+        //             '2' => ['id' => $cursos[3]->id],
+        //             '3' => ['id' => $cursos[4]->id],
+        //         ],
+        //     ]);
+    }
 }
