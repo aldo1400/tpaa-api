@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Capacitaciones;
 
 use App\Curso;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
@@ -22,12 +23,14 @@ class CreateProcessController extends Controller
                     if (in_array($extensionFile, $extensiones)) {
                         Image::make(file_get_contents($request->file('diploma')->getRealPath()))
                         ->encode($request->file('diploma')->extension(), 75);
-                        // dd($request->file('diploma')->getSize());
-                        // ->save('aldo/'.$curso->id.'.'.$request->file('diploma')->extension(), 75);
                     }
                     $file = $request->diploma;
                 } else {
+                    // $pdf = PDF::loadView('capacitacion.diploma', []);
+                    $content = $pdf->download()->getOriginalContent();
+                    dd($content);
                     // $file=generarPDF();
+                    // $file=$content;
                 }
                 $curso->crearCapacitacion($colaborador, $file);
             }
