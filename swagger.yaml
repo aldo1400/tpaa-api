@@ -16,6 +16,8 @@ tags:
   description: User module
 - name: type-users
   description: Everything about type of users
+- name: capacitaciones(curso-colaborador)
+  description: Everything about capacitaciones
 - name: cargos
   description: Everything about cargos
 - name: cargas familiares
@@ -245,6 +247,83 @@ paths:
           description: Route not found
         409:
           description: Departure has children  
+  
+  # ---------------------
+  #   Capacitaciones - Curso-Colaborador
+  # ---------------------
+  "/colaboradores/{id}/capacitaciones":
+    get:
+      tags:
+      - capacitaciones(curso-colaborador)
+      summary: Obtener todos las capacitaciones de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CapacitacionResource'
+        401:
+          description: unauthenticated 
+  
+  "/cursos/{id}/capacitaciones":
+    post:
+      tags:
+      - capacitaciones(curso-colaborador)
+      summary: Crear una capacitacion
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/CapacitacionCreateRequest'
+      responses:
+        201:
+          description: Data was inserted succesfully
+        400:
+          description: Invalid input, object invalid
+        401:
+          description: Unauthenticated
+        403:
+          description: Forbidden access
+  
+  "/capacitaciones/{id}":
+    delete:
+      tags:
+      - capacitaciones(curso-colaborador)
+      summary: Eliminar capacitacion
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Cargo deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children
           
   # ---------------------
   #   Cargos
@@ -1754,6 +1833,32 @@ paths:
          
 definitions:
   
+  CapacitacionResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      diploma_url:
+        type: string
+      diploma_path:
+        type: string
+      diploma:
+        type: string
+      curso_id:
+        type: integer
+      colaborador_id:
+        type: integer
+  
+  CapacitacionCreateRequest:
+    type: object
+    properties:
+      diploma:
+        type: string
+      colaboradores:
+        type: array
+        items:
+          type: integer
+   
   CargaFamiliarResource:
     type: object
     properties:
@@ -1826,7 +1931,13 @@ definitions:
         $ref: "#/definitions/AreaResource"
       descriptor_url:
         type: string
+      descriptor_path:
+        type: string
       organigrama_url:
+        type: string
+      organigrama_path:
+        type: string
+      nombre_fantasia:
         type: string
       
   CargoCreateRequest:
@@ -1846,6 +1957,8 @@ definitions:
       descriptor:
         type: string
       organigrama:
+        type: string
+      nombre_fantasia:
         type: string
   
   CargoUpdateRequest:
@@ -1870,6 +1983,8 @@ definitions:
         type: integer
       nivel_jerarquico_id:
         type: integer
+      nombre_fantasia:
+        type: string
   
   ColaboradorCreateRequest:
     type: object

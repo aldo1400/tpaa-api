@@ -24,7 +24,8 @@ class Cargo extends Model
         'descriptor',
         'descriptor_url',
         'organigrama',
-        'organigrama_url'
+        'organigrama_url',
+        'nombre_fantasia'
     ];
 
     /**

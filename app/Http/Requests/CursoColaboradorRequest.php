@@ -27,7 +27,7 @@ class CursoColaboradorRequest extends FormRequest
             // 'fecha'=>['required','date','date_format:Y-m-d'],
             // 'tipo_archivo'=>['required','string'],
             // 'estado'=>['required','boolean'],
-            'diploma' => ['required', 'image', 'mimes:jpeg,bmp,png'],
+            'diploma' => ['nullable', 'image', 'mimes:jpeg,bmp,png'],
             // 'url_diploma'=>['required','string'],
             // 'curso_id'=>['required','exists:cursos,id'],
             'colaboradores' => ['nullable', 'array'],

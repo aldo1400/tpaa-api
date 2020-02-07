@@ -42,6 +42,7 @@ class CrudTest extends TestCase
                             'nombre',
                             'estado',
                         ],
+                        'nombre_fantasia'
                     ],
                 ],
             ]);
@@ -83,6 +84,7 @@ class CrudTest extends TestCase
                             'nombre',
                             'estado',
                         ],
+                        'nombre_fantasia'
                     ],
                 ],
             ]);
@@ -124,6 +126,7 @@ class CrudTest extends TestCase
                             'nombre',
                             'estado',
                         ],
+                        'nombre_fantasia'
                     ],
                 ],
             ]);
@@ -159,6 +162,7 @@ class CrudTest extends TestCase
                             ]),
                             'organigrama_url' => '',
                             'descriptor_url' => '',
+                            'nombre_fantasia'=>$cargos[1]->nombre_fantasia
                     ],
                 ]);
     }
@@ -183,6 +187,7 @@ class CrudTest extends TestCase
             'area_id' => $area->id,
             'descriptor' => $descriptor,
             'organigrama' => $organigrama,
+            'nombre_fantasia'=>$cargo->nombre_fantasia
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -192,7 +197,6 @@ class CrudTest extends TestCase
         $cargoCreado = Cargo::latest()->first();
         $descriptorUrl = 'public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_descriptor'.'.'.$descriptor->extension();
         $organigramaUrl = 'public/cargos/'.$cargoCreado->id.'_'.$cargoCreado->nombre.'_organigrama'.'.'.$organigrama->extension();
-        // dd($organigramaUrl,$descriptorUrl);
         Storage::disk('local')->assertExists($descriptorUrl);
         Storage::disk('local')->assertExists($organigramaUrl);
 
@@ -205,6 +209,7 @@ class CrudTest extends TestCase
             'estado' => $parameters['estado'],
             'organigrama_url' => $organigramaUrl,
             'descriptor_url' => $descriptorUrl,
+            'nombre_fantasia'=>$parameters['nombre_fantasia']
         ]);
     }
 
@@ -218,6 +223,7 @@ class CrudTest extends TestCase
         $url = '/api/cargos';
         $parameters = [
             'nombre' => $cargo->nombre,
+            'nombre_fantasia' => $cargo->nombre_fantasia,
             'estado' => $cargo->estado,
             'supervisor_id' => $cargoSupervisor->id,
             'nivel_jerarquico_id' => $nivelJerarquico->id,
@@ -233,6 +239,7 @@ class CrudTest extends TestCase
             'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
             'area_id' => $parameters['area_id'],
             'estado' => $parameters['estado'],
+            'nombre_fantasia'=>$parameters['nombre_fantasia']
         ]);
     }
 
@@ -308,6 +315,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
+            'nombre_fantasia' => 'Nuevo nombre de fantasia',
             'supervisor_id' => $supervisor->id,
             'organigrama' => $organigrama,
             'descriptor' => $descriptor,
@@ -329,6 +337,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $parameters['nombre'],
+            'nombre_fantasia' => $parameters['nombre_fantasia'],
             'supervisor_id' => $parameters['supervisor_id'],
             'descriptor_url' => $descriptorUrl,
             'organigrama_url' => $organigramaUrl,
@@ -340,6 +349,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargos[0]->id,
             'nombre' => $cargos[0]->nombre,
+            'nombre_fantasia' => $cargos[0]->nombre_fantasia,
             'supervisor_id' => $cargos[0]->supervisor_id,
             'organigrama' => null,
             'organigrama_url' => null,
@@ -378,6 +388,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
+            'nombre_fantasia' => 'Nuevo Administrador de recursos humanos',
             'supervisor_id' => $supervisor->id,
             'organigrama' => $organigrama,
             'descriptor' => $descriptor,
@@ -399,6 +410,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
+            'nombre_fantasia' => $parameters['nombre_fantasia'],
             'supervisor_id' => $parameters['supervisor_id'],
             'descriptor_url' => $descriptorUrl,
             'organigrama_url' => $organigramaUrl,
@@ -410,6 +422,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargo->id,
             'nombre' => $cargo->nombre,
+            'nombre_fantasia' => $cargo->nombre_fantasia,
             'supervisor_id' => $cargo->supervisor_id,
             'organigrama' => $cargo->organigrama,
             'organigrama_url' => $cargo->orgranigrama_url,
@@ -451,6 +464,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
+            'nombre_fantasia'=>'',
             'supervisor_id' => '',
             'organigrama' => '',
             'organigrama_url' => '',
@@ -471,6 +485,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
+            'nombre_fantasia' => null,
             'descriptor_url' => null,
             'descriptor' => '',
             'organigrama_url' => null,
@@ -483,6 +498,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargo->id,
             'nombre' => $cargo->nombre,
+            'nombre_fantasia' => $cargo->nombre_fantasia,
             'organigrama' => $cargo->organigrama,
             'organigrama_url' => $cargo->orgranigrama_url,
             'descriptor' => $cargo->descriptor,
@@ -549,6 +565,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
+            'nombre_fantasia' => 'Administrador de recursos humanos',
             'supervisor_id' => $cargo->supervisor_id,
             'area_id' => $area->id,
             'nivel_jerarquico_id' => $nivelJerarquico->id,
@@ -562,6 +579,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
+            'nombre_fantasia' => $parameters['nombre_fantasia'],
             'supervisor_id' => $parameters['supervisor_id'],
             // 'descriptor_url' => null,
             // 'descriptor' => '',
@@ -574,6 +592,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseMissing('cargos', [
             'id' => $cargo->id,
             'nombre' => $cargo->nombre,
+            'nombre_fantasia' => $cargo->nombre_fantasia,
             'supervisor_id' => $cargo->supervisor_id,
             'organigrama' => $cargo->organigrama,
             'organigrama_url' => $cargo->orgranigrama_url,
@@ -642,6 +661,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
+            'nombre_fantasia' => 'Nuevo Administrador de recursos humanos',
             'supervisor_id' => $cargoSupervisor->id,
             'estado'=>0,
             'area_id'=>$cargos[0]->area_id,

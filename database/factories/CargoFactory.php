@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Cargo::class, function (Faker $faker) {
     return [
         'nombre' => $faker->company,
+        'nombre_fantasia' => $faker->company,
         'estado' => $faker->randomElement([
             0,
             1,

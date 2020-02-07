@@ -21,6 +21,7 @@ class UpdateProcessController extends Controller
             'nivel_jerarquico_id' => 'required|exists:niveles_jerarquico,id',
             'supervisor_id' => 'nullable|exists:cargos,id',
             'estado' => 'required|boolean',
+            'nombre_fantasia'=>'nullable|string'
         ]);
 
         $cargo = Cargo::findOrFail($id);
@@ -42,6 +43,7 @@ class UpdateProcessController extends Controller
 
         $cargo->fill([
             'nombre' => $request->nombre,
+            'nombre_fantasia'=>$request->nombre_fantasia
         ]);
 
         $cargo->actualizarArchivo($request, 'descriptor');

@@ -30,6 +30,7 @@ class CargoResource extends JsonResource
             'hijos' => $this->encontrarCargoInferior() ? true : false,
             'movilidades' => $this->movilidades()->where('estado', 1)->count() ? true : false,
             'updated_at' => $this->updated_at->format('d/m/Y'),
+            'nombre_fantasia'=>$this->nombre_fantasia ? $this->nombre_fantasia : ''
         ];
     }
 }
