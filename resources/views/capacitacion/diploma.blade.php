@@ -44,6 +44,7 @@ table, td, th {
     </style>
 
 <div class="main">
+    <img src="http://admisionapi.uniq.edu.pe/public/img/HEADER.png" style="width:100%;height:100px"/>
     <div style="margin-left:296px">
         <p style="font-weight:700;font-size:12pt; color:#747373">SOLICITO: INSCRIPCIÓN COMO POSTULANTE</p>
     </div>

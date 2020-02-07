@@ -3,7 +3,9 @@
 namespace App;
 
 use App\Helpers\Image;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,7 +57,7 @@ class Curso extends Model
     public function crearCapacitacion($colaborador, $file)
     {
         $cursoColaborador = CursoColaborador::make([
-            'diploma' => Image::convertImage($file),
+            'diploma' => is_string($file) ? base64_encode($file) : Image::convertImage($file),
         ]);
 
         $cursoColaborador->url_diploma = $this->saveFile($file,$colaborador);
@@ -70,11 +72,24 @@ class Curso extends Model
     public function saveFile($file,$colaborador)
     {
         $colaborador=Colaborador::findOrFail($colaborador);
-        $filePath = $file->storeAs(
+        
+        if(is_string($file)){
+            $extension='pdf';
+            $filePath='public/diplomas/'.$this->nombre.'_'.$colaborador->rut.'.'.$extension;
+            Storage::put($filePath, $file);
+        }
+        else{
+            $filePath = $file->storeAs(
                     'public/diplomas',
                     $this->nombre.'_'.$colaborador->rut.'.'.$file->extension()
                 );
-
+        }
         return $filePath;
+    }
+
+    public function generarPDFCapacitacion(){
+        $pdf = PDF::loadView('capacitacion.diploma', []);
+        $content = $pdf->download()->getOriginalContent();
+        return $content;
     }
 }

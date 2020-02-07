@@ -11,7 +11,7 @@ class IndexController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $cargos = Cargo::all();
+        $cargos = Cargo::orderBy('updated_at','DESC')->get();
 
         if(!empty($request->estado)){
             if($request->estado=='true'){

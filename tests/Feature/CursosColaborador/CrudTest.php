@@ -26,13 +26,14 @@ class CrudTest extends TestCase
 
         $parameters = [
             'diploma' => $image,
+            'masivo'=>0,
             'colaboradores' => [
                 $colaborador->id,
             ],
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        dd($response->decodeResponseJson());
+        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.'.$image->extension();
