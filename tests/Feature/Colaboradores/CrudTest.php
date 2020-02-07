@@ -78,6 +78,146 @@ class CrudTest extends TestCase
             ]);
     }
 
+    public function testObtenerTodosLosActivosColaboradores()
+    {
+        factory(Colaborador::class, 3)
+                    ->create([
+                        'estado'=>'1'
+                    ]);
+        
+        factory(Colaborador::class, 5)
+                    ->create([
+                        'estado'=>'0'
+                    ]);
+
+        $url = '/api/colaboradores?estado=true';
+        $response = $this->json('GET', $url);
+        
+        $response->assertStatus(200)
+            ->assertJsonCount(3, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'usuario',
+                        'primer_nombre',
+                        'segundo_nombre',
+                        'apellido_paterno',
+                        'apellido_materno',
+                        'sexo',
+                        'nacionalidad',
+                        'fecha_nacimiento',
+                        'edad_colaborador',
+                        'email',
+                        'domicilio',
+                        'licencia_b',
+                        'vencimiento_licencia_b',
+                        'licencia_d',
+                        'vencimiento_licencia_d',
+                        'carnet_portuario',
+                        'vencimiento_carnet_portuario',
+                        'talla_calzado',
+                        'talla_chaleco',
+                        'talla_polera',
+                        'talla_pantalon',
+                        'fecha_ingreso',
+                        'telefono',
+                        'celular',
+                        'anexo',
+                        'contacto_emergencia_nombre',
+                        'contacto_emergencia_telefono',
+                        // 'estado',
+                        'fecha_inactividad',
+                        'nivelEducacion' => [
+                            'id',
+                            'nivel_tipo',
+                            'estado',
+                        ],
+                        'estadoCivil' => [
+                            'id',
+                            'tipo',
+                            'estado',
+                        ],
+                        'cargoActual',
+                        'movilidadActual',
+                        'credencial_vigilante',
+                        'vencimiento_credencial_vigilante',
+                        'imagen_url',
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerTodosLosInactivosColaboradores()
+    {
+        factory(Colaborador::class, 3)
+                    ->create([
+                        'estado'=>'1'
+                    ]);
+        
+        factory(Colaborador::class, 5)
+                    ->create([
+                        'estado'=>'0'
+                    ]);
+
+        $url = '/api/colaboradores?estado=false';
+        $response = $this->json('GET', $url);
+        
+        $response->assertStatus(200)
+            ->assertJsonCount(5, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'usuario',
+                        'primer_nombre',
+                        'segundo_nombre',
+                        'apellido_paterno',
+                        'apellido_materno',
+                        'sexo',
+                        'nacionalidad',
+                        'fecha_nacimiento',
+                        'edad_colaborador',
+                        'email',
+                        'domicilio',
+                        'licencia_b',
+                        'vencimiento_licencia_b',
+                        'licencia_d',
+                        'vencimiento_licencia_d',
+                        'carnet_portuario',
+                        'vencimiento_carnet_portuario',
+                        'talla_calzado',
+                        'talla_chaleco',
+                        'talla_polera',
+                        'talla_pantalon',
+                        'fecha_ingreso',
+                        'telefono',
+                        'celular',
+                        'anexo',
+                        'contacto_emergencia_nombre',
+                        'contacto_emergencia_telefono',
+                        // 'estado',
+                        'fecha_inactividad',
+                        'nivelEducacion' => [
+                            'id',
+                            'nivel_tipo',
+                            'estado',
+                        ],
+                        'estadoCivil' => [
+                            'id',
+                            'tipo',
+                            'estado',
+                        ],
+                        'cargoActual',
+                        'movilidadActual',
+                        'credencial_vigilante',
+                        'vencimiento_credencial_vigilante',
+                        'imagen_url',
+                    ],
+                ],
+            ]);
+    }
+
     public function testObtenerUnColaborador()
     {
         $colaboradores = factory(Colaborador::class, 10)
@@ -1183,25 +1323,6 @@ class CrudTest extends TestCase
                     ],
                 ],
         ]);
-    }
-
-    public function testDeleteImage()
-    {
-        // $user = factory(Colaborador::class)->create();
-        // $token = JWTAuth::fromUser($user);
-
-        // Storage::fake('local');
-        // $image = UploadedFile::fake()->create('banner1.jpg');
-        // $imagePath = Storage::putFile('public/banners', $image);
-        // dd($imagePath);
-        // $url =  "/api/colaboradores/{}/imagen";
-        // $response = $this->withHeaders([
-        // 'Authorization' => 'Bearer ' . $token
-        // ])
-        // $response = $this->json('DELETE', $url);
-        // dd($response->decodeResponseJson());
-        // $response->assertStatus(200);
-        // Storage::disk('local')->assertMissing('storage/banners/' . $image->hashName());
     }
 
     public function testValidarRutSiYaExiste()

@@ -383,7 +383,7 @@ class CrudTest extends TestCase
         $parameters = [
             'nombre' => 'Area de administración de recursos humanos',
             'padre_id' => $areas[1]->id,
-            'estado' => 1,
+            'estado' => $area->estado,
             'tipo_area_id' => $area->tipo_area_id,
         ];
 
@@ -449,6 +449,7 @@ class CrudTest extends TestCase
         $area = factory(Area::class)
                         ->create([
                             'padre_id' => $areas[0]->id,
+                            'estado'=>1
                         ]);
 
         factory(Cargo::class)->create([
@@ -461,6 +462,7 @@ class CrudTest extends TestCase
             'nombre' => 'Area de administración de recursos humanos',
             'padre_id' => $areas[1]->id,
             'estado' => 0,
+            'tipo_area_id'=>$area->tipo_area_id
         ];
 
         $response = $this->json('PATCH', $url, $parameters);

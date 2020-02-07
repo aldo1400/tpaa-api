@@ -547,7 +547,8 @@ class CrudTest extends TestCase
 
         $cargo = factory(Cargo::class)
                     ->create([
-                        'supervisor_id'=>$cargoSupervisor->id
+                        'supervisor_id'=>$cargoSupervisor->id,
+                        'estado'=>1
                     ]);
 
         $cargoHijo = factory(Cargo::class)->create([

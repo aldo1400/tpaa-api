@@ -21,7 +21,7 @@ class UpdateProcessController extends Controller
               'estado' => $request->estado,
             ]);
         } else {
-            if (!$request->estado || ($request->tipo_area_id != $area->tipo_area_id)) {
+            if (($request->estado!=$area->estado) || ($request->tipo_area_id != $area->tipo_area_id)) {
                 return response()->json($errors, 409);
             }
         }

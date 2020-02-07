@@ -41,7 +41,7 @@ class CrudTest extends TestCase
                 ->json('GET', $url);
 
         $response->assertStatus(200)
-            ->assertJsonCount(11, 'data')
+            ->assertJsonCount(12, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [

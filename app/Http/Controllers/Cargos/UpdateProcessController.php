@@ -36,7 +36,7 @@ class UpdateProcessController extends Controller
             ]);
         } else {
           
-            if (!$request->estado || ($request->supervisor_id != $cargo->supervisor_id)) {
+            if (($request->estado!=$cargo->estado) || ($request->supervisor_id != $cargo->supervisor_id)) {
                 return response()->json($errors, 409);
             }
         }
