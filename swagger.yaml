@@ -481,6 +481,11 @@ paths:
       - application/json
       produces:
       - application/json
+      parameters:
+      - in: query
+        name: estado
+        type: boolean
+        description: Obtener cursos inactivos o activos
       responses:
         200:
           description: Retrieved data succesfully
@@ -765,6 +770,11 @@ paths:
       - application/json
       produces:
       - application/json
+      parameters:
+      - in: query
+        name: estado
+        type: boolean
+        description: Obtener cursos inactivos o activos
       responses:
         200:
           description: Retrieved data succesfully
@@ -882,6 +892,11 @@ paths:
       - application/json
       produces:
       - application/json
+      parameters:
+      - in: query
+        name: estado
+        type: boolean
+        description: Obtener cursos inactivos o activos
       responses:
         200:
           description: Retrieved data succesfully
@@ -1858,6 +1873,9 @@ definitions:
         type: array
         items:
           type: integer
+      masivo:
+        type: string
+        enum: [0,1]
    
   CargaFamiliarResource:
     type: object

@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class CrudTest extends TestCase
 {
-    public function testObtenerCursos()
+    public function testObtenerTodosLosCursos()
     {
         factory(Curso::class, 10)
                     ->create();
@@ -19,6 +19,84 @@ class CrudTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'titulo',
+                        'horas_cronologicas',
+                        'realizado',
+                        'fecha_inicio',
+                        'fecha_termino',
+                        'estado',
+                        'anio',
+                        'interno',
+                        'tipoCurso' => [
+                            'id',
+                            'categoria',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerTodosLosCursosActivos()
+    {
+        factory(Curso::class, 2)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        factory(Curso::class, 4)
+                    ->create([
+                        'estado' => 0,
+                    ]);
+
+        $url = '/api/cursos?estado=true';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'titulo',
+                        'horas_cronologicas',
+                        'realizado',
+                        'fecha_inicio',
+                        'fecha_termino',
+                        'estado',
+                        'anio',
+                        'interno',
+                        'tipoCurso' => [
+                            'id',
+                            'categoria',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerTodosLosCursosInactivos()
+    {
+        factory(Curso::class, 2)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        factory(Curso::class, 4)
+                    ->create([
+                        'estado' => 0,
+                    ]);
+
+        $url = '/api/cursos?estado=false';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(4, 'data')
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
