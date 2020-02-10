@@ -16,6 +16,29 @@ class CargoResource extends JsonResource
      */
     public function toArray($request)
     {
+        if ($this->organigrama) {
+            if (!(Storage::disk('local')->exists($this->organigrama_url))) {
+                $ext = pathinfo($this->organigrama_url, PATHINFO_EXTENSION);
+                if ($ext) {
+                    $url = 'public/cargos/'.$this->id.'_'.$this->nombre.'_organigrama'.'.'.$ext;
+                } else {
+                    $url = 'public/cargos/'.$this->id.'_'.$this->nombre.'_organigrama'.'.pdf';
+                }
+
+                Storage::disk('local')
+                        ->put($url, base64_decode($this->organigrama));
+            }
+        } else {
+            if ($this->organigrama_url) {
+                $content = Storage::get($this->organigrama_url);
+                if ($content) {
+                    $this->update([
+                        'organigrama' => $content,
+                    ]);
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
@@ -30,7 +53,7 @@ class CargoResource extends JsonResource
             'hijos' => $this->encontrarCargoInferior() ? true : false,
             'movilidades' => $this->movilidades()->where('estado', 1)->count() ? true : false,
             'updated_at' => $this->updated_at->format('d/m/Y'),
-            'nombre_fantasia'=>$this->nombre_fantasia ? $this->nombre_fantasia : ''
+            'nombre_fantasia' => $this->nombre_fantasia ? $this->nombre_fantasia : '',
         ];
     }
 }

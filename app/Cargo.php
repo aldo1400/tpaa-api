@@ -25,7 +25,7 @@ class Cargo extends Model
         'descriptor_url',
         'organigrama',
         'organigrama_url',
-        'nombre_fantasia'
+        'nombre_fantasia',
     ];
 
     /**
@@ -74,34 +74,35 @@ class Cargo extends Model
 
     public function setOrganigramaAttribute($organigrama)
     {
-        $this->attributes['organigrama'] = $organigrama ? Image::convertImage($organigrama) : '';
+        $this->attributes['organigrama'] = $organigrama ? is_string($organigrama) ? base64_encode($organigrama) : Image::convertImage($organigrama) : '';
     }
 
     public function encontrarCargoInferior()
     {
-        $cargosHijos=self::where('supervisor_id', $this->id)->get();
-        if($cargosHijos->where('estado',1)->count()){
+        $cargosHijos = self::where('supervisor_id', $this->id)->get();
+        if ($cargosHijos->where('estado', 1)->count()) {
             return true;
         }
 
         return false;
     }
 
-    public function saveFile($file,$tipo)
+    public function saveFile($file, $tipo)
     {
         $filePath = $file->storeAs(
                     'public/cargos',
                     $this->id.'_'.$this->nombre.'_'.$tipo.'.'.$file->extension()
                 );
+
         return $filePath;
     }
 
-    public function actualizarArchivo($request,$tipo)
+    public function actualizarArchivo($request, $tipo)
     {
-        $tipoUrl=$tipo.'_url';
+        $tipoUrl = $tipo.'_url';
 
         if ($request->file($tipo)) {
-            $this->$tipoUrl = $this->saveFile($request->file($tipo),$tipo);
+            $this->$tipoUrl = $this->saveFile($request->file($tipo), $tipo);
         } else {
             if (!$request->$tipoUrl && $this->$tipoUrl) {
                 Storage::delete($this->$tipoUrl);
