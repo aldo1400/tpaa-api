@@ -18,6 +18,7 @@ class CargoResource extends JsonResource
     {
         if ($this->organigrama) {
             if (!(Storage::disk('local')->exists($this->organigrama_url))) {
+                // guardar url al crear en storage
                 $ext = pathinfo($this->organigrama_url, PATHINFO_EXTENSION);
                 if ($ext) {
                     $url = 'public/cargos/'.$this->id.'_'.$this->nombre.'_organigrama'.'.'.$ext;
@@ -27,6 +28,10 @@ class CargoResource extends JsonResource
 
                 Storage::disk('local')
                         ->put($url, base64_decode($this->organigrama));
+
+                $this->update([
+                    'organigrama_url' => $url,
+                ]);
             }
         } else {
             if ($this->organigrama_url) {

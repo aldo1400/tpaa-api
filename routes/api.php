@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 // Route::get('/cargos/{id}/hijos', 'Colaboradores\GetChildrenController');
 // Route::get('/colaboradores1/{rut}', 'Colaboradores\Testing');
+Route::get('/colaboradores/{id}/generar-imagen', 'Colaboradores\GenerateFileController');
 Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 
 Route::get('/areas', 'Areas\IndexController');

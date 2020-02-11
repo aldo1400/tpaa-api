@@ -134,7 +134,7 @@ class Colaborador extends Model
 
     public function setImagenAttribute($imagen)
     {
-        $this->attributes['imagen'] = $imagen ? Image::convertImage($imagen) : '';
+        $this->attributes['imagen'] = $imagen ? is_string($imagen) ? base64_encode($imagen) : Image::convertImage($imagen) : '';
     }
 
     public function saveImage($request)
@@ -184,6 +184,40 @@ class Colaborador extends Model
                 ->where('tags.estado', 1)
                 ->where('tipo', 'POSITIVO')
                 ->get();
+    }
+
+    public function generarImagen()
+    {
+        if ($this->imagen) {
+            // dd('aldo');
+            if (!(Storage::disk('local')->exists($this->imagen_url))) {
+                $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
+                if ($ext) {
+                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+                } else {
+                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.jpg';
+                }
+
+                Storage::disk('local')
+                        ->put($url, base64_decode($this->imagen));
+
+                $this->update([
+                    'imagen_url' => url(Storage::url($url)),
+                ]);
+            }
+        } else {
+            if ($this->imagen_url) {
+                $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
+                $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+
+                $content = Storage::get($url);
+                if ($content) {
+                    $this->update([
+                        'imagen' => $content,
+                    ]);
+                }
+            }
+        }
     }
 
     public function obtenerTipoDepartamento()

@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ColaboradorResource extends JsonResource
@@ -16,20 +15,6 @@ class ColaboradorResource extends JsonResource
      */
     public function toArray($request)
     {
-        if ($this->imagen) {
-            if (!(Storage::disk('local')->exists($this->imagen_url))) {
-                $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
-                if ($ext) {
-                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
-                } else {
-                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.jpg';
-                }
-
-                Storage::disk('local')
-                        ->put($url, base64_decode($this->imagen));
-            }
-        }
-
         return [
             'id' => $this->id,
             'rut' => $this->rut,
