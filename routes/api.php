@@ -106,6 +106,7 @@ Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessControlle
 
 Route::post('/cursos/{id}/colaboradores', 'Capacitaciones\CreateProcessController');
 Route::delete('/capacitaciones/{id}', 'Capacitaciones\DeleteProcessController');
+Route::get('/capacitaciones/{id}/generar-archivo', 'Capacitaciones\GenerateFileController');
 
 Route::get('/niveles-jerarquico', 'NivelesJerarquico\IndexController');
 Route::post('/niveles-jerarquico', 'NivelesJerarquico\CreateProcessController');

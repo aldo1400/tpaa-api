@@ -4,6 +4,7 @@ namespace App;
 
 use App\Http\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -50,5 +51,31 @@ class CursoColaborador extends Model
     public function curso(): BelongsTo
     {
         return $this->belongsTo('App\Curso');
+    }
+
+    public function generarArchivoDeDiploma()
+    {
+        if ($this->diploma) {
+            if (!(Storage::disk('local')->exists($this->url_diploma))) {
+                if ($this->url_diploma) {
+                    $url = $this->url_diploma;
+                }
+                Storage::disk('local')
+                        ->put($url, base64_decode($this->diploma));
+
+                $this->update([
+                    'url_diploma' => $url,
+                ]);
+            }
+        } else {
+            if ($this->url_diploma) {
+                $content = Storage::get($this->url_diploma);
+                if ($content) {
+                    $this->update([
+                        'diploma' => base64_encode($content),
+                    ]);
+                }
+            }
+        }
     }
 }
