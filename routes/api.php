@@ -59,6 +59,7 @@ Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 Route::get('/cargos', 'Cargos\IndexController');
 Route::get('/cargos/{id}', 'Cargos\ShowController');
 Route::get('/cargos/{id}/relacionados', 'Cargos\GetRelatedController');
+Route::get('/cargos/{id}/generar-archivos', 'Cargos\GenerateFileController');
 Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');

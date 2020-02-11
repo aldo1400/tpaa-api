@@ -69,7 +69,7 @@ class Cargo extends Model
 
     public function setDescriptorAttribute($descriptor)
     {
-        $this->attributes['descriptor'] = $descriptor ? Image::convertImage($descriptor) : '';
+        $this->attributes['descriptor'] = $descriptor ? is_string($descriptor) ? base64_encode($descriptor) : Image::convertImage($descriptor) : '';
     }
 
     public function setOrganigramaAttribute($organigrama)
@@ -108,6 +108,39 @@ class Cargo extends Model
                 Storage::delete($this->$tipoUrl);
                 $this->$tipo = null;
                 $this->$tipoUrl = null;
+            }
+        }
+    }
+
+    public function generarArchivo($tipo)
+    {
+        // organigrama,descriptor
+        $tipoURL = $tipo.'_url';
+        // organigrama_url,descriptor_url
+        if ($this->$tipo) {
+            if (!(Storage::disk('local')->exists($this->$tipoURL))) {
+                if ($this->$tipoURL) {
+                    $url = $this->$tipoURL;
+                // $url = 'public/cargos/'.$this->id.'_'.$this->nombre.'_organigrama'.'.'.$ext;
+                } else {
+                    $url = 'public/cargos/'.$this->id.'_'.$this->nombre.'_'.$tipo.'.pdf';
+                }
+
+                Storage::disk('local')
+                        ->put($url, base64_decode($this->$tipo));
+
+                $this->update([
+                    $tipoURL => $url,
+                ]);
+            }
+        } else {
+            if ($this->$tipoURL) {
+                $content = Storage::get($this->$tipoURL);
+                if ($content) {
+                    $this->update([
+                        $tipo => $content,
+                    ]);
+                }
             }
         }
     }
