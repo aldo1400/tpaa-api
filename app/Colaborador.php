@@ -186,17 +186,23 @@ class Colaborador extends Model
                 ->get();
     }
 
+    public function obtenerURLPublicaDeImagenColaborador()
+    {
+        $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
+        if ($ext) {
+            $url = 'public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+        } else {
+            $url = 'public/colaboradores/imagenes/'.$this->rut.'.jpg';
+        }
+
+        return $url;
+    }
+
     public function generarImagen()
     {
         if ($this->imagen) {
-            // dd('aldo');
             if (!(Storage::disk('local')->exists($this->imagen_url))) {
-                $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
-                if ($ext) {
-                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
-                } else {
-                    $url = '/public/colaboradores/imagenes/'.$this->rut.'.jpg';
-                }
+                $url = $this->obtenerURLPublicaDeImagenColaborador();
 
                 Storage::disk('local')
                         ->put($url, base64_decode($this->imagen));
@@ -207,8 +213,7 @@ class Colaborador extends Model
             }
         } else {
             if ($this->imagen_url) {
-                $ext = pathinfo($this->imagen_url, PATHINFO_EXTENSION);
-                $url = '/public/colaboradores/imagenes/'.$this->rut.'.'.$ext;
+                $url = $this->obtenerURLPublicaDeImagenColaborador();
 
                 $content = Storage::get($url);
                 if ($content) {
