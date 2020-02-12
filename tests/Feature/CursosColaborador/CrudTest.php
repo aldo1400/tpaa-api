@@ -11,9 +11,41 @@ use Illuminate\Support\Facades\Storage;
 
 class CrudTest extends TestCase
 {
-    public function testCrearCursoColaborador()
+    public function testCrearCursoColaboradorManual()
     {
         $colaborador = factory(Colaborador::class)->create();
+        $curso = factory(Curso::class)->create();
+        $cursoColaborador = factory(CursoColaborador::class)->make();
+
+        Storage::fake('local');
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/capacitaciones';
+
+        $image = UploadedFile::fake()->image('curso123.jpg', 1200, 750);
+
+        $parameters = [
+            'diploma' => $image,
+            'curso_id' => $curso->id,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.'.$image->extension();
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'id' => CursoColaborador::latest()->first()->id,
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaborador->id,
+            'url_diploma' => $diplomaUrl,
+        ]);
+    }
+
+    public function testCrearCursoColaboradorMasivo()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $segundoColaborador = factory(Colaborador::class)->create();
         $curso = factory(Curso::class)->create();
         $cursoColaborador = factory(CursoColaborador::class)->make();
 
@@ -22,27 +54,31 @@ class CrudTest extends TestCase
         $url = '/api/cursos/'.$curso->id.'/colaboradores';
 
         $image = UploadedFile::fake()->image('curso123.jpg', 1200, 750);
-        // $image = UploadedFile::fake()->image('banner1.jpg', 1200, 750);
 
         $parameters = [
-            'diploma' => $image,
-            'masivo'=>0,
             'colaboradores' => [
                 $colaborador->id,
+                $segundoColaborador->id,
             ],
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(201);
 
-        $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.'.$image->extension();
+        $diplomaUrlOne = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.pdf';
+        $diplomaUrlTwo = 'public/diplomas/'.$curso->nombre.'_'.$segundoColaborador->rut.'.pdf';
 
         $this->assertDatabaseHas('cursos_colaborador', [
-            'id' => CursoColaborador::latest()->first()->id,
             'curso_id' => $curso->id,
             'colaborador_id' => $parameters['colaboradores'][0],
-            'url_diploma' => $diplomaUrl,
+            'url_diploma' => $diplomaUrlOne,
+        ]);
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'curso_id' => $curso->id,
+            'colaborador_id' => $parameters['colaboradores'][1],
+            'url_diploma' => $diplomaUrlTwo,
         ]);
     }
 

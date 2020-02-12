@@ -60,7 +60,7 @@ class Curso extends Model
             'diploma' => is_string($file) ? base64_encode($file) : Image::convertImage($file),
         ]);
 
-        $cursoColaborador->url_diploma = $this->saveFile($file,$colaborador);
+        $cursoColaborador->url_diploma = $this->saveFile($file, $colaborador);
 
         $cursoColaborador->curso()->associate($this->id);
         $cursoColaborador->colaborador()->associate($colaborador);
@@ -69,27 +69,32 @@ class Curso extends Model
         return true;
     }
 
-    public function saveFile($file,$colaborador)
+    public function saveFile($file, $colaborador)
     {
-        $colaborador=Colaborador::findOrFail($colaborador);
-        
-        if(is_string($file)){
-            $extension='pdf';
-            $filePath='public/diplomas/'.$this->nombre.'_'.$colaborador->rut.'.'.$extension;
+        $colaborador = Colaborador::findOrFail($colaborador);
+
+        if (is_string($file)) {
+            $extension = 'pdf';
+            $filePath = 'public/diplomas/'.$this->nombre.'_'.$colaborador->rut.'.'.$extension;
             Storage::put($filePath, $file);
-        }
-        else{
+        } else {
             $filePath = $file->storeAs(
                     'public/diplomas',
                     $this->nombre.'_'.$colaborador->rut.'.'.$file->extension()
                 );
         }
+
         return $filePath;
     }
 
-    public function generarPDFCapacitacion(){
-        $pdf = PDF::loadView('capacitacion.diploma', []);
+    public function generarPDFCapacitacion($IdColaborador)
+    {
+        $colaborador = Colaborador::findOrFail($IdColaborador);
+        $pdf = PDF::loadView('capacitacion.diploma', [
+            'colaborador' => $colaborador,
+        ]);
         $content = $pdf->download()->getOriginalContent();
+
         return $content;
     }
 }

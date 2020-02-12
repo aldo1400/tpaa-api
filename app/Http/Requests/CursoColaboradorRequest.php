@@ -24,12 +24,6 @@ class CursoColaboradorRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'fecha'=>['required','date','date_format:Y-m-d'],
-            // 'tipo_archivo'=>['required','string'],
-            // 'estado'=>['required','boolean'],
-            'diploma' => ['nullable', 'image', 'mimes:jpeg,bmp,png'],
-            // 'url_diploma'=>['required','string'],
-            // 'curso_id'=>['required','exists:cursos,id'],
             'colaboradores' => ['nullable', 'array'],
             'colaboradores.*' => ['nullable', 'distinct', 'exists:colaboradores,id'],
         ];

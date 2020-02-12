@@ -9,6 +9,10 @@
 </head>
 <body>
     <style>
+        body{
+    margin:-30px -40px -30px -35px;
+    /* font-family: 'Open Sans', sans-serif; */
+}
 p{
             font-family: 'Roboto', sans-serif !important;
         }
@@ -24,7 +28,7 @@ table, td, th {
     border: 0px solid black;
 } */
 .main{
-    margin:-10px 35px -45px 35px;
+    margin:-20px 35px -45px 35px;
 }
 .footer{
     text-align: center;
@@ -44,11 +48,9 @@ table, td, th {
     </style>
 
 <div class="main">
-    <img src="http://admisionapi.uniq.edu.pe/public/img/HEADER.png" style="width:100%;height:100px"/>
-    <div style="margin-left:296px">
-        <p style="font-weight:700;font-size:12pt; color:#747373">SOLICITO: INSCRIPCIÓN COMO POSTULANTE</p>
-    </div>
-
+    <img src='http://admisionapi.uniq.edu.pe/public/img/fondo_corregido_Mesa de trabajo 1.jpg' style="width:109%;position:absolute;left:0;top:0" />
+    <p style="position:absolute;left:180;top:92;font-size:9pt">HOLA</p>
+    <p style="position:absolute;left:180;top:92;font-size:9pt"></p>
 </div>
 </body>
 </html>

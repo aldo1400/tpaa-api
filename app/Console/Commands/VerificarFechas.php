@@ -23,8 +23,6 @@ class VerificarFechas extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -39,7 +37,7 @@ class VerificarFechas extends Command
     public function handle()
     {
         TipoCurso::create([
-            'categoria'=>'TESTING TESTING'
+        'categoria' => 'TESTING TESTING',
         ]);
     }
 }
