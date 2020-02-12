@@ -132,6 +132,11 @@ class Colaborador extends Model
         return $this->hasMany('App\Movilidad');
     }
 
+    public function notificaciones(): HasMany
+    {
+        return $this->hasMany('App\Notificacion');
+    }
+
     public function setImagenAttribute($imagen)
     {
         $this->attributes['imagen'] = $imagen ? is_string($imagen) ? base64_encode($imagen) : Image::convertImage($imagen) : '';
@@ -225,8 +230,9 @@ class Colaborador extends Model
         }
     }
 
-    public function revisarFechaNacimiento($tipo)
+    public function revisarFechaVencimiento($tipo)
     {
+        $now = Carbon::now();
         if ($this->$tipo->diffInDays($now) < 30) {
             $notificaciones = $this->notificaciones()
                         ->where('tipo', $tipo)
@@ -234,10 +240,12 @@ class Colaborador extends Model
                         ->count();
 
             if (!$notificaciones) {
-                Notificacion::make([
+                $notificacion=Notificacion::make([
                     'mensaje' => 'Su licencia b esta a punto de vencerse',
                     'tipo' => $tipo,
                 ]);
+                $notificacion->colaborador()->associate($this);
+                $notificacion->save();
             }
         }
     }

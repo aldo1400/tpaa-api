@@ -11,6 +11,13 @@ class Notificacion extends Model
     const LICENCIA = 'licencia';
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'notificaciones';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
 use App\Colaborador;
 use Illuminate\Console\Command;
 
@@ -38,7 +37,6 @@ class VerificarFechas extends Command
     public function handle()
     {
         $colaboradores = Colaborador::all();
-        $now = Carbon::now();
 
         foreach ($colaboradores as $colaborador) {
             $colaborador->revisarFechaVencimiento('vencimiento_licencia_b');
