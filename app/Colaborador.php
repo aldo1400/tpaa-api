@@ -237,7 +237,6 @@ class Colaborador extends Model
                 Notificacion::make([
                     'mensaje' => 'Su licencia b esta a punto de vencerse',
                     'tipo' => $tipo,
-                    // 'col',
                 ]);
             }
         }
