@@ -225,6 +225,24 @@ class Colaborador extends Model
         }
     }
 
+    public function revisarFechaNacimiento($tipo)
+    {
+        if ($this->$tipo->diffInDays($now) < 30) {
+            $notificaciones = $this->notificaciones()
+                        ->where('tipo', $tipo)
+                        ->get()
+                        ->count();
+
+            if (!$notificaciones) {
+                Notificacion::make([
+                    'mensaje' => 'Su licencia b esta a punto de vencerse',
+                    'tipo' => $tipo,
+                    // 'col',
+                ]);
+            }
+        }
+    }
+
     public function obtenerTipoDepartamento()
     {
         $departamento = '';

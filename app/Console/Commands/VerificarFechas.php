@@ -2,7 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\TipoCurso;
+use Carbon\Carbon;
+use App\Colaborador;
 use Illuminate\Console\Command;
 
 class VerificarFechas extends Command
@@ -36,8 +37,14 @@ class VerificarFechas extends Command
      */
     public function handle()
     {
-        TipoCurso::create([
-        'categoria' => 'TESTING TESTING',
-        ]);
+        $colaboradores = Colaborador::all();
+        $now = Carbon::now();
+
+        foreach ($colaboradores as $colaborador) {
+            $colaborador->revisarFechaVencimiento('vencimiento_licencia_b');
+            $colaborador->revisarFechaVencimiento('vencimiento_licencia_d');
+            $colaborador->revisarFechaVencimiento('vencimiento_carnet_portuario');
+            $colaborador->revisarFechaVencimiento('vencimiento_credencial_vigilante');
+        }
     }
 }

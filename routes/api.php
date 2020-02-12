@@ -103,7 +103,7 @@ Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');
 Route::delete('/cargas-familiares/{id}', 'CargasFamiliares\DeleteProcessController');
 Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessController');
 
-// Route::post('/cursos-colaborador', 'CursosColaborador\CreateProcessController');
+Route::get('/vista-pdf', 'TestingController');
 
 Route::post('/cursos/{id}/colaboradores', 'Capacitaciones\CreateProcessController');
 Route::delete('/capacitaciones/{id}', 'Capacitaciones\DeleteProcessController');

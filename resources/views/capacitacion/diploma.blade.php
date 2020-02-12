@@ -49,7 +49,7 @@ table, td, th {
 
 <div class="main">
     <img src='http://admisionapi.uniq.edu.pe/public/img/fondo_corregido_Mesa de trabajo 1.jpg' style="width:109%;position:absolute;left:0;top:0" />
-    <p style="position:absolute;left:180;top:92;font-size:9pt">HOLA</p>
+    <p style="position:absolute;left:180;top:92;font-size:9pt">{{$colaborador->rut}}</p>
     <p style="position:absolute;left:180;top:92;font-size:9pt"></p>
 </div>
 </body>
