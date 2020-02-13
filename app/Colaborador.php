@@ -234,15 +234,17 @@ class Colaborador extends Model
     {
         $now = Carbon::now();
         if ($this->$tipo->diffInDays($now) < Notificacion::DIAS_LIMITE) {
+            $tipo = str_replace('vencimiento_', '', $tipo);
+
             $notificaciones = $this->notificaciones()
                         ->where('tipo', $tipo)
                         ->get()
                         ->count();
 
-            $tipo = str_replace('vencimiento_', '', $tipo);
             if (!$notificaciones) {
+                $mensaje = 'Su '.$tipo.'está a punto de vencerse';
                 $notificacion = Notificacion::make([
-                    'mensaje' => 'Su licencia b esta a punto de vencerse',
+                    'mensaje' => $mensaje,
                     'tipo' => $tipo,
                 ]);
                 $notificacion->colaborador()->associate($this);

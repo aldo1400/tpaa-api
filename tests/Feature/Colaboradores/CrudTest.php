@@ -1395,7 +1395,7 @@ class CrudTest extends TestCase
 
         $response = $this->json('GET', $url, $parameters);
         $response->assertStatus(409)
-                    ->assertSeeText(json_encode('El rut es inválido.'));
+                    ->assertSeeText(json_encode('Error: Rut inválido.'));
     }
 
     public function testObtenerMisTagsPositivos()
@@ -1523,7 +1523,7 @@ class CrudTest extends TestCase
         $response = $this->json('GET', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(409)
-                ->assertSeeText(json_encode('El rut es inválido.'));
+                ->assertSeeText(json_encode('Error: Rut duplicado.'));
     }
 
     public function testObtenerTodosLasCapacitacionesDeUnColaborador()

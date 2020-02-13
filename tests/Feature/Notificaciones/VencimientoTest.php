@@ -77,4 +77,35 @@ class VencimientoTest extends TestCase
             'tipo' => Notificacion::CREDENCIAL,
         ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testVerificarQueNoSeCreenNotificacionSiSeVenceLasFechaDeCarnetProtuarioYCredencialVigilanteMasDeUnaVez()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+            'vencimiento_licencia_b' => now()->addDays(10)->format('Y-m-d'),
+            'vencimiento_licencia_d' => now()->addDays(60)->format('Y-m-d'),
+            'vencimiento_carnet_portuario' => now()->addDays(60)->format('Y-m-d'),
+            'vencimiento_credencial_vigilante' => now()->addDays(60)->format('Y-m-d'),
+        ]);
+
+        $notificacion = factory(Notificacion::class)
+                        ->create([
+                            'colaborador_id' => $colaborador->id,
+                            'tipo' => 'licencia_b',
+                            'mensaje' => 'licencia_b',
+                        ]);
+
+        $this->artisan('colaboradores:vencimiento');
+
+        $response = $this->get('api/colaboradores/'.$colaborador->id.'/notificaciones');
+
+        $this->assertCount(1, $response->json());
+
+        $this->assertDatabaseHas('notificaciones', [
+            'colaborador_id' => $colaborador->id,
+            'tipo' => Notificacion::LICENCIA_B,
+        ]);
+    }
 }
