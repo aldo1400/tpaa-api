@@ -43,7 +43,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::put('/administradores/{id}', 'Administradores\UpdateProcessController');
 });
 
-// Route::get('/cargos/{id}/hijos', 'Colaboradores\GetChildrenController');
+Route::get('/notificaciones', 'Notificaciones\IndexController');
+Route::get('/colaboradores/{id}/notificaciones', 'Colaboradores\Notificaciones\IndexController');
+
 // Route::get('/colaboradores1/{rut}', 'Colaboradores\Testing');
 Route::get('/colaboradores/{id}/generar-imagen', 'Colaboradores\GenerateFileController');
 Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');

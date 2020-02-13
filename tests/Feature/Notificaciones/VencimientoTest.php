@@ -4,6 +4,7 @@ namespace Tests\Feature\Notificaciones;
 
 use Tests\TestCase;
 use App\Colaborador;
+use App\Notificacion;
 
 class VencimientoTest extends TestCase
 {
@@ -23,22 +24,22 @@ class VencimientoTest extends TestCase
 
         $this->assertDatabaseHas('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_licencia_b',
+            'tipo' => Notificacion::LICENCIA_B,
         ]);
 
         $this->assertDatabaseHas('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_licencia_d',
+            'tipo' => Notificacion::LICENCIA_D,
         ]);
 
         $this->assertDatabaseMissing('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_carnet_portuario',
+            'tipo' => Notificacion::CARNET,
         ]);
 
         $this->assertDatabaseMissing('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_credencial_vigilante',
+            'tipo' => Notificacion::CREDENCIAL,
         ]);
     }
 
@@ -58,22 +59,22 @@ class VencimientoTest extends TestCase
 
         $this->assertDatabaseMissing('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_licencia_b',
+            'tipo' => Notificacion::LICENCIA_B,
         ]);
 
         $this->assertDatabaseMissing('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_licencia_d',
+            'tipo' => Notificacion::LICENCIA_D,
         ]);
 
         $this->assertDatabaseHas('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_carnet_portuario',
+            'tipo' => Notificacion::CARNET,
         ]);
 
         $this->assertDatabaseHas('notificaciones', [
             'colaborador_id' => $colaborador->id,
-            'tipo' => 'vencimiento_credencial_vigilante',
+            'tipo' => Notificacion::CREDENCIAL,
         ]);
     }
 }

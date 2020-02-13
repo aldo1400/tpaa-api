@@ -233,14 +233,15 @@ class Colaborador extends Model
     public function revisarFechaVencimiento($tipo)
     {
         $now = Carbon::now();
-        if ($this->$tipo->diffInDays($now) < 30) {
+        if ($this->$tipo->diffInDays($now) < Notificacion::DIAS_LIMITE) {
             $notificaciones = $this->notificaciones()
                         ->where('tipo', $tipo)
                         ->get()
                         ->count();
 
+            $tipo = str_replace('vencimiento_', '', $tipo);
             if (!$notificaciones) {
-                $notificacion=Notificacion::make([
+                $notificacion = Notificacion::make([
                     'mensaje' => 'Su licencia b esta a punto de vencerse',
                     'tipo' => $tipo,
                 ]);

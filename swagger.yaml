@@ -38,6 +38,8 @@ tags:
   description: Everything about niveles educacion
 - name: niveles jerarquico
   description: Everything about niveles jerarquico
+- name: notificaciones
+  description: Everything about notificaciones
 - name: tags
   description: Everything about tags
 - name: tipos carga
@@ -1459,6 +1461,54 @@ paths:
           description: Route not found
         409:
           description: Departure has children 
+  
+  # ---------------------
+  #   Notificaciones
+  # ---------------------
+  "/notificaciones":
+    get:
+      tags:
+      - notificaciones
+      summary: Obtener todas las notificaciones
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Retrieved data succesfully
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NotificacionResource'
+        401:
+          description: unauthenticated
+  
+  "/colaboradores/{id}/notificaciones":
+    get:
+      tags:
+      - notificaciones
+      summary: Obtener las notificaciones de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: colaborador ID
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/NotificacionResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+         
   # ---------------------
   #   Tags
   # ---------------------
@@ -2620,6 +2670,18 @@ definitions:
         type: boolean
       tipoArea:  
         $ref: "#/definitions/TipoAreaResource"  
+  
+  NotificacionResource:
+    type: object
+    properties:
+      id:
+        type: integer
+      tipo:
+        type: string
+      mensaje:
+        type: string
+      colaborador:  
+        $ref: "#/definitions/ColaboradorResource"  
   
   MovilidadResource:
     type: object
