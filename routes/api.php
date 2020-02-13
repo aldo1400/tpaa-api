@@ -46,7 +46,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 Route::get('/notificaciones', 'Notificaciones\IndexController');
 Route::get('/colaboradores/{id}/notificaciones', 'Colaboradores\Notificaciones\IndexController');
 
-// Route::get('/colaboradores1/{rut}', 'Colaboradores\Testing');
+Route::get('/colaboradores/{id}/cursos-disponibles', 'Colaboradores\Cursos\GetAvailableController');
+Route::get('/cursos/{id}/colaboradores-disponibles', 'Cursos\Colaboradores\GetAvailableController');
+
 Route::get('/colaboradores/{id}/generar-imagen', 'Colaboradores\GenerateFileController');
 Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 

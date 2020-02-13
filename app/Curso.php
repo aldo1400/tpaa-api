@@ -46,6 +46,11 @@ class Curso extends Model
         return $this->hasMany('App\CursoColaborador');
     }
 
+    public function capacitaciones(): HasMany
+    {
+        return $this->hasMany('App\CursoColaborador');
+    }
+
     /**
      * Get the tipo for the cursp.
      */

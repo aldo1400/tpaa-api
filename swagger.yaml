@@ -253,6 +253,57 @@ paths:
   # ---------------------
   #   Capacitaciones - Curso-Colaborador
   # ---------------------
+  "/colaboradores/{id}/cursos-disponibles":
+    get:
+      tags:
+      - capacitaciones(curso-colaborador)
+      summary: Obtener todos los cursos disponibles de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: colaborador ID
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/CursoResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+  
+  "/cursos/{id}/colaboradores-disponibles":
+    get:
+      tags:
+      - capacitaciones(curso-colaborador)
+      summary: Obtener todos los colaboradores disponibles de un curso
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: colaborador ID
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/ColaboradorResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+        
+        
   "/capacitaciones/{id}/generar-archivo":
     get:
       tags:

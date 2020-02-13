@@ -122,4 +122,99 @@ class CrudTest extends TestCase
         //         ],
         //     ]);
     }
+
+    public function testObtenerCursosDisponiblesCuandoElColaboradorTieneCapacitaciones()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cursos = factory(Curso::class, 10)->create([
+            'estado' => 1,
+        ]);
+        factory(CursoColaborador::class)->create([
+            'curso_id' => $cursos[0]->id,
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        factory(CursoColaborador::class)->create([
+            'curso_id' => $cursos[1]->id,
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/cursos-disponibles';
+        $response = $this->json('GET', $url);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    '0' => [
+                        'id' => $cursos[2]->id,
+                        'nombre' => $cursos[2]->nombre,
+                    ],
+                    '1' => [
+                        'id' => $cursos[3]->id,
+                        'nombre' => $cursos[3]->nombre,
+                    ],
+                    '2' => [
+                        'id' => $cursos[4]->id,
+                        'nombre' => $cursos[4]->nombre,
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerColaboradoresDisponiblesCuandoElCursoTieneCapacitaciones()
+    {
+        $colaboradores = factory(Colaborador::class, 10)->create([
+            'estado' => '1',
+        ]);
+
+        $curso = factory(Curso::class)->create([
+            'estado' => 1,
+        ]);
+
+        factory(CursoColaborador::class)->create([
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaboradores[0]->id,
+        ]);
+
+        factory(CursoColaborador::class)->create([
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaboradores[1]->id,
+        ]);
+
+        $url = '/api/cursos/'.$curso->id.'/colaboradores-disponibles';
+        $response = $this->json('GET', $url);
+        // dd($response->decodeResponseJson());
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    '0' => [
+                        'id' => $colaboradores[2]->id,
+                        'primer_nombre' => $colaboradores[2]->primer_nombre,
+                    ],
+                    '1' => [
+                        'id' => $colaboradores[3]->id,
+                        'primer_nombre' => $colaboradores[3]->primer_nombre,
+                    ],
+                    '2' => [
+                        'id' => $colaboradores[4]->id,
+                        'primer_nombre' => $colaboradores[4]->primer_nombre,
+                    ],
+                ],
+            ]);
+    }
+
+    public function testObtenerCursosDisponiblesCuandoElColaboradorNoTieneCapacitaciones()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cursos = factory(Curso::class, 10)->create();
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/cursos-disponibles';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [],
+            ]);
+    }
 }
