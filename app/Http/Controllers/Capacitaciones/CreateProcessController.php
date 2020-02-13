@@ -13,6 +13,7 @@ class CreateProcessController extends Controller
     {
         $curso = Curso::findOrFail($id);
 
+        // validar colaboradores añadidos
         DB::transaction(function () use ($curso,$request) {
             foreach ($request->colaboradores as $colaborador) {
                 $file = $curso->generarPDFCapacitacion($colaborador);

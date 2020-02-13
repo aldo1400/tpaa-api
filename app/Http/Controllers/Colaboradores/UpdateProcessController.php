@@ -38,6 +38,11 @@ class UpdateProcessController extends Controller
 
         $colaborador->tags()->sync($request->tags);
 
+        $colaborador->actualizarFechaVencimiento('vencimiento_licencia_b');
+        $colaborador->actualizarFechaVencimiento('vencimiento_licencia_d');
+        $colaborador->actualizarFechaVencimiento('vencimiento_carnet_portuario');
+        $colaborador->actualizarFechaVencimiento('vencimiento_credencial_vigilante');
+
         return response()->json();
     }
 }
