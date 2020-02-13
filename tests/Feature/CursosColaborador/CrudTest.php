@@ -51,7 +51,7 @@ class CrudTest extends TestCase
 
         // Storage::fake('local');
 
-        $url = '/api/cursos/'.$curso->id.'/colaboradores';
+        $url = '/api/cursos/'.$curso->id.'/capacitaciones';
 
         $image = UploadedFile::fake()->image('curso123.jpg', 1200, 750);
 
