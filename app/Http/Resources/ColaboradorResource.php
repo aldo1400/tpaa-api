@@ -18,6 +18,7 @@ class ColaboradorResource extends JsonResource
         return [
             'id' => $this->id,
             'rut' => $this->rut,
+            'nombre_completo'=>$this->rut.' '.$this->primer_nombre.' '.$this->apellido_paterno.' '.$this->apellido_materno,
             'usuario' => $this->usuario ? $this->usuario : '',
             'primer_nombre' => $this->primer_nombre ? $this->primer_nombre : '',
             'segundo_nombre' => $this->segundo_nombre ? $this->segundo_nombre : '',
