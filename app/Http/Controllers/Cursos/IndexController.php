@@ -21,6 +21,12 @@ class IndexController extends Controller
             }
         }
 
+        if ($request->interno) {
+            $cursos = Curso::where('interno', 1)
+                    ->where('estado', 1)
+                    ->get();
+        }
+
         return CursoResource::collection($cursos);
     }
 }

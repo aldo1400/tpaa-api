@@ -917,6 +917,10 @@ paths:
         name: estado
         type: boolean
         description: Obtener cursos inactivos o activos
+      - in: query
+        name: interno
+        type: boolean
+        description: Obtener cursos activos internos
       responses:
         200:
           description: Retrieved data succesfully

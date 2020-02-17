@@ -23,7 +23,9 @@ class GetAvailableController extends Controller
 
         $cursos = $cursos->pluck('id')->toArray();
 
-        $cursosDisponibles = Curso::whereNotIn('id', $cursos)->where('estado', 1)->get();
+        $cursosDisponibles = Curso::whereNotIn('id', $cursos)
+                            ->where('estado', 1)
+                            ->get();
 
         return CursoResource::collection($cursosDisponibles);
     }
