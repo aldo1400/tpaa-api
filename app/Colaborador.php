@@ -242,7 +242,7 @@ class Colaborador extends Model
                         ->count();
 
             if (!$notificaciones) {
-                $tipoSeparado = ucfirst(str_replace('_', ' ', $tipo));
+                $tipoSeparado = ucwords(str_replace('_', ' ', $tipo));
 
                 $mensaje = 'Su '.$tipoSeparado.' está a punto de vencerse';
                 $notificacion = Notificacion::make([
