@@ -21,6 +21,7 @@ class CursoColaboradorResource extends JsonResource
             'diploma_url' => $this->diploma_url ? $this->diploma_url : '',
             'diploma_path' => $this->diploma_url ? url(Storage::url($this->diploma_url)) : '',
             'curso_id' => $this->curso->id,
+            'curso_nombre' => $this->curso->nombre,
             'colaborador_id' => $this->colaborador->id,
         ];
     }
