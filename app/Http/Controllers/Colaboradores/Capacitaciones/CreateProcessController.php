@@ -13,7 +13,8 @@ class CreateProcessController extends Controller
     public function __invoke(Request $request, $id)
     {
         $this->validate($request, [
-            'diploma' => 'required|image|mimes:jpeg,bmp,png',
+            'diploma' => 'required|file',
+            // 'diploma' => 'required|image|mimes:jpeg,bmp,png',
             'curso_id' => 'required|exists:cursos,id',
         ]);
 
