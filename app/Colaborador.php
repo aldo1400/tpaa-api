@@ -258,14 +258,16 @@ class Colaborador extends Model
     public function actualizarFechaVencimiento($tipo)
     {
         $now = Carbon::now();
-        if ($this->$tipo->diffInDays($now) > Notificacion::DIAS_LIMITE) {
-            $tipo = str_replace('vencimiento_', '', $tipo);
-            $notificacion = $this->notificaciones()
-                        ->where('tipo', $tipo)
-                        ->first();
+        if ($this->$tipo) {
+            if ($this->$tipo->diffInDays($now) > Notificacion::DIAS_LIMITE) {
+                $tipo = str_replace('vencimiento_', '', $tipo);
+                $notificacion = $this->notificaciones()
+                            ->where('tipo', $tipo)
+                            ->first();
 
-            if ($notificacion) {
-                $notificacion->delete();
+                if ($notificacion) {
+                    $notificacion->delete();
+                }
             }
         }
 
