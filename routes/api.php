@@ -112,7 +112,8 @@ Route::put('/niveles-jerarquico/{id}', 'NivelesJerarquico\UpdateProcessControlle
 Route::delete('/niveles-jerarquico/{id}', 'NivelesJerarquico\DeleteProcessController');
 
 Route::get('/colaboradores/{id}/tags', 'Colaboradores\Tags\IndexController');
-Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
+Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Comentarios\IndexController');
+// Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
 
 Route::get('/tags', 'Tags\IndexController');
 Route::get('/tags/{id}', 'Tags\ShowController');

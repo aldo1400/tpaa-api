@@ -840,6 +840,33 @@ paths:
         409:
           description: Departure has children        
   
+  "/colaboradores/{id}/comentarios":
+    get:
+      tags:
+      - comentarios
+      summary: Obtener las comentarios de un colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        description: colaborador ID
+      responses:
+        200:
+          description: Data retrieved successfully
+          schema:
+            $ref: '#/definitions/ComentarioResource'
+        404:
+          description: Method or resource not found
+        401:
+          description: Unauthenticated
+         
+         
+  
   # ---------------------
   #   Cursos
   # ---------------------

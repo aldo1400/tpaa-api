@@ -137,6 +137,11 @@ class Colaborador extends Model
         return $this->hasMany('App\Notificacion');
     }
 
+    public function comentariosRecibidos(): HasMany
+    {
+        return $this->hasMany('App\Comentario', 'colaborador_id');
+    }
+
     public function setImagenAttribute($imagen)
     {
         $this->attributes['imagen'] = $imagen ? is_string($imagen) ? base64_encode($imagen) : Image::convertImage($imagen) : '';
