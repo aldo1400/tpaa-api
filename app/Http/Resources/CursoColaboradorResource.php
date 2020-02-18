@@ -18,8 +18,8 @@ class CursoColaboradorResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'diploma_url' => $this->diploma_url ? $this->diploma_url : '',
-            'diploma_path' => $this->diploma_url ? url(Storage::url($this->diploma_url)) : '',
+            'diploma_url' => $this->url_diploma ? $this->url_diploma : '',
+            'diploma_path' => $this->url_diploma ? url(Storage::url($this->url_diploma)) : '',
             'curso_id' => $this->curso->id,
             'curso_nombre' => $this->curso->nombre,
             'colaborador_id' => $this->colaborador->id,
