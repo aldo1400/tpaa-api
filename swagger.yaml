@@ -12,6 +12,8 @@ host: virtserver.swaggerhub.com
 tags:
 - name: administradores
   description: Administrador module
+- name: areas
+  description: Everything about areas
 - name: users
   description: User module
 - name: type-users
@@ -28,8 +30,6 @@ tags:
   description: Everything about comentarios
 - name: cursos
   description: Everything about cursos
-- name: areas
-  description: Everything about areas
 - name: estado civiles
   description: Everything about niveles estado civiles
 - name: movilidades
@@ -303,26 +303,6 @@ paths:
         401:
           description: Unauthenticated
         
-        
-  "/capacitaciones/{id}/generar-archivo":
-    get:
-      tags:
-      - capacitaciones(curso-colaborador)
-      summary: Obtener todos las capacitaciones de un colaborador
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Archivo generado exitosamente
-        401:
-          description: unauthenticated 
           
   "/colaboradores/{id}/capacitaciones":
     get:
@@ -570,26 +550,6 @@ paths:
           description: Method or resource not found
         401:
           description: Unauthenticated
-  
-  "/cargos/{id}/generar-archivos":
-    get:
-      tags:
-      - cargos
-      summary: Genera el organigrama y descriptor de un cargo a partir del blob
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Archivo generado exitosamente
-        401:
-          description: unauthenticated 
           
   # ---------------------
   #   Colaboradores
@@ -714,7 +674,7 @@ paths:
   "/colaboradores/{id}/cargas-familiares":
     get:
       tags:
-      - colaboradores
+      - cargas familiares
       summary: Obtener todos las cargas familiares de un colaborador
       consumes:
       - application/json
@@ -737,7 +697,7 @@ paths:
     
     post:
       tags:
-      - colaboradores
+      - cargas familiares
       summary: Crear una carga familiar a un determinado colaborador
       consumes:
       - application/json
@@ -761,26 +721,6 @@ paths:
           description: Unauthenticated
         403:
           description: Forbidden access
-  
-  "/colaboradores/{id}/generar-imagen":
-    get:
-      tags:
-      - colaboradores
-      summary: Genera la imagen del colaborador a partir del blob
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Archivo generado exitosamente
-        401:
-          description: unauthenticated 
           
   # ---------------------
   #   Comentarios
@@ -1442,7 +1382,26 @@ paths:
         403:
           description: Forbidden Access
     
-  
+    delete:
+      tags:
+      - movilidades
+      summary: Eliminar la movilidad actual del colaborador
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        200:
+          description: Movilidad deleted 
+        404:
+          description: Route not found
+        409:
+          description: Departure has children 
           
   "/colaboradores/{id}/movilidades":
     get:
@@ -1495,27 +1454,6 @@ paths:
           description: Unauthenticated
         403:
           description: Forbidden access
-  
-    delete:
-      tags:
-      - movilidades
-      summary: Eliminar la movilidad actual del colaborador
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - name: id
-        in: path
-        required: true
-        type: integer
-      responses:
-        200:
-          description: Movilidad deleted 
-        404:
-          description: Route not found
-        409:
-          description: Departure has children 
   
   # ---------------------
   #   Notificaciones
@@ -2423,6 +2361,8 @@ definitions:
         type: integer
       rut:
         type: string
+      nombre_completo:
+        type: string
       usuario:
         type: string
       primer_nombre:
@@ -2625,6 +2565,8 @@ definitions:
         type: string
       titulo:
         type: string
+      horas_cronologicas:
+        type: string
       realizado:
         type: string
       fecha_inicio:
@@ -2651,6 +2593,8 @@ definitions:
         type: string
       titulo:
         type: string
+      horas_cronologicas:
+        type: string
       realizado:
         type: string
       fecha_inicio:
@@ -2676,6 +2620,8 @@ definitions:
       nombre:
         type: string
       titulo:
+        type: string
+      horas_cronologicas:
         type: string
       realizado:
         type: string

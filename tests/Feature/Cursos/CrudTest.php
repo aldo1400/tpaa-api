@@ -41,6 +41,47 @@ class CrudTest extends TestCase
             ]);
     }
 
+    public function testObtenerTodosLosCursosActivosEInternos()
+    {
+        factory(Curso::class, 8)
+                    ->create([
+                        'estado' => 1,
+                        'interno' => 1,
+                    ]);
+
+        factory(Curso::class, 10)
+                    ->create([
+                        'estado' => 1,
+                        'interno' => 0,
+                    ]);
+
+        $url = '/api/cursos?interno=true';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(8, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'titulo',
+                        'horas_cronologicas',
+                        'realizado',
+                        'fecha_inicio',
+                        'fecha_termino',
+                        'estado',
+                        'anio',
+                        'interno',
+                        'tipoCurso' => [
+                            'id',
+                            'categoria',
+                        ],
+                    ],
+                ],
+            ]);
+    }
+
     public function testObtenerTodosLosCursosActivos()
     {
         factory(Curso::class, 2)

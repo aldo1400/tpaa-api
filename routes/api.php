@@ -49,9 +49,9 @@ Route::get('/colaboradores/{id}/notificaciones', 'Colaboradores\Notificaciones\I
 Route::get('/colaboradores/{id}/cursos-disponibles', 'Colaboradores\Cursos\GetAvailableController');
 Route::get('/cursos/{id}/colaboradores-disponibles', 'Cursos\Colaboradores\GetAvailableController');
 
-Route::get('/colaboradores/{id}/generar-imagen', 'Colaboradores\GenerateFileController');
 Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 
+// Areas
 Route::get('/areas', 'Areas\IndexController');
 Route::post('/areas', 'Areas\CreateProcessController');
 Route::get('/areas/{id}', 'Areas\ShowController');
@@ -63,18 +63,11 @@ Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 Route::get('/cargos', 'Cargos\IndexController');
 Route::get('/cargos/{id}', 'Cargos\ShowController');
 Route::get('/cargos/{id}/relacionados', 'Cargos\GetRelatedController');
-Route::get('/cargos/{id}/generar-archivos', 'Cargos\GenerateFileController');
 Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 
 // TipoCarga
-Route::get('/tipo-cargas', 'TipoCargas\IndexController');
-
-Route::get('/tipo-movilidades', 'TipoMovilidades\IndexController');
-
-Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
-Route::get('/estado-civiles', 'EstadoCiviles\IndexController');
 
 // Cursos
 Route::get('/cursos', 'Cursos\IndexController');
@@ -97,7 +90,7 @@ Route::get('/movilidades/{id}', 'Movilidades\ShowController');
 Route::get('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\IndexController');
 Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');
 Route::delete('/movilidades/{id}', 'Colaboradores\Movilidades\DeleteProcessController');
-// Route::delete('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\DeleteProcessController');
+
 Route::get('/colaboradores/{id}/capacitaciones', 'Colaboradores\Capacitaciones\IndexController');
 Route::post('/colaboradores/{id}/capacitaciones', 'Colaboradores\Capacitaciones\CreateProcessController');
 
@@ -111,7 +104,6 @@ Route::get('/vista-pdf', 'TestingController');
 
 Route::post('/cursos/{id}/capacitaciones', 'Capacitaciones\CreateProcessController');
 Route::delete('/capacitaciones/{id}', 'Capacitaciones\DeleteProcessController');
-Route::get('/capacitaciones/{id}/generar-archivo', 'Capacitaciones\GenerateFileController');
 
 Route::get('/niveles-jerarquico', 'NivelesJerarquico\IndexController');
 Route::post('/niveles-jerarquico', 'NivelesJerarquico\CreateProcessController');
@@ -134,10 +126,14 @@ Route::post('/tipos-area', 'TipoAreas\CreateProcessController');
 Route::patch('/tipos-area/{id}', 'TipoAreas\UpdateProcessController');
 Route::delete('/tipos-area/{id}', 'TipoAreas\DeleteProcessController');
 
-Route::get('/tipo-comentarios', 'TipoComentarios\IndexController');
 Route::post('/comentarios', 'Comentarios\CreateProcessController');
 Route::get('/comentarios', 'Comentarios\IndexController');
 Route::get('/comentarios/{id}', 'Comentarios\ShowController');
 Route::put('/comentarios/{id}', 'Comentarios\UpdateProcessController');
 
+Route::get('/tipo-comentarios', 'TipoComentarios\IndexController');
 Route::get('/tipo-cursos', 'TipoCursos\IndexController');
+Route::get('/estado-civiles', 'EstadoCiviles\IndexController');
+Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
+Route::get('/tipo-movilidades', 'TipoMovilidades\IndexController');
+Route::get('/tipo-cargas', 'TipoCargas\IndexController');
