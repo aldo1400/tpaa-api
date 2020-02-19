@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>{{$colaborador->rut}}</title>
     {{-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i&display=swap" rel="stylesheet"> --}}
 </head>
 <body>
     <style>
-        body{
-    margin:-30px -40px -30px -35px;
+ body{
+    margin:-50px -50px -50px -50px;
     /* font-family: 'Open Sans', sans-serif; */
 }
 p{
@@ -19,16 +19,16 @@ p{
 table {
   border-collapse: collapse;
 }
-        
+
 table, td, th {
-  border: 1px solid black;
+  border: 0px solid black;
 }
 
 /* .tabla td th{
     border: 0px solid black;
 } */
 .main{
-    margin:-20px 35px -45px 35px;
+    margin: 0;
 }
 .footer{
     text-align: center;
@@ -45,12 +45,82 @@ table, td, th {
 .end-body{
     font-size:12pt
 }
+
+.nombre {
+    position: relative;
+    top: 276;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+}
+.rut{
+     position: relative;
+    top: 265;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    font-size: 18px;
+}
+h1{
+    text-align:center;
+    letter-spacing: 1;
+}
+.texto-libre {
+     position: relative;
+    top: 335;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    font-size: 14px;
+}
+.texto-libre2 {
+     position: relative;
+    top: 275;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    font-size: 16px;
+}
+.titulo {
+    position: relative;
+    top: 220;
+    left: 47%;
+    transform: translateX(-52%);
+    -webkit-transform: translateX(-52%);
+    -ms-transform: translateX(-52%);
+    padding-left: 55px;
+    padding-right: 195px;
+    font-size: 12px;
+    letter-spacing: 0.5;
+    color: #00B5B5;
+}
+
     </style>
 
 <div class="main">
-    <img src='http://admisionapi.uniq.edu.pe/public/img/fondo_corregido_Mesa de trabajo 1.jpg' style="width:109%;position:absolute;left:0;top:0" />
-    <p style="position:absolute;left:180;top:92;font-size:9pt">{{$colaborador->rut}}</p>
-    <p style="position:absolute;left:180;top:92;font-size:9pt"></p>
+    <img src='http://admisionapi.uniq.edu.pe/public/img/fondo_corregido_Mesa de trabajo 1.jpg' style="width:100%;position:absolute;left:0;top:0" />
+
+    <div class="nombre">
+        <h1>{{$colaborador->nombre_completo}}</h1>
+    </div>
+    <div class="rut">
+        <p style="text-align:center; font-weight: bold;">{{$colaborador->rut}}</p>
+    </div>
+    <div class="texto-libre2">
+        <p style="text-align:center;">{{$colaborador->anio}}
+
+    </div>
+    <div class="texto-libre">
+        <p style="text-align:center;">{{$colaborador->realizado}}
+        <br>{{$colaborador->horas_cronologicas}} horas cronológicas</p>
+    </div>
+     <div class="titulo">
+        <h1 style="padding-right: 25px; padding-left: 15px;">{{$colaborador->titulo}}</h1>
+    </div>
 </div>
 </body>
 </html>
