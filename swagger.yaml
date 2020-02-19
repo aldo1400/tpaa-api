@@ -996,6 +996,25 @@ paths:
   # ---------------------
   #   Areas
   # ---------------------
+  "/areas/validar-nombre":
+    get:
+      tags:
+      - areas
+      summary: Validar que el nombre de una nueva area sea unico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: nombre
+        type: boolean
+      responses:
+        200:
+          description: Nombre valido
+        409:
+          description: Nombre invalido
+          
   "/areas":
     get:
       tags:
@@ -1043,6 +1062,29 @@ paths:
         403:
           description: Forbidden access
   
+  "/areas/{id}/validar-nombre":
+    get:
+      tags:
+      - areas
+      summary: Validar que el nombre de una nueva area sea unico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: query
+        name: nombre
+        type: boolean
+      responses:
+        200:
+          description: Nombre valido
+        409:
+          description: Nombre invalido
+          
   "/areas/{id}":
     get:
       tags:
