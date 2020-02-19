@@ -26,12 +26,12 @@ class ComentarioRequest extends FormRequest
         return [
             'texto_libre' => ['nullable', 'string'],
             'publico' => ['required', 'boolean'],
-            'fecha' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'fecha' => ['required', 'date', 'date_format:Y-m-d'],
             'estado' => ['nullable', 'boolean'],
             'colaborador_id' => ['required', 'exists:colaboradores,id'],
             'colaborador_autor_id' => ['required', 'exists:colaboradores,id'],
             'tipo_comentario_id' => ['required', 'exists:tipos_comentario,id'],
-            'positivo'=>['required','boolean']
+            'positivo' => ['required', 'boolean'],
         ];
     }
 }
