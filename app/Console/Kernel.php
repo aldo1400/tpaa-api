@@ -13,14 +13,13 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\VerificarFechas'
+        'App\Console\Commands\VerificarFechas',
     ];
-    
+
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule)
     {
@@ -28,12 +27,11 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->command('colaboradores:vencimiento')
             ->everyMinute();
+        // ->dailyAt('2:00');
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
     protected function commands()
     {

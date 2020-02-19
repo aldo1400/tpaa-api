@@ -238,24 +238,26 @@ class Colaborador extends Model
     public function revisarFechaVencimiento($tipo)
     {
         $now = Carbon::now();
-        if ($this->$tipo->diffInDays($now) < Notificacion::DIAS_LIMITE) {
-            $tipo = str_replace('vencimiento_', '', $tipo);
+        if ($this->$tipo) {
+            if ($this->$tipo->diffInDays($now) < Notificacion::DIAS_LIMITE) {
+                $tipo = str_replace('vencimiento_', '', $tipo);
 
-            $notificaciones = $this->notificaciones()
+                $notificaciones = $this->notificaciones()
                         ->where('tipo', $tipo)
                         ->get()
                         ->count();
 
-            if (!$notificaciones) {
-                $tipoSeparado = ucwords(str_replace('_', ' ', $tipo));
+                if (!$notificaciones) {
+                    $tipoSeparado = ucwords(str_replace('_', ' ', $tipo));
 
-                $mensaje = 'Su '.$tipoSeparado.' está a punto de vencerse';
-                $notificacion = Notificacion::make([
+                    $mensaje = 'Su '.$tipoSeparado.' está a punto de vencerse';
+                    $notificacion = Notificacion::make([
                     'mensaje' => $mensaje,
                     'tipo' => $tipo,
                 ]);
-                $notificacion->colaborador()->associate($this);
-                $notificacion->save();
+                    $notificacion->colaborador()->associate($this);
+                    $notificacion->save();
+                }
             }
         }
     }
