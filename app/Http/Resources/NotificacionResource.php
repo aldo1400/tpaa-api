@@ -19,6 +19,7 @@ class NotificacionResource extends JsonResource
             'id' => $this->id,
             'colaborador' => new ColaboradorResource($this->colaborador),
             'tipo' => $this->tipo,
+            'tipoFormato' => ucwords(str_replace('_', ' ', $this->tipo)),
             'mensaje' => $this->mensaje,
             'updated_at' => $this->updated_at->format('Y-m-d'),
         ];

@@ -61,7 +61,6 @@ class ColaboradorRequest extends FormRequest
             'fecha_inicio' => ['nullable', 'date', 'date_format:Y-m-d'],
             'credencial_vigilante' => ['nullable', 'string', 'in:SI,NO,N/A'],
             'vencimiento_credencial_vigilante' => ['nullable', 'date', 'date_format:Y-m-d'],
-            // 'imagen_url' => ['nullable', 'string'],
         ];
 
         if (!$this->route('id')) {
