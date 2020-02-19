@@ -97,8 +97,9 @@ class Curso extends Model
         $colaborador = Colaborador::findOrFail($IdColaborador);
         $pdf = PDF::loadView('capacitacion.diploma', [
             'colaborador' => $colaborador,
+            'curso' => $this,
         ]);
-        //$pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper('letter', 'portrait');
         $content = $pdf->download()->getOriginalContent();
 
         return $content;

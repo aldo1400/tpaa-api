@@ -18,7 +18,7 @@ class TestingController extends Controller
             'horas_cronologicas' => '35.5',
             'realizado' => 'Realizado el 25 de Marzo de 2019',
             'anio' => 'Por su aprobación en el Taller',
-            'titulo' => 'PRÁCTICO DE FORMACIÓN MONITOR DE PAUSA ACTIVA'
+            'titulo' => 'PRÁCTICO DE FORMACIÓN MONITOR DE PAUSA ACTIVA',
         );
 
         // dd($colaborador);
@@ -27,6 +27,7 @@ class TestingController extends Controller
             'colaborador' => $colaborador,
         ]);
         $pdf->setPaper('letter', 'portrait');
+
         return $pdf->stream('testing.pdf');
         //return $pdf->download('testing.pdf');
     }

@@ -102,24 +102,24 @@ h1{
     </style>
 
 <div class="main">
-    <img src='http://admisionapi.uniq.edu.pe/public/img/fondo_corregido_Mesa de trabajo 1.jpg' style="width:100%;position:absolute;left:0;top:0" />
+    <img src="{{url('img/DIPLOMA_FONDO.jpg')}}" style="width:100%;position:absolute;left:0;top:0" />
 
     <div class="nombre">
-        <h1>{{$colaborador->nombre_completo}}</h1>
+        <h1>{{$colaborador->primer_nombre}} {{$colaborador->apellido_paterno}} {{$colaborador->apellido_materno}}</h1>
     </div>
     <div class="rut">
         <p style="text-align:center; font-weight: bold;">{{$colaborador->rut}}</p>
     </div>
     <div class="texto-libre2">
-        <p style="text-align:center;">{{$colaborador->anio}}
+        <p style="text-align:center;">{{$curso->anio}}
 
     </div>
     <div class="texto-libre">
-        <p style="text-align:center;">{{$colaborador->realizado}}
-        <br>{{$colaborador->horas_cronologicas}} horas cronológicas</p>
+        <p style="text-align:center;">{{$curso->realizado}}
+        <br>{{$curso->horas_cronologicas}} horas cronológicas</p>
     </div>
      <div class="titulo">
-        <h1 style="padding-right: 25px; padding-left: 15px;">{{$colaborador->titulo}}</h1>
+        <h1 style="padding-right: 25px; padding-left: 15px;">{{$curso->titulo}}</h1>
     </div>
 </div>
 </body>
