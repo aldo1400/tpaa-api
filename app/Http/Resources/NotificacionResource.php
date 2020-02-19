@@ -20,6 +20,7 @@ class NotificacionResource extends JsonResource
             'colaborador' => new ColaboradorResource($this->colaborador),
             'tipo' => $this->tipo,
             'mensaje' => $this->mensaje,
+            'updated_at' => $this->updated_at->format('Y-m-d'),
         ];
     }
 }
