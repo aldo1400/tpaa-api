@@ -48,12 +48,12 @@ class LoginTest extends TestCase
         $url = '/api/login/';
 
         $parameters = [
-            'username' => $admin->username,
-            'password' => 'secret',
+            'username' => '',
+            'password' => '',
         ];
 
         $response = $this->json('POST', $url, $parameters);
-
+        // dd($response->decodeResponseJson());
         $response->assertStatus(422);
     }
 }
