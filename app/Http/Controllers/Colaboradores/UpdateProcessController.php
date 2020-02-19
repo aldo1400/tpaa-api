@@ -20,7 +20,7 @@ class UpdateProcessController extends Controller
 
             $colaborador->imagen_url = $colaborador->saveImage($request);
         } else {
-            dd($request->imagen_url);
+            // dd($request->imagen_url);
             if (!$request->imagen_url && $colaborador->imagen_url) {
                 $ext = pathinfo($colaborador->imagen_url, PATHINFO_EXTENSION);
 
