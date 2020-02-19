@@ -98,6 +98,7 @@ class Curso extends Model
         $pdf = PDF::loadView('capacitacion.diploma', [
             'colaborador' => $colaborador,
         ]);
+        //$pdf->setPaper('letter', 'portrait');
         $content = $pdf->download()->getOriginalContent();
 
         return $content;
