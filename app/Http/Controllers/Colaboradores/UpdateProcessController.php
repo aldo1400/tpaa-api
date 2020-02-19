@@ -14,12 +14,13 @@ class UpdateProcessController extends Controller
     {
         $colaborador = Colaborador::findOrFail($id);
         $colaborador->fill($request->validated());
+
         if ($request->imagen) {
             Image::make(file_get_contents($request->file('imagen')->getRealPath()))
             ->encode($request->file('imagen')->extension(), 75);
 
             $colaborador->imagen_url = $colaborador->saveImage($request);
-            $colaborador->imagen = $request->image;
+            $colaborador->imagen = $request->imagen;
         } else {
             if (!$request->imagen_url && $colaborador->imagen_url) {
                 $ext = pathinfo($colaborador->imagen_url, PATHINFO_EXTENSION);

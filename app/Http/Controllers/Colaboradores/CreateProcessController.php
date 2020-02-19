@@ -45,7 +45,7 @@ class CreateProcessController extends Controller
                             ->save($finalURL, 75);
             // dd(Storage::url('public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension()));
             $colaborador->imagen_url = url(Storage::url('public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension()));
-            $colaborador->imagen = $request->image;
+            $colaborador->imagen = $request->imagen;
         }
 
         return $colaborador;
