@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AreaRequest extends FormRequest
@@ -24,7 +25,12 @@ class AreaRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'nombre' => ['required', 'string'],
+            'nombre' => [
+                'required',
+                'string',
+                Rule::unique('areas')
+                ->ignore($this->id),
+             ],
             'padre_id' => ['nullable', 'exists:areas,id'],
             'estado' => ['required', 'boolean'],
             'tipo_area_id' => ['required', 'exists:tipo_areas,id'],

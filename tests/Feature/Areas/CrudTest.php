@@ -43,13 +43,13 @@ class CrudTest extends TestCase
         factory(Area::class, 5)
                     ->create([
                         'tipo_area_id' => 1,
-                        'estado'=>1
+                        'estado' => 1,
                     ]);
 
         factory(Area::class, 3)
                     ->create([
                         'tipo_area_id' => 1,
-                        'estado'=>0
+                        'estado' => 0,
                     ]);
 
         $url = '/api/areas?estado=true';
@@ -79,13 +79,13 @@ class CrudTest extends TestCase
         factory(Area::class, 5)
                     ->create([
                         'tipo_area_id' => 1,
-                        'estado'=>1
+                        'estado' => 1,
                     ]);
 
         factory(Area::class, 3)
                     ->create([
                         'tipo_area_id' => 1,
-                        'estado'=>0
+                        'estado' => 0,
                     ]);
 
         $url = '/api/areas?estado=false';
@@ -226,6 +226,30 @@ class CrudTest extends TestCase
         ]);
     }
 
+    public function testNoSePuedeCrearDosAreasConElMismoNombre()
+    {
+        $areaPadre = factory(Area::class)->create([
+            'nombre' => 'Area importante',
+        ]);
+        $area = factory(Area::class)->make([
+            'nombre' => 'Area importante',
+        ]);
+        $tipoArea = TipoArea::first();
+        $url = '/api/areas';
+
+        $parameters = [
+            'tipo' => $area->tipo,
+            'nombre' => $area->nombre,
+            'estado' => $area->estado,
+            'padre_id' => $areaPadre->id,
+            'tipo_area_id' => $tipoArea->id,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(422);
+    }
+
     /**
      * A basic test example.
      */
@@ -286,6 +310,7 @@ class CrudTest extends TestCase
                         ->create([
                             'padre_id' => $areas[0]->id,
                             'tipo_area_id' => 4,
+                            'nombre' => 'Area 3',
                         ]);
 
         $tipoArea = TipoArea::where('tipo_nombre', 'Subgerencia')->first();
@@ -293,13 +318,14 @@ class CrudTest extends TestCase
         $url = "/api/areas/{$area->id}";
 
         $parameters = [
-            'nombre' => 'Area de administración de recursos humanos',
+            'nombre' => 'Area 3',
             'padre_id' => $areas[1]->id,
             'estado' => 1,
             'tipo_area_id' => $tipoArea->id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
+
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('areas', [
@@ -449,7 +475,7 @@ class CrudTest extends TestCase
         $area = factory(Area::class)
                         ->create([
                             'padre_id' => $areas[0]->id,
-                            'estado'=>1
+                            'estado' => 1,
                         ]);
 
         factory(Cargo::class)->create([
@@ -462,7 +488,7 @@ class CrudTest extends TestCase
             'nombre' => 'Area de administración de recursos humanos',
             'padre_id' => $areas[1]->id,
             'estado' => 0,
-            'tipo_area_id'=>$area->tipo_area_id
+            'tipo_area_id' => $area->tipo_area_id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);

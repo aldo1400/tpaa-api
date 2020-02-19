@@ -7,7 +7,6 @@ use App\Administrador;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\AdministradorResource;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -44,30 +43,41 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request): bool
     {
         // config()->set( 'auth.defaults.guard', 'api' );
-        $user=Administrador::where('username',$request->username)
+        $user = Administrador::where('username', $request->username)
                 ->first();
-                
-        if(!$user){
+
+        if (!$user) {
             return false;
         }
 
-        if(!$user->estado){
-           return false; 
+        if (!$user->estado) {
+            return false;
         }
 
         $token = $this->guard()->attempt([
             'username' => $request->username,
             'password' => $request->password,
             ]);
-            
+
         if ($token) {
             $this->guard()->setToken($token);
 
             return true;
         }
 
-
         return false;
+    }
+
+    /**
+     * Get failed request response.
+     *
+     * @param null
+     */
+    public function sendFailedLoginResponse()
+    {
+        return response()->json(['status' => false,
+        'message' => 'Las credenciales introducidas son incorrectas.',
+    ],422);
     }
 
     /**

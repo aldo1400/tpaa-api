@@ -26,7 +26,7 @@ class LoginTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                         'token',
@@ -53,6 +53,7 @@ class LoginTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
+
         $response->assertStatus(422);
     }
 }
