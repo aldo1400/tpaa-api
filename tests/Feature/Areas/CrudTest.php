@@ -137,6 +137,56 @@ class CrudTest extends TestCase
             ]);
     }
 
+    public function testValidarNombreDeAreaNueva()
+    {
+        $nombre = 'Area importante';
+        $area = factory(Area::class)
+                    ->create([
+                        'nombre' => 1,
+                    ]);
+
+        $url = '/api/areas/validar-nombre?nombre='.$nombre;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(422);
+    }
+
+    public function testValidarNombreDeAreaNuevaAlActualizar()
+    {
+        $nombre = 'Area importante';
+        $area = factory(Area::class)
+                    ->create([
+                        'nombre' => 'Area importante',
+                        'estado' => 1,
+                    ]);
+
+        $url = '/api/areas/'.$area->id.'/validar-nombre?nombre='.$area->nombre;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200);
+    }
+
+    public function testNoDebeDejarQueUnNombreDeAreaNuevaSeaIgualAOtro()
+    {
+        $nombre = 'Area importante';
+        $area = factory(Area::class)
+                    ->create([
+                        'nombre' => 'Area secundaria',
+                        'estado' => 1,
+                    ]);
+
+        factory(Area::class)
+                    ->create([
+                        'nombre' => 'Area importante',
+                        'estado' => 1,
+                    ]);
+
+        $url = '/api/areas/'.$area->id.'/validar-nombre?nombre='.$nombre;
+        $response = $this->json('GET', $url);
+        dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+    }
+
     public function testCrearAreaSinPadre()
     {
         $area = factory(Area::class)->make();
