@@ -19,8 +19,8 @@ class UpdateProcessController extends Controller
             ->encode($request->file('imagen')->extension(), 75);
 
             $colaborador->imagen_url = $colaborador->saveImage($request);
+            $colaborador->imagen = $request->image;
         } else {
-            // dd($request->imagen_url);
             if (!$request->imagen_url && $colaborador->imagen_url) {
                 $ext = pathinfo($colaborador->imagen_url, PATHINFO_EXTENSION);
 

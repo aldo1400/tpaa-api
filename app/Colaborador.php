@@ -35,7 +35,7 @@ class Colaborador extends Model
         'segundo_nombre',
         'apellido_paterno',
         'apellido_materno',
-        'imagen',
+        // 'imagen',
         'sexo',
         'nacionalidad',
         'fecha_nacimiento',
