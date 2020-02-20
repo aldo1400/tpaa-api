@@ -16,7 +16,7 @@ class ValidateUniqueUpdateController extends Controller
         if ($areas->count()) {
             if ($areas[0]->nombre != $area->nombre) {
                 return response()->json([
-                        'message' => 'Data inválida',
+                        'message' => 'Area duplicada',
                         'errors' => [
                             'nombre' => 'Nombre de área duplicado.',
                         ],
