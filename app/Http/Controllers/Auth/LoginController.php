@@ -73,12 +73,18 @@ class LoginController extends Controller
      *
      * @param null
      */
-    // public function sendFailedLoginResponse(Request $request)
-    // {
-    //     if ($request->username && $request->password) {
-    //         return response()->json(['errors' => 'Las credenciales introducidas son incorrectas.'], 422);
-    //     }
-    // }
+    public function sendFailedLoginResponse(Request $request)
+    {
+        if ($request->username && $request->password) {
+            return response()->json([
+                'username' => 'Data inválida',
+                'errors' => [
+                    'username' => 'Las credenciales introducidas son incorrectas.',
+                ],
+            ],
+            422);
+        }
+    }
 
     /**
      * Send the response after the user was authenticated.
