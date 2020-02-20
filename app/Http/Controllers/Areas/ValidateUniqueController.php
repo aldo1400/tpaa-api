@@ -14,7 +14,7 @@ class ValidateUniqueController extends Controller
 
         if ($area) {
             return response()->json([
-                'message' => 'Data invalida',
+                'message' => 'Data inválida',
                 'errors' => [
                     'nombre' => 'Nombre de área duplicado.',
                 ],
