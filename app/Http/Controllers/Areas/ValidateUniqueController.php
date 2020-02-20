@@ -10,9 +10,9 @@ class ValidateUniqueController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $area = Area::where('nombre', $request->nombre)->get();
+        $areas = Area::where('nombre', $request->nombre)->get();
 
-        if ($area) {
+        if ($areas->count()) {
             return response()->json([
                 'message' => 'Data inválida',
                 'errors' => [

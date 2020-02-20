@@ -13,7 +13,7 @@ class ValidateUniqueUpdateController extends Controller
         $area = Area::findOrFail($id);
         $areas = Area::where('nombre', $request->nombre)->get();
 
-        if ($areas) {
+        if ($areas->count()) {
             if ($areas[0]->nombre != $area->nombre) {
                 return response()->json([
                         'message' => 'Data inválida',
