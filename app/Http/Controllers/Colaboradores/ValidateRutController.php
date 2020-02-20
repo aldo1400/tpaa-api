@@ -16,11 +16,23 @@ class ValidateRutController extends Controller
         ]);
 
         if (!(Rut::parse($request->rut)->quiet()->validate())) {
-            return response()->json(['message' => 'Error: Rut inválido.'], 409);
+            return response()->json(
+                    [
+                    'message' => 'Error: Rut inválido.',
+                    'errors' => [
+                        'rut' => 'Rut inválido.',
+                    ],
+                ], 409);
         }
 
         if (Colaborador::where('rut', $request->rut)->get()->count()) {
-            return response()->json(['message' => 'Error: Rut duplicado.'], 409);
+            return response()->json(
+                [
+                'message' => 'Error: Rut duplicado.',
+                'errors' => [
+                    'rut' => 'Rut duplicado.',
+                ],
+            ], 409);
         }
 
         return response()->json();
