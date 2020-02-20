@@ -13,7 +13,12 @@ class ValidateUniqueController extends Controller
         $area = Area::where('nombre', $request->nombre)->get();
 
         if ($area) {
-            return response()->json(['errors' => 'Área duplicada.'], 422);
+            return response()->json([
+                'message' => 'Data invalida',
+                'errors' => [
+                    'nombre' => 'Nombre de área duplicado.',
+                ],
+            ], 422);
         }
 
         return response()->json();
