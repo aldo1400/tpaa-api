@@ -76,7 +76,7 @@ class LoginController extends Controller
     public function sendFailedLoginResponse(Request $request)
     {
         if ($request->username && $request->password) {
-            return response()->json('Las credenciales introducidas son incorrectas.', 422);
+            return response()->json(['errors' => 'Las credenciales introducidas son incorrectas.'], 422);
         }
     }
 

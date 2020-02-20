@@ -11,12 +11,13 @@ class UpdateProcessController extends Controller
     public function __invoke(CargaFamiliarRequest $request, $id)
     {
         $cargaFamiliar = CargaFamiliar::findOrFail($id);
-        
+
         $cargaFamiliar->fill([
             'nombres' => $request->nombres,
             'apellidos' => $request->apellidos,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'estado' => $request->estado,
+            'rut' => $request->rut,
         ]);
 
         $cargaFamiliar->tipoCarga()->associate($request->tipo_carga_id);
