@@ -142,7 +142,7 @@ class CrudTest extends TestCase
         $nombre = 'Area importante';
         $area = factory(Area::class)
                     ->create([
-                        'nombre' => 1,
+                        'nombre' => $nombre,
                     ]);
 
         $url = '/api/areas/validar-nombre?nombre='.$nombre;
@@ -183,8 +183,7 @@ class CrudTest extends TestCase
 
         $url = '/api/areas/'.$area->id.'/validar-nombre?nombre='.$nombre;
         $response = $this->json('GET', $url);
-        dd($response->decodeResponseJson());
-        $response->assertStatus(200);
+        $response->assertStatus(422);
     }
 
     public function testCrearAreaSinPadre()

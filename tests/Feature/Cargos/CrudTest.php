@@ -42,7 +42,7 @@ class CrudTest extends TestCase
                             'nombre',
                             'estado',
                         ],
-                        'nombre_fantasia'
+                        'nombre_fantasia',
                     ],
                 ],
             ]);
@@ -52,12 +52,12 @@ class CrudTest extends TestCase
     {
         factory(Cargo::class, 10)
                     ->create([
-                        'estado'=>0
+                        'estado' => 0,
                     ]);
-        
+
         factory(Cargo::class, 2)
                     ->create([
-                        'estado'=>1
+                        'estado' => 1,
                     ]);
 
         $url = '/api/cargos?estado=true';
@@ -84,7 +84,7 @@ class CrudTest extends TestCase
                             'nombre',
                             'estado',
                         ],
-                        'nombre_fantasia'
+                        'nombre_fantasia',
                     ],
                 ],
             ]);
@@ -94,12 +94,12 @@ class CrudTest extends TestCase
     {
         factory(Cargo::class, 7)
                     ->create([
-                        'estado'=>0
+                        'estado' => 0,
                     ]);
-        
+
         factory(Cargo::class, 2)
                     ->create([
-                        'estado'=>1
+                        'estado' => 1,
                     ]);
 
         $url = '/api/cargos?estado=false';
@@ -126,7 +126,7 @@ class CrudTest extends TestCase
                             'nombre',
                             'estado',
                         ],
-                        'nombre_fantasia'
+                        'nombre_fantasia',
                     ],
                 ],
             ]);
@@ -162,9 +162,59 @@ class CrudTest extends TestCase
                             ]),
                             'organigrama_url' => '',
                             'descriptor_url' => '',
-                            'nombre_fantasia'=>$cargos[1]->nombre_fantasia
+                            'nombre_fantasia' => $cargos[1]->nombre_fantasia,
                     ],
                 ]);
+    }
+
+    public function testValidarNombreDeCargpNuevo()
+    {
+        $nombre = 'Cargo importante';
+        $cargo = factory(Cargo::class)
+                    ->create([
+                        'nombre' => $nombre,
+                    ]);
+
+        $url = '/api/cargos/validar-nombre?nombre='.$nombre;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(422);
+    }
+
+    public function testValidarNombreDeCargoNuevoAlActualizar()
+    {
+        $nombre = 'Cargo importante';
+        $cargo = factory(Cargo::class)
+                    ->create([
+                        'nombre' => $nombre,
+                        'estado' => 1,
+                    ]);
+
+        $url = '/api/cargos/'.$cargo->id.'/validar-nombre?nombre='.$cargo->nombre;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200);
+    }
+
+    public function testNoDebeDejarQueUnNombreDeCargoNuevaSeaIgualAOtro()
+    {
+        $nombre = 'Cargo importante';
+        $cargo = factory(Cargo::class)
+                    ->create([
+                        'nombre' => 'Cargo secundario',
+                        'estado' => 1,
+                    ]);
+
+        factory(Cargo::class)
+                    ->create([
+                        'nombre' => 'Cargo importante',
+                        'estado' => 1,
+                    ]);
+
+        $url = '/api/cargos/'.$cargo->id.'/validar-nombre?nombre='.$nombre;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(422);
     }
 
     public function testCrearCargoSinSupervisor()
@@ -187,7 +237,7 @@ class CrudTest extends TestCase
             'area_id' => $area->id,
             'descriptor' => $descriptor,
             'organigrama' => $organigrama,
-            'nombre_fantasia'=>$cargo->nombre_fantasia
+            'nombre_fantasia' => $cargo->nombre_fantasia,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -209,7 +259,7 @@ class CrudTest extends TestCase
             'estado' => $parameters['estado'],
             'organigrama_url' => $organigramaUrl,
             'descriptor_url' => $descriptorUrl,
-            'nombre_fantasia'=>$parameters['nombre_fantasia']
+            'nombre_fantasia' => $parameters['nombre_fantasia'],
         ]);
     }
 
@@ -239,7 +289,7 @@ class CrudTest extends TestCase
             'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
             'area_id' => $parameters['area_id'],
             'estado' => $parameters['estado'],
-            'nombre_fantasia'=>$parameters['nombre_fantasia']
+            'nombre_fantasia' => $parameters['nombre_fantasia'],
         ]);
     }
 
@@ -464,7 +514,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
-            'nombre_fantasia'=>'',
+            'nombre_fantasia' => '',
             'supervisor_id' => '',
             'organigrama' => '',
             'organigrama_url' => '',
@@ -541,14 +591,13 @@ class CrudTest extends TestCase
 
     public function testSePuedeCambiarElAreaDeUnCargoConHijos()
     {
-        
         $cargoSupervisor = factory(Cargo::class)
                             ->create();
 
         $cargo = factory(Cargo::class)
                     ->create([
-                        'supervisor_id'=>$cargoSupervisor->id,
-                        'estado'=>1
+                        'supervisor_id' => $cargoSupervisor->id,
+                        'estado' => 1,
                     ]);
 
         $cargoHijo = factory(Cargo::class)->create([
@@ -556,10 +605,10 @@ class CrudTest extends TestCase
             'estado' => 1,
         ]);
 
-        $area=factory(Area::class)
+        $area = factory(Area::class)
                 ->create();
-        
-        $nivelJerarquico=factory(NivelJerarquico::class)
+
+        $nivelJerarquico = factory(NivelJerarquico::class)
                         ->create();
 
         $url = "/api/cargos/{$cargo->id}";
@@ -576,7 +625,7 @@ class CrudTest extends TestCase
         $response = $this->json('PATCH', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(200);
-    
+
         $this->assertDatabaseHas('cargos', [
             'id' => $cargo->id,
             'nombre' => $parameters['nombre'],
@@ -599,21 +648,20 @@ class CrudTest extends TestCase
             'organigrama_url' => $cargo->orgranigrama_url,
             'descriptor' => $cargo->descriptor,
             'descriptor_url' => $cargo->descriptor_url,
-            'area_id'=>$cargo->area_id,
-            'nivel_jerarquico_id'=>$cargo->nivel_jerarquico_id
+            'area_id' => $cargo->area_id,
+            'nivel_jerarquico_id' => $cargo->nivel_jerarquico_id,
         ]);
     }
 
     public function testNoSePuedeDesactivarCargoSiTieneCargosHijos()
     {
-        $cargos = factory(Cargo::class,1)
+        $cargos = factory(Cargo::class, 1)
                     ->create()
                     ->each(function ($cargo) {
                         $cargo->supervisor()->associate(factory(Cargo::class)->create());
                         $cargo->save();
                     });
 
-        
         $cargoSupervisor = factory(Cargo::class)
                 ->create();
 
@@ -627,9 +675,9 @@ class CrudTest extends TestCase
         $parameters = [
             'nombre' => 'Administrador de recursos humanos',
             'supervisor_id' => $cargoSupervisor->id,
-            'estado'=>0,
-            'area_id'=>$cargos[0]->area_id,
-            'nivel_jerarquico_id'=>$cargos[0]->nivel_jerarquico_id
+            'estado' => 0,
+            'area_id' => $cargos[0]->area_id,
+            'nivel_jerarquico_id' => $cargos[0]->nivel_jerarquico_id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -664,9 +712,9 @@ class CrudTest extends TestCase
             'nombre' => 'Administrador de recursos humanos',
             'nombre_fantasia' => 'Nuevo Administrador de recursos humanos',
             'supervisor_id' => $cargoSupervisor->id,
-            'estado'=>0,
-            'area_id'=>$cargos[0]->area_id,
-            'nivel_jerarquico_id'=>$cargos[0]->nivel_jerarquico_id
+            'estado' => 0,
+            'area_id' => $cargos[0]->area_id,
+            'nivel_jerarquico_id' => $cargos[0]->nivel_jerarquico_id,
         ];
 
         $response = $this->json('PATCH', $url, $parameters);

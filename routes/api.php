@@ -63,6 +63,9 @@ Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 
 // Cargos
 Route::get('/cargos', 'Cargos\IndexController');
+Route::get('/cargos/validar-nombre', 'Cargos\ValidateUniqueController');
+Route::get('/cargos/{id}/validar-nombre', 'Cargos\ValidateUniqueUpdateController');
+
 Route::get('/cargos/{id}', 'Cargos\ShowController');
 Route::get('/cargos/{id}/relacionados', 'Cargos\GetRelatedController');
 Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');

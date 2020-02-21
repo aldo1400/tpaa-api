@@ -410,6 +410,25 @@ paths:
   # ---------------------
   #   Cargos
   # ---------------------
+  "/cargos/validar-nombre":
+    get:
+      tags:
+      - cargos
+      summary: Validar que el nombre de una nueva cargo sea unico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: nombre
+        type: boolean
+      responses:
+        200:
+          description: Nombre valido
+        409:
+          description: Nombre invalido
+          
   "/cargos":
     get:
       tags:
@@ -452,6 +471,29 @@ paths:
         403:
           description: Forbidden access
     
+  "/cargos/{id}/validar-nombre":
+    get:
+      tags:
+      - cargos
+      summary: Validar que el nombre de una nuevo cargo sea unico
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: query
+        name: nombre
+        type: boolean
+      responses:
+        200:
+          description: Nombre valido
+        409:
+          description: Nombre invalido
+          
   "/cargos/{id}":
     get:
       tags:
