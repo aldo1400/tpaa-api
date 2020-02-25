@@ -53,6 +53,7 @@ Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 
 // Areas
 Route::get('/areas', 'Areas\IndexController');
+Route::get('/areas/import', 'Areas\ImportDataController');
 Route::get('/areas/validar-nombre', 'Areas\ValidateUniqueController');
 Route::get('/areas/{id}/validar-nombre', 'Areas\ValidateUniqueUpdateController');
 Route::post('/areas', 'Areas\CreateProcessController');
@@ -63,6 +64,7 @@ Route::delete('/areas/{id}', 'Areas\DeleteProcessController');
 
 // Cargos
 Route::get('/cargos', 'Cargos\IndexController');
+Route::get('/cargos/import', 'Cargos\ImportDataController');
 Route::get('/cargos/validar-nombre', 'Cargos\ValidateUniqueController');
 Route::get('/cargos/{id}/validar-nombre', 'Cargos\ValidateUniqueUpdateController');
 
@@ -76,6 +78,7 @@ Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
 
 // Cursos
 Route::get('/cursos', 'Cursos\IndexController');
+Route::get('/cursos/import', 'Cursos\ImportDataController');
 Route::get('/cursos/{id}', 'Cursos\ShowController');
 Route::post('/cursos', 'Cursos\CreateProcessController');
 Route::put('/cursos/{id}', 'Cursos\UpdateProcessController');
@@ -99,6 +102,7 @@ Route::delete('/movilidades/{id}', 'Colaboradores\Movilidades\DeleteProcessContr
 Route::get('/colaboradores/{id}/capacitaciones', 'Colaboradores\Capacitaciones\IndexController');
 Route::post('/colaboradores/{id}/capacitaciones', 'Colaboradores\Capacitaciones\CreateProcessController');
 
+Route::get('/cargas-familiares/import', 'CargasFamiliares\ImportDataController');
 Route::get('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\IndexController');
 Route::post('/colaboradores/{id}/cargas-familiares', 'Colaboradores\CargasFamiliares\CreateProcessController');
 Route::get('/cargas-familiares/{id}', 'CargasFamiliares\ShowController');
@@ -121,6 +125,7 @@ Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Comentarios\IndexCo
 // Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
 
 Route::get('/tags', 'Tags\IndexController');
+Route::get('/tags/import', 'Tags\ImportDataController');
 Route::get('/tags/{id}', 'Tags\ShowController');
 Route::put('/tags/{id}', 'Tags\UpdateProcessController');
 Route::delete('/tags/{id}', 'Tags\DeleteProcessController');
