@@ -14,10 +14,6 @@ class CreateProcessController extends Controller
 {
     public function __invoke(ColaboradorRequest $request)
     {
-        if (!(Rut::parse($request->rut)->quiet()->validate())) {
-            return response()->json(['message' => 'El rut es inválido.'], 409);
-        }
-
         $colaborador = $this->instanciarColaborador($request);
 
         $colaborador->nivelEducacion()->associate($request->nivel_educacion_id);
