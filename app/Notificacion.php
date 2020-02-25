@@ -13,7 +13,7 @@ class Notificacion extends Model
     const LICENCIA_D = 'licencia_d';
     const CARNET = 'carnet_portuario';
     const CREDENCIAL = 'credencial_vigilante';
-    const DIAS_LIMITE = '30';
+    const DIAS_LIMITE = '45';
 
     /**
      * The table associated with the model.
