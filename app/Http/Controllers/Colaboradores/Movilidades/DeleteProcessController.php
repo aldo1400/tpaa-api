@@ -12,10 +12,10 @@ class DeleteProcessController extends Controller
     {
         $movilidad = Movilidad::findOrFail($id);
         $colaborador = $movilidad->colaborador;
-       
-        if (!$colaborador->cargoActual()) {
-            return response()->json(['message' => 'El colaborador no tiene un cargo activo.'], 409);
-        }
+
+        // if (!$colaborador->cargoActual()) {
+        //     return response()->json(['message' => 'El colaborador no tiene un cargo activo.'], 409);
+        // }
 
         $colaborador->movilidadActual()
                 ->delete();
