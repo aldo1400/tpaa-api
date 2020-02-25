@@ -105,7 +105,7 @@ class CrudTest extends TestCase
 
         $cargaFamiliar = factory(CargaFamiliar::class)
                         ->create([
-                            'colaborador_id' => $colaborador->id
+                            'colaborador_id' => $colaborador->id,
                         ]);
 
         $tipoCarga = factory(TipoCarga::class)
@@ -119,6 +119,7 @@ class CrudTest extends TestCase
             'fecha_nacimiento' => '1997-05-02',
             'estado' => 1,
             'tipo_carga_id' => $tipoCarga->id,
+            'rut' => $cargaFamiliar->rut,
             // 'colaborador_id' => $colaborador->id
         ];
 
@@ -148,6 +149,92 @@ class CrudTest extends TestCase
         ]);
     }
 
+    public function testActualizarCargaFamiliarConNuevoRut()
+    {
+        $colaborador = factory(Colaborador::class)
+                        ->create();
+
+        $cargaFamiliar = factory(CargaFamiliar::class)
+                        ->create([
+                            'colaborador_id' => $colaborador->id,
+                        ]);
+
+        $tipoCarga = factory(TipoCarga::class)
+                        ->create();
+
+        $url = '/api/cargas-familiares/'.$cargaFamiliar->id;
+
+        $parameters = [
+            'nombres' => 'Leonidas Esteban',
+            'apellidos' => 'Ramos Quiroga',
+            'fecha_nacimiento' => '1997-05-02',
+            'estado' => 1,
+            'tipo_carga_id' => $tipoCarga->id,
+            'rut' => '12870631-3',
+            // 'colaborador_id' => $colaborador->id
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cargas_familiares', [
+            'id' => $cargaFamiliar->id,
+            'rut' => $parameters['rut'],
+            'nombres' => $parameters['nombres'],
+            'apellidos' => $parameters['apellidos'],
+            'fecha_nacimiento' => $parameters['fecha_nacimiento'],
+            'estado' => $parameters['estado'],
+            'tipo_carga_id' => $parameters['tipo_carga_id'],
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        $this->assertDatabaseMissing('cargas_familiares', [
+            'id' => $cargaFamiliar->id,
+            'rut' => $cargaFamiliar->rut,
+            'nombres' => $cargaFamiliar->nombres,
+            'apellidos' => $cargaFamiliar->apellidos,
+            'fecha_nacimiento' => $cargaFamiliar->fecha_nacimiento,
+            'estado' => $cargaFamiliar->estado,
+            'tipo_carga_id' => $tipoCarga->id,
+            'colaborador_id' => $colaborador->id,
+        ]);
+    }
+
+    public function testVerificarQueNuevoRutNoEsteDuplicado()
+    {
+        $colaborador = factory(Colaborador::class)
+                        ->create();
+
+        $cargaFamiliar = factory(CargaFamiliar::class)
+                        ->create([
+                            'colaborador_id' => $colaborador->id,
+                        ]);
+
+        $otraCargaFamiliar = factory(CargaFamiliar::class)
+                        ->create();
+
+        $tipoCarga = factory(TipoCarga::class)
+                        ->create();
+
+        $url = '/api/cargas-familiares/'.$cargaFamiliar->id;
+
+        $parameters = [
+            'nombres' => 'Leonidas Esteban',
+            'apellidos' => 'Ramos Quiroga',
+            'fecha_nacimiento' => '1997-05-02',
+            'estado' => 1,
+            'tipo_carga_id' => $tipoCarga->id,
+            'rut' => $otraCargaFamiliar->rut,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'rut',
+            ]);
+    }
+
     public function testEliminarCargaFamiliar()
     {
         $colaboradores = factory(Colaborador::class, 1)
@@ -164,7 +251,5 @@ class CrudTest extends TestCase
         $this->assertSoftDeleted('cargas_familiares', [
             'id' => $colaboradores[0]->cargasFamiliares[1]->id,
         ]);
-
     }
-
 }
