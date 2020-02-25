@@ -35,7 +35,7 @@ class CreateProcessController extends Controller
 
         $colaborador->estado = 1;
 
-        if ($tipoMovilidad->tipo == TipoMovilidad::DESVINCULADO || $tipoMovilidad->tipo == TipoMovilidad::RENUNCIA) {
+        if ($tipoMovilidad->tipo == TipoMovilidad::DESVINCULADO || $tipoMovilidad->tipo == TipoMovilidad::RENUNCIA || $tipoMovilidad->tipo == TipoMovilidad::TERMINO_DE_CONTRATO) {
             $colaborador->estado = 0;
             if ($request->cargo_id) {
                 return response()->json(['message' => 'El cargo es inválido.'], 409);

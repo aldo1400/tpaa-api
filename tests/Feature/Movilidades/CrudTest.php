@@ -12,11 +12,11 @@ class CrudTest extends TestCase
 {
     public function testObtenerUnaMovilidad()
     {
-        $cargo=factory(Cargo::class)->create();
+        $cargo = factory(Cargo::class)->create();
 
-        $colaborador=factory(Colaborador::class)->create();
-        
-        $tipoMovilidad=TipoMovilidad::first();
+        $colaborador = factory(Colaborador::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::first();
 
         $movilidad = factory(Movilidad::class)->create([
             'colaborador_id' => $colaborador->id,
@@ -24,7 +24,7 @@ class CrudTest extends TestCase
             'fecha_inicio' => now()->format('Y-m-d'),
             'fecha_termino' => null,
             'tipo_movilidad_id' => $tipoMovilidad,
-            'estado'=>1
+            'estado' => 1,
         ]);
 
         $url = '/api/movilidades/'.$movilidad->id;
@@ -35,19 +35,20 @@ class CrudTest extends TestCase
                 'data' => [
                         'id' => $movilidad->id,
                         'fecha_inicio' => $movilidad->fecha_inicio->format('Y-m-d'),
-                        'fecha_termino' =>'',
+                        'fecha_termino' => '',
                         'estado' => $movilidad->estado,
                         'tipoMovilidad' => $movilidad->tipoMovilidad->only([
                             'id',
                             'tipo',
                         ]),
-                        'observaciones'=>$movilidad->observaciones,
-                        'cargo_id'=>$movilidad->cargo->id,
-                        'cargo_nombre'=>$movilidad->cargo->nombre,
-                        'colaborador_id'=>$movilidad->colaborador->id
+                        'observaciones' => $movilidad->observaciones,
+                        'cargo_id' => $movilidad->cargo->id,
+                        'cargo_nombre' => $movilidad->cargo->nombre,
+                        'colaborador_id' => $movilidad->colaborador->id,
                 ],
             ]);
     }
+
     /**
      * A basic test example.
      */
@@ -56,7 +57,7 @@ class CrudTest extends TestCase
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
 
-        $tipoMovilidad = TipoMovilidad::first();//Nuevo (a)
+        $tipoMovilidad = TipoMovilidad::first(); //Nuevo (a)
 
         $parameters = [
             'fecha_termino' => '',
@@ -90,7 +91,7 @@ class CrudTest extends TestCase
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
 
-        $tipoMovilidad = TipoMovilidad::where('tipo','Movilidad')->first();
+        $tipoMovilidad = TipoMovilidad::where('tipo', 'Movilidad')->first();
 
         $parameters = [
             'fecha_termino' => '',
@@ -164,13 +165,13 @@ class CrudTest extends TestCase
         ]);
     }
 
-     /**
+    /**
      * A basic test example.
      */
     public function testCrearSegundaMovilidadAUnColaboradorDeTipoRenuncia()
     {
         $colaborador = factory(Colaborador::class)->create([
-                            'estado'=>1
+                            'estado' => 1,
                         ]);
 
         $cargoAnterior = factory(Cargo::class)->create();
@@ -191,7 +192,7 @@ class CrudTest extends TestCase
             'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
             'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'SUBIO DE GRADO',
-            'cargo_id' =>'',
+            'cargo_id' => '',
         ];
 
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
@@ -223,17 +224,80 @@ class CrudTest extends TestCase
 
         $this->assertDatabaseHas('colaboradores', [
             'id' => $colaborador->id,
-            'estado'=>0
+            'estado' => 0,
         ]);
     }
 
-      /**
+    /**
+     * A basic test example.
+     */
+    public function testCrearSegundaMovilidadAUnColaboradorDeTipoTerminoDeContrato()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+                            'estado' => 1,
+                        ]);
+
+        $cargoAnterior = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::TERMINO_DE_CONTRATO)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => now()->addDays(1)->format('Y-m-d'),
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => '',
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $primeraMovilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'estado' => 0,
+            'fecha_inicio' => $primeraMovilidad->fecha_inicio,
+            'fecha_termino' => $parameters['fecha_termino'],
+            'observaciones' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $this->assertDatabaseHas('movilidades', [
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => null,
+            'estado' => 1,
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
+            'observaciones' => $parameters['observaciones'],
+        ]);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaborador->id,
+            'estado' => 0,
+        ]);
+    }
+
+    /**
      * A basic test example.
      */
     public function testNoSePuedeCrearSegundaMovilidadAUnColaboradorDeTipoRenunciaSiEnviaCargoID()
     {
         $colaborador = factory(Colaborador::class)->create([
-                            'estado'=>1
+                            'estado' => 1,
                         ]);
 
         $cargoAnterior = factory(Cargo::class)->create();
@@ -254,7 +318,45 @@ class CrudTest extends TestCase
             'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
             'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'SUBIO DE GRADO',
-            'cargo_id' =>$cargoNuevo->id,
+            'cargo_id' => $cargoNuevo->id,
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('El cargo es inválido.'));
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testNoSePuedeCrearSegundaMovilidadAUnColaboradorDeTipoTerminoDeCargoSiEnviaCargoID()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+                            'estado' => 1,
+                        ]);
+
+        $cargoAnterior = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::TERMINO_DE_CONTRATO)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => now()->addDays(1)->format('Y-m-d'),
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => $cargoNuevo->id,
         ];
 
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
@@ -292,7 +394,7 @@ class CrudTest extends TestCase
         $url = '/api/movilidades/'.$movilidad->id;
 
         $response = $this->json('DELETE', $url);
-        
+
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('movilidades', [
@@ -308,7 +410,7 @@ class CrudTest extends TestCase
         ]);
     }
 
-     /**
+    /**
      * A basic test example.
      */
     public function testEditarMovilidadActivaDeUnColaborador()
@@ -327,12 +429,12 @@ class CrudTest extends TestCase
         ]);
 
         $movilidad = factory(Movilidad::class)->create([
-            'fecha_inicio'=>now()->format('Y-m-d'),
+            'fecha_inicio' => now()->format('Y-m-d'),
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidad->id,
             'estado' => 1,
-            'fecha_termino'=>null
+            'fecha_termino' => null,
         ]);
 
         $parameters = [
@@ -340,12 +442,12 @@ class CrudTest extends TestCase
             'fecha_inicio' => now()->addDays(3)->format('Y-m-d'),
             // 'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'SUBIO DE GRADO',
-            'cargo_id' =>$cargoNuevo->id,
+            'cargo_id' => $cargoNuevo->id,
         ];
 
         $url = '/api/movilidades/'.$movilidad->id;
 
-        $response = $this->json('PUT', $url,$parameters);
+        $response = $this->json('PUT', $url, $parameters);
         // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
@@ -355,8 +457,8 @@ class CrudTest extends TestCase
             'cargo_id' => $parameters['cargo_id'],
             'estado' => 1,
             'fecha_termino' => null,
-            'fecha_inicio'=>$parameters['fecha_inicio'],
-            'tipo_movilidad_id'=>$movilidad->tipoMovilidad->id
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'tipo_movilidad_id' => $movilidad->tipoMovilidad->id,
         ]);
     }
 

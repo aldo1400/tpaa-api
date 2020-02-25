@@ -12,6 +12,7 @@ class TipoMovilidad extends Model
     const DESARROLLO = 'Desarrollo';
     const DESVINCULADO = 'Desvinculado (a)';
     const RENUNCIA = 'Renuncia';
+    const TERMINO_DE_CONTRATO = 'Termino de contrato';
 
     /**
      * The table associated with the model.
