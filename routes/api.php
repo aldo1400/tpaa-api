@@ -86,6 +86,7 @@ Route::delete('/cursos/{id}', 'Cursos\DeleteProcessController');
 
 // Colaboradores
 Route::get('/colaboradores', 'Colaboradores\IndexController');
+Route::get('/colaboradores/tags/import', 'Colaboradores\Tags\ImportDataController');
 Route::get('/colaboradores/validacion-rut', 'Colaboradores\ValidateRutController');
 Route::get('/colaboradores/{id}', 'Colaboradores\ShowController');
 Route::patch('/colaboradores/{id}', 'Colaboradores\UpdateProcessController');

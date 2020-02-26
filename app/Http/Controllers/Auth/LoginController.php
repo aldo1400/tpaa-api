@@ -54,7 +54,7 @@ class LoginController extends Controller
             return false;
         }
 
-        $token = $this->guard()->attempt([
+        $token = $this->guard()->setTTL(300)->attempt([
             'username' => $request->username,
             'password' => $request->password,
             ]);

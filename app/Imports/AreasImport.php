@@ -20,7 +20,7 @@ class AreasImport implements ToModel, WithHeadingRow
         ]);
 
         $area->padre_id = $row['padre_id'];
-        $area->tipo_area_id = $row['tipo_area_id'];
+        $area->tipo_area_id = $row['area_tipo'];
 
         return $area;
     }
