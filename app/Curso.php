@@ -61,11 +61,14 @@ class Curso extends Model
 
     public function crearCapacitacion($colaborador, $file)
     {
-        $cursoColaborador = CursoColaborador::make([
-            'diploma' => is_string($file) ? base64_encode($file) : Image::convertImage($file),
-        ]);
-
-        $cursoColaborador->url_diploma = $this->saveFile($file, $colaborador);
+        if ($file) {
+            $cursoColaborador = CursoColaborador::make([
+                'diploma' => is_string($file) ? base64_encode($file) : Image::convertImage($file),
+            ]);
+            $cursoColaborador->url_diploma = $this->saveFile($file, $colaborador);
+        } else {
+            $cursoColaborador = CursoColaborador::make();
+        }
 
         $cursoColaborador->curso()->associate($this->id);
         $cursoColaborador->colaborador()->associate($colaborador);

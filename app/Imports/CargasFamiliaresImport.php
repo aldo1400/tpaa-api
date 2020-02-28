@@ -5,33 +5,14 @@ namespace App\Imports;
 use App\Colaborador;
 use App\CargaFamiliar;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
 class CargasFamiliaresImport implements ToModel, WithValidation, WithHeadingRow
 {
-    use Importable, SkipsFailures;
-    // public function collection(Collection $rows)
-    // {
-    //     foreach ($rows as $row) {
-    //         $colaborador = Colaborador::where('rut', $row['rut_colaborador'])->first();
-    //         // dd($colaborador->id);
-    //         $cargaFamiliar = CargaFamiliar::make([
-    //             'rut' => $row['rut_carga'],
-    //             'nombres' => $row['nombres'],
-    //             'apellidos' => $row['apellidos'],
-    //             'fecha_nacimiento' => $row['fecha_nacimiento'],
-    //             // 'colaborador_id' => $colaborador->id,
-    //             'tipo_carga_id' => $row['tipo_carga_id'],
-    //         ]);
-    //         $cargaFamiliar->colaborador_id = $colaborador->id;
-    //         $cargaFamiliar->save();
-    //     }
-    // }
+    use Importable;
 
     /**
      * @param array $row

@@ -42,6 +42,34 @@ class CrudTest extends TestCase
         ]);
     }
 
+    public function testCrearCursoColaboradorManualSinFoto()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $curso = factory(Curso::class)->create();
+        $cursoColaborador = factory(CursoColaborador::class)->make();
+
+        Storage::fake('local');
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/capacitaciones';
+
+        $parameters = [
+            'diploma' => '',
+            'curso_id' => $curso->id,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'id' => CursoColaborador::latest()->first()->id,
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaborador->id,
+            'url_diploma' => null,
+            'diploma' => null,
+        ]);
+    }
+
     public function testCrearCursoColaboradorMasivo()
     {
         $colaborador = factory(Colaborador::class)->create();

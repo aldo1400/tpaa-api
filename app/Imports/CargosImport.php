@@ -8,6 +8,13 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class CargosImport implements ToModel, WithHeadingRow
 {
+    protected $_idUsuario;
+
+    public function __construct($idUsuario)
+    {
+        $this->_idUsuario = $idUsuario;
+    }
+
     /**
      * @param array $row
      *
@@ -20,6 +27,7 @@ class CargosImport implements ToModel, WithHeadingRow
             'descriptor_url' => $row['descriptor_url'],
             'organigrama_url' => $row['organigrama_url'],
             'nombre_fantasia' => $row['nombre_fantasia'],
+            'estado' => $row['estado'],
         ]);
 
         $cargo->supervisor_id = $row['supervisor_id'];

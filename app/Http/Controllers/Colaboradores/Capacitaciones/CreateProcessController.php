@@ -13,7 +13,7 @@ class CreateProcessController extends Controller
     public function __invoke(Request $request, $id)
     {
         $this->validate($request, [
-            'diploma' => 'required|file',
+            'diploma' => 'nullable|file',
             // 'diploma' => 'required|image|mimes:jpeg,bmp,png',
             'curso_id' => 'required|exists:cursos,id',
         ]);
@@ -21,13 +21,15 @@ class CreateProcessController extends Controller
         $colaborador = Colaborador::findOrFail($id);
         $curso = Curso::findOrFail($request->curso_id);
 
-        $extensiones = ['bmp', 'png', 'jpeg'];
-        $extensionFile = $request->file('diploma')
+        if ($request->diploma) {
+            $extensiones = ['bmp', 'png', 'jpeg'];
+            $extensionFile = $request->file('diploma')
                             ->extension();
 
-        if (in_array($extensionFile, $extensiones)) {
-            Image::make(file_get_contents($request->file('diploma')->getRealPath()))
+            if (in_array($extensionFile, $extensiones)) {
+                Image::make(file_get_contents($request->file('diploma')->getRealPath()))
                         ->encode($request->file('diploma')->extension(), 75);
+            }
         }
 
         $file = $request->diploma;
