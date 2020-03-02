@@ -77,7 +77,7 @@ class CrudTest extends TestCase
         $curso = factory(Curso::class)->create();
         $cursoColaborador = factory(CursoColaborador::class)->make();
 
-        // Storage::fake('local');
+        Storage::fake('local');
 
         $url = '/api/cursos/'.$curso->id.'/capacitaciones';
 

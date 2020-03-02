@@ -96,6 +96,7 @@ Route::post('/colaboradores', 'Colaboradores\CreateProcessController');
 Route::delete('/colaboradores/{id}/imagen', 'Colaboradores\DeleteImageController');
 
 Route::put('/movilidades/{id}', 'Colaboradores\Movilidades\UpdateProcessController');
+Route::get('/movilidades/import', 'Movilidades\ImportDataController');
 Route::get('/movilidades/{id}', 'Movilidades\ShowController');
 Route::get('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\IndexController');
 Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');

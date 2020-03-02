@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Carbon\Carbon;
 use App\Colaborador;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -15,6 +16,7 @@ class ColaboradoresImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
+        // dd(Carbon::createFromFormat('d/m/Y', $row['fecha_de_nacimiento'])->format('Y-m-d'), );
         $colaborador = new Colaborador([
             // 'id'=>$row['id'],
             // 'rut'=>$row['rut'],
@@ -24,29 +26,30 @@ class ColaboradoresImport implements ToModel, WithHeadingRow
             'apellido_materno' => $row['apellido_materno'],
             'sexo' => $row['sexo'],
             'nacionalidad' => $row['nacionalidad'],
-            'fecha_nacimiento' => $row['fecha_de_nacimiento'],
+            'fecha_nacimiento' => $row['fecha_nacimiento'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_nacimiento'])) : null,
             'edad' => $row['edad'],
-            'email' => $row['correo'],
             'domicilio' => $row['domicilio'],
             'licencia_b' => $row['licencia_b'],
-            'vencimiento_licencia_b' => $row['vencimiento_l_b'],
+            'vencimiento_licencia_b' => $row['vencimiento_licencia_b'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['vencimiento_licencia_b'])) : null,
             'licencia_d' => $row['licencia_d'],
-            'vencimiento_licencia_d' => $row['vencimiento_l_d'],
+            'vencimiento_licencia_d' => $row['vencimiento_licencia_d'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['vencimiento_licencia_d'])) : null,
             'carnet_portuario' => $row['carnet_portuario'],
-            'vencimiento_carnet_portuario' => $row['vencimiento_c_p'],
-            'credencial_vigilante' => $row['credencial_de_vigilancia'],
-            'vencimiento_credencial_vigilante' => $row['vencimiento_c_v'],
+            'vencimiento_carnet_portuario' => $row['vencimiento_carnet_portuario'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['vencimiento_carnet_portuario'])) : null,
+            'credencial_vigilante' => $row['credencial_vigilante'],
+            'vencimiento_credencial_vigilante' => $row['vencimiento_credencial_vigilante'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['vencimiento_credencial_vigilante'])) : null,
             'talla_calzado' => $row['talla_calzado'],
             'talla_chaleco' => $row['talla_chaleco'],
             'talla_polera' => $row['talla_polera'],
             'talla_pantalon' => $row['talla_pantalon'],
-            'fecha_ingreso' => $row['fecha_de_ingreso'],
-            'anexo' => $row['anexo'],
+            'fecha_ingreso' => $row['fecha_ingreso'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_ingreso'])) : null,
+            'email' => $row['email'],
+            'telefono' => $row['telefono'],
             'celular' => $row['celular'],
-            'contacto_emergencia_nombre' => $row['contacto_de_emergencia'],
-            'contacto_emergencia_telefono' => $row['celular_cont_emergencia'],
+            'anexo' => $row['anexo'],
+            'contacto_emergencia_nombre' => $row['contacto_emergencia_nombre'],
+            'contacto_emergencia_telefono' => $row['contacto_emergencia_telefono'],
+            'fecha_inactividad' => $row['fecha_inactividad'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_inactividad'])) : null,
             'estado' => $row['estado'],
-            'fecha_inactividad' => $row['fecha_de_inactividad'],
         ]);
 
         $colaborador->rut = $row['rut'];
@@ -54,5 +57,19 @@ class ColaboradoresImport implements ToModel, WithHeadingRow
         $colaborador->nivel_educacion_id = $row['nivel_educacion_id'];
 
         return $colaborador;
+    }
+
+    /**
+     * Transform a date value into a Carbon object.
+     *
+     * @return \Carbon\Carbon|null
+     */
+    public function transformDate($value, $format = 'Y-m-d')
+    {
+        try {
+            return \Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value));
+        } catch (\ErrorException $e) {
+            return \Carbon\Carbon::createFromFormat($format, $value);
+        }
     }
 }
