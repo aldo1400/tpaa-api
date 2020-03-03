@@ -672,7 +672,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El cargo tiene hijos.'));
     }

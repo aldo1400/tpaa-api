@@ -156,7 +156,6 @@ class CrudTest extends TestCase
 
         $url = '/api/colaboradores/'.$colaborador->id.'/cursos-disponibles';
         $response = $this->json('GET', $url);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
@@ -198,7 +197,6 @@ class CrudTest extends TestCase
 
         $url = '/api/cursos/'.$curso->id.'/colaboradores-disponibles';
         $response = $this->json('GET', $url);
-        // dd($response->decodeResponseJson());
 
         $response->assertStatus(200)
             ->assertJson([

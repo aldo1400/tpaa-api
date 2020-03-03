@@ -230,6 +230,69 @@ class CrudTest extends TestCase
         ]);
     }
 
+    public function testValidarQueFechaDeTerminoSeaMayorQueLaFechaDeInicioDelCurso()
+    {
+        $curso = factory(Curso::class)->make();
+        $tipoCurso = factory(TipoCurso::class)->create();
+        $url = '/api/cursos';
+
+        $parameters = [
+            'nombre' => $curso->nombre,
+            'titulo' => $curso->titulo,
+            'horas_cronologicas' => $curso->horas_cronologicas,
+            'realizado' => $curso->realizado,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '10')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2017', '02', '10')->format('Y-m-d'),
+            'tipo_curso_id' => $tipoCurso->id,
+            'estado' => 1,
+            'interno' => 1,
+            'anio' => '2018',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio del curso.'));
+    }
+
+    public function testCrearCursoSinFechaTermino()
+    {
+        $curso = factory(Curso::class)->make();
+        $tipoCurso = factory(TipoCurso::class)->create();
+        $url = '/api/cursos';
+
+        $parameters = [
+            'nombre' => $curso->nombre,
+            'titulo' => $curso->titulo,
+            'horas_cronologicas' => $curso->horas_cronologicas,
+            'realizado' => $curso->realizado,
+            'fecha_inicio' => '',
+            'fecha_termino' => now()->format('Y-m-d'),
+            'tipo_curso_id' => $tipoCurso->id,
+            'estado' => 1,
+            'interno' => 1,
+            'anio' => '2018',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('cursos', [
+            'id' => Curso::latest()->first()->id,
+            'nombre' => $parameters['nombre'],
+            'titulo' => $parameters['titulo'],
+            'horas_cronologicas' => $parameters['horas_cronologicas'],
+            'realizado' => $parameters['realizado'],
+            'fecha_inicio' => null,
+            'fecha_termino' => $parameters['fecha_termino'],
+            'tipo_curso_id' => $parameters['tipo_curso_id'],
+            'interno' => $parameters['interno'],
+            'anio' => $parameters['anio'],
+            'estado' => $parameters['estado'],
+        ]);
+    }
+
     public function testEditarCurso()
     {
         $curso = factory(Curso::class)->create([
@@ -284,6 +347,36 @@ class CrudTest extends TestCase
             'anio' => $curso->anio,
             'estado' => $curso->estado,
         ]);
+    }
+
+    public function testValidarFechaAlEditarCurso()
+    {
+        $curso = factory(Curso::class)->create([
+            'estado' => 1,
+        ]);
+
+        $tipoCurso = factory(TipoCurso::class)
+                    ->create();
+
+        $url = '/api/cursos/'.$curso->id;
+
+        $parameters = [
+            'nombre' => 'NUEVO CURSO DE BIOLOGIA',
+            'titulo' => 'BIOLOGIA 2020',
+            'horas_cronologicas' => $curso->horas_cronologicas,
+            'realizado' => $curso->realizado,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '01')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2017', '02', '10')->format('Y-m-d'),
+            'tipo_curso_id' => $tipoCurso->id,
+            'estado' => 1,
+            'interno' => 1,
+            'anio' => '2020',
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(409)
+        ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio del curso.'));
     }
 
     /**

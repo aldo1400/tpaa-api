@@ -18,7 +18,6 @@ class MovilidadesImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $colaborador = Colaborador::where('rut', $row['colaborador_rut'])->first();
-
         $movilidad = new Movilidad([
             'fecha_inicio' => $row['fecha_inicio'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_inicio'])) : null,
             'fecha_termino' => $row['fecha_termino'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_termino'])) : null,

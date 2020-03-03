@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Carbon\Carbon;
 use App\Colaborador;
 use App\CargaFamiliar;
 use Illuminate\Validation\Rule;
@@ -27,7 +28,7 @@ class CargasFamiliaresImport implements ToModel, WithValidation, WithHeadingRow
             'rut' => $row['rut_carga'],
             'nombres' => $row['nombres_carga'],
             'apellidos' => $row['apellido_carga'],
-            'fecha_nacimiento' => $row['fecha_de_nacimiento'],
+            'fecha_nacimiento' => $row['fecha_de_nacimiento'] ? Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_de_nacimiento'])) : null,
         ]);
 
         $cargaFamiliar->colaborador_id = $colaborador->id;

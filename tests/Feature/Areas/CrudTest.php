@@ -415,7 +415,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('areas', [
@@ -463,7 +462,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('areas', [
@@ -512,7 +510,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El area tiene hijos.'));
     }
@@ -541,7 +538,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El area esta asociada a cargos.'));
     }
@@ -564,7 +560,6 @@ class CrudTest extends TestCase
         $url = "/api/areas/{$area->id}/relacionados";
 
         $response = $this->json('GET', $url);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data')
             ->assertJsonStructure([
