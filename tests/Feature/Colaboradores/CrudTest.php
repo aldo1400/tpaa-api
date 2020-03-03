@@ -319,7 +319,6 @@ class CrudTest extends TestCase
                         'anexo' => $colaboradores[1]->anexo,
                         'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
                         'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
-                        // 'estado' => $colaboradores[1]->estado,
                         'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('Y-m-d'),
                         'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
                         'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
@@ -379,7 +378,6 @@ class CrudTest extends TestCase
             'anexo' => $colaborador->anexo,
             'contacto_emergencia_nombre' => $colaborador->contacto_emergencia_nombre,
             'contacto_emergencia_telefono' => $colaborador->contacto_emergencia_telefono,
-            'estado' => $colaborador->estado,
             'fecha_inactividad' => '',
             'estado_civil_id' => $estadoCivil->id,
             'nivel_educacion_id' => $nivelEducacion->id,
@@ -391,7 +389,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();
@@ -427,7 +424,7 @@ class CrudTest extends TestCase
             'anexo' => $parameters['anexo'],
             'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
             'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
-            'estado' => $parameters['estado'],
+            'estado' => 1,
             'fecha_inactividad' => null,
             'estado_civil_id' => $parameters['estado_civil_id'],
             'nivel_educacion_id' => $parameters['nivel_educacion_id'],
@@ -514,7 +511,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();
@@ -638,7 +634,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $imageUrl = 'public/colaboradores/imagenes/'.$colaborador->rut.'.'.$image->clientExtension();
@@ -1493,7 +1488,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('GET', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('Error: Rut duplicado.'));
     }
@@ -1511,7 +1505,6 @@ class CrudTest extends TestCase
                                     ]));
                     });
 
-        // dd($colaborador[0]->capacitaciones()->count());
         $url = '/api/colaboradores/'.$colaborador[0]->id.'/capacitaciones';
 
         $response = $this->json('GET', $url);

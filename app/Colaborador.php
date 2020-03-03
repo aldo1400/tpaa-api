@@ -226,11 +226,13 @@ class Colaborador extends Model
                 $url = $this->obtenerURLPublicaDeImagenColaborador();
 
                 $content = Storage::get($url);
+
                 if ($content) {
-                    $this->update([
-                        'imagen' => $content,
-                    ]);
+                    $this->imagen = $content;
+                    $this->save();
                 }
+
+                return true;
             }
         }
     }

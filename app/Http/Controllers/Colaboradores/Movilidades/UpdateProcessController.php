@@ -12,7 +12,6 @@ class UpdateProcessController extends Controller
     public function __invoke(Request $request, $id)
     {
         $movilidad = Movilidad::findOrFail($id);
-        // dd($request->fecha_inicio);
         $movilidad->fill([
             'fecha_inicio' => $request->fecha_inicio,
             'observaciones' => $request->observaciones,

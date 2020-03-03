@@ -241,7 +241,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $cargoCreado = Cargo::latest()->first();
@@ -375,7 +374,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $descriptorUrl = 'public/cargos/'.$cargos[0]->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
@@ -448,7 +446,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $descriptorUrl = 'public/cargos/'.$cargo->id.'_'.$parameters['nombre'].'_descriptor'.'.'.$descriptor->extension();
@@ -584,7 +581,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('El cargo tiene hijos.'));
     }
@@ -623,7 +619,6 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('cargos', [
@@ -631,10 +626,6 @@ class CrudTest extends TestCase
             'nombre' => $parameters['nombre'],
             'nombre_fantasia' => $parameters['nombre_fantasia'],
             'supervisor_id' => $parameters['supervisor_id'],
-            // 'descriptor_url' => null,
-            // 'descriptor' => '',
-            // 'organigrama_url' => null,
-            // 'organigrama' => '',
             'area_id' => $parameters['area_id'],
             'nivel_jerarquico_id' => $parameters['nivel_jerarquico_id'],
         ]);

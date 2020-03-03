@@ -17,8 +17,6 @@ class MovilidadesImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        // dd($row);
-
         $colaborador = Colaborador::where('rut', $row['colaborador_rut'])->first();
 
         $movilidad = new Movilidad([

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Colaboradores;
 
 use App\Colaborador;
-use Freshwork\ChileanBundle\Rut;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
@@ -39,7 +38,6 @@ class CreateProcessController extends Controller
             $finalURL = storage_path().'/app/public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension();
             $imagenReducida = Image::make(file_get_contents($request->file('imagen')->getRealPath()))
                             ->save($finalURL, 75);
-            // dd(Storage::url('public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension()));
             $colaborador->imagen_url = url(Storage::url('public/colaboradores/imagenes/'.$request->rut.'.'.$request->file('imagen')->extension()));
             $colaborador->imagen = $request->imagen;
         }

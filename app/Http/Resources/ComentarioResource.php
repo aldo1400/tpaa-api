@@ -15,8 +15,6 @@ class ComentarioResource extends JsonResource
      */
     public function toArray($request)
     {
-        // dd(collect($this->receptor->only(['id', 'name', 'imagen'])));
-
         return [
             'id' => $this->id,
             'texto_libre' => $this->texto_libre,
@@ -24,9 +22,9 @@ class ComentarioResource extends JsonResource
             'fecha' => $this->fecha->format('Y-m-d'),
             'estado' => $this->estado,
             'tipoComentario' => new TipoComentarioResource($this->tipoComentario),
-            'positivo'=> $this->positivo,
+            'positivo' => $this->positivo,
             'receptor' => new ColaboradorResource($this->receptor),
-            'autor'=>new ColaboradorResource($this->autor),
+            'autor' => new ColaboradorResource($this->autor),
         ];
     }
 }

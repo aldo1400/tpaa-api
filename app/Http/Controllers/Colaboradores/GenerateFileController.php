@@ -10,7 +10,6 @@ class GenerateFileController extends Controller
     public function __invoke($id)
     {
         $colaborador = Colaborador::findOrFail($id);
-        // dd($colaborador->id);
         $colaborador->generarImagen();
 
         return response()->json();

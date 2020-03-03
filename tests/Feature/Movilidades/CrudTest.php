@@ -71,7 +71,6 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('movilidades', [
@@ -104,7 +103,6 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
 
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('El tipo de movilidad es inválido.'));
@@ -440,7 +438,6 @@ class CrudTest extends TestCase
         $parameters = [
             'fecha_termino' => '',
             'fecha_inicio' => now()->addDays(3)->format('Y-m-d'),
-            // 'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
         ];
@@ -448,7 +445,6 @@ class CrudTest extends TestCase
         $url = '/api/movilidades/'.$movilidad->id;
 
         $response = $this->json('PUT', $url, $parameters);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [

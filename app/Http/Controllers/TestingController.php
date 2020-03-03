@@ -21,8 +21,6 @@ class TestingController extends Controller
             'titulo' => 'PRÁCTICO DE FORMACIÓN MONITOR DE PAUSA ACTIVA',
         );
 
-        // dd($colaborador);
-
         $pdf = PDF::loadView('capacitacion.diploma', [
             'colaborador' => $colaborador,
         ]);

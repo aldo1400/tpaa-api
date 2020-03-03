@@ -4,22 +4,16 @@ namespace App\Imports;
 
 use Carbon\Carbon;
 use App\Colaborador;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ColaboradoresImport implements ToModel, WithHeadingRow
+class ColaboradoresImport implements ToCollection, WithHeadingRow
 {
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        // dd(Carbon::createFromFormat('d/m/Y', $row['fecha_de_nacimiento'])->format('Y-m-d'), );
-        $colaborador = new Colaborador([
-            // 'id'=>$row['id'],
-            // 'rut'=>$row['rut'],
+        foreach ($rows as $row) {
+            $colaborador = Colaborador::make([
             'primer_nombre' => $row['primer_nombre'],
             'segundo_nombre' => $row['segundo_nombre'],
             'apellido_paterno' => $row['apellido_paterno'],
@@ -52,11 +46,14 @@ class ColaboradoresImport implements ToModel, WithHeadingRow
             'estado' => $row['estado'],
         ]);
 
-        $colaborador->rut = $row['rut'];
-        $colaborador->estado_civil_id = $row['estado_civil_id'];
-        $colaborador->nivel_educacion_id = $row['nivel_educacion_id'];
+            $colaborador->rut = $row['rut'];
+            $colaborador->estado_civil_id = $row['estado_civil_id'];
+            $colaborador->nivel_educacion_id = $row['nivel_educacion_id'];
+            $colaborador->imagen_url = $row['imagen_url'];
 
-        return $colaborador;
+            $colaborador->save();
+            $colaborador->generarImagen();
+        }
     }
 
     /**

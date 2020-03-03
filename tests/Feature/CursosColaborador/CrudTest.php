@@ -131,24 +131,11 @@ class CrudTest extends TestCase
         $url = '/api/capacitaciones/'.$colaborador[0]->capacitaciones[0]->id;
 
         $response = $this->json('DELETE', $url);
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('cursos_colaborador', [
             'id' => $colaborador[0]->capacitaciones[0]->id,
         ]);
-
-        // $response = $this->json('GET', '/api/cursos');
-        // $response->assertStatus(200)
-        //     ->assertJsonCount(4, 'data')
-        //     ->assertJson([
-        //         'data' => [
-        //             '0' => ['id' => $cursos[1]->id],
-        //             '1' => ['id' => $cursos[2]->id],
-        //             '2' => ['id' => $cursos[3]->id],
-        //             '3' => ['id' => $cursos[4]->id],
-        //         ],
-        //     ]);
     }
 
     public function testObtenerCursosDisponiblesCuandoElColaboradorTieneCapacitaciones()

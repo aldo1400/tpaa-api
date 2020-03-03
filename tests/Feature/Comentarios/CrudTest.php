@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\Comentarios;
 
+use App\Cargo;
+use App\Movilidad;
 use App\Comentario;
 use Tests\TestCase;
 use App\Colaborador;
+use App\TipoMovilidad;
 use App\TipoComentario;
 
 class CrudTest extends TestCase
@@ -13,19 +16,29 @@ class CrudTest extends TestCase
     {
         $colaboradorAutor = factory(Colaborador::class)->create();
         $colaboradorReceptor = factory(Colaborador::class)->create();
+        $cargoReceptor = factory(Cargo::class)->create();
         $tipoComentario = factory(TipoComentario::class)->create();
+        $TipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        factory(Movilidad::class)->create([
+            'colaborador_id' => $colaboradorReceptor->id,
+            'cargo_id' => $cargoReceptor->id,
+            'tipo_movilidad_id' => $TipoMovilidad->id,
+            'estado' => 1,
+            'fecha_inicio' => now()->format('Y-m-d'),
+        ]);
 
         $url = '/api/comentarios';
 
         $parameters = [
             'texto_libre' => 'Un comentario random',
             'publico' => 1,
-            'fecha' => now()->format('Y-m-d'),
+            'fecha' => now()->addDays(2)->format('Y-m-d'),
             'estado' => 1,
             'colaborador_id' => $colaboradorReceptor->id,
             'colaborador_autor_id' => $colaboradorAutor->id,
             'tipo_comentario_id' => $tipoComentario->id,
-            'positivo'=>1
+            'positivo' => 1,
         ];
 
         $response = $this->json('POST', $url, $parameters);
@@ -41,7 +54,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $parameters['colaborador_id'],
             'colaborador_autor_id' => $parameters['colaborador_autor_id'],
             'tipo_comentario_id' => $parameters['tipo_comentario_id'],
-            'positivo'=>$parameters['positivo']
+            'positivo' => $parameters['positivo'],
         ]);
     }
 
@@ -65,7 +78,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $colaboradorReceptor->id,
             'colaborador_autor_id' => $colaboradorAutor->id,
             'tipo_comentario_id' => $tipoComentario->id,
-            'positivo'=>1
+            'positivo' => 1,
         ];
 
         $response = $this->json('PUT', $url, $parameters);
@@ -81,7 +94,7 @@ class CrudTest extends TestCase
             'colaborador_id' => $parameters['colaborador_id'],
             'colaborador_autor_id' => $parameters['colaborador_autor_id'],
             'tipo_comentario_id' => $parameters['tipo_comentario_id'],
-            'positivo'=>$parameters['positivo']
+            'positivo' => $parameters['positivo'],
         ]);
 
         $this->assertDatabaseMissing('comentarios', [
@@ -93,8 +106,43 @@ class CrudTest extends TestCase
             'colaborador_id' => $comentario->colaborador_id,
             'colaborador_autor_id' => $comentario->colaborador_autor_id,
             'tipo_comentario_id' => $comentario->tipo_comentario_id,
-            'positivo'=>$comentario->positivo
+            'positivo' => $comentario->positivo,
         ]);
+    }
+
+    public function testValidarFechaDeComentario()
+    {
+        $colaboradorAutor = factory(Colaborador::class)->create();
+        $colaboradorReceptor = factory(Colaborador::class)->create();
+        $cargoReceptor = factory(Cargo::class)->create();
+        $tipoComentario = factory(TipoComentario::class)->create();
+        $TipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        factory(Movilidad::class)->create([
+            'colaborador_id' => $colaboradorReceptor->id,
+            'cargo_id' => $cargoReceptor->id,
+            'tipo_movilidad_id' => $TipoMovilidad->id,
+            'estado' => 1,
+            'fecha_inicio' => now()->format('Y-m-d'),
+        ]);
+
+        $url = '/api/comentarios/';
+
+        $parameters = [
+            'texto_libre' => 'Otro comentario random',
+            'publico' => 1,
+            'fecha' => now()->subDays(2)->format('Y-m-d'),
+            'estado' => 1,
+            'colaborador_id' => $colaboradorReceptor->id,
+            'colaborador_autor_id' => $colaboradorAutor->id,
+            'tipo_comentario_id' => $tipoComentario->id,
+            'positivo' => 1,
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('La fecha del comentario es inválida.'));
     }
 
     public function testObtenerTodosLosComentarios()
@@ -104,7 +152,6 @@ class CrudTest extends TestCase
         $url = '/api/comentarios';
         $response = $this->json('GET', $url);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data')
             ->assertJsonStructure([
@@ -119,7 +166,7 @@ class CrudTest extends TestCase
                             'id',
                             'tipo',
                         ],
-                        'positivo'
+                        'positivo',
                     ],
                 ],
             ]);
@@ -139,17 +186,17 @@ class CrudTest extends TestCase
         $response->assertStatus(200)
                 ->assertJson([
                     'data' => [
-                        'id'=>$comentarios[1]->id,
-                        'texto_libre'=>$comentarios[1]->texto_libre,
-                        'publico'=>$comentarios[1]->publico,
-                        'fecha'=>$comentarios[1]->fecha->format('Y-m-d'),
-                        'estado'=>$comentarios[1]->estado,
+                        'id' => $comentarios[1]->id,
+                        'texto_libre' => $comentarios[1]->texto_libre,
+                        'publico' => $comentarios[1]->publico,
+                        'fecha' => $comentarios[1]->fecha->format('Y-m-d'),
+                        'estado' => $comentarios[1]->estado,
                         'tipoComentario' => $comentarios[1]->tipoComentario->only([
                             'id',
                             'tipo',
                             'estado',
                         ]),
-                        'positivo'=>$comentarios[1]->positivo
+                        'positivo' => $comentarios[1]->positivo,
                     ],
                 ]);
     }
