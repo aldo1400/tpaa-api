@@ -20,13 +20,13 @@ class CreateProcessController extends Controller
 
         if (!$primeraMovilidad) {
             return response()->json([
-                'message' => 'El colaborador no está asociado a un cargo.',
+                'message' => 'Primero debe asignarle un Cargo al Colaborador.',
             ], 409);
         }
 
         if ($primeraMovilidad->fecha_inicio->gt($request->fecha)) {
             return response()->json([
-                'message' => 'La fecha del comentario es inválida.',
+                'message' => 'La fecha del comentario debe ser posterior a la Fecha de Inicio del Cargo del Colaborador.',
             ], 409);
         }
 
