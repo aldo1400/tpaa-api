@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Image;
 use App\Http\Traits\ImageTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -75,6 +76,26 @@ class CursoColaborador extends Model
                         'diploma' => base64_encode($content),
                     ]);
                 }
+            }
+        }
+    }
+
+    public function actualizarArchivo($request, $tipo)
+    {
+        $tipoUrl = 'url_'.$tipo;
+
+        if ($request->file($tipo)) {
+            $this->$tipoUrl = $filePath = $request->file($tipo)->storeAs(
+                'public/diplomas',
+                $this->curso->nombre.'_'.$this->colaborador->rut.'.'.$request->file($tipo)->extension()
+            );
+            $this->diploma = Image::convertImage($request->file($tipo));
+        // $this->saveFile($request->file($tipo), $tipo);
+        } else {
+            if (!$request->$tipoUrl && $this->$tipoUrl) {
+                Storage::delete($this->$tipoUrl);
+                $this->$tipo = null;
+                $this->$tipoUrl = null;
             }
         }
     }

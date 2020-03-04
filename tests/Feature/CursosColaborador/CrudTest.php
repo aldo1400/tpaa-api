@@ -5,6 +5,7 @@ namespace Tests\Feature\CursosColaborador;
 use App\Curso;
 use Tests\TestCase;
 use App\Colaborador;
+use App\Helpers\Image;
 use App\CursoColaborador;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -107,6 +108,227 @@ class CrudTest extends TestCase
             'curso_id' => $curso->id,
             'colaborador_id' => $parameters['colaboradores'][1],
             'url_diploma' => $diplomaUrlTwo,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarCursoColaboradorSoloCurso()
+    {
+        $curso = factory(Curso::class)
+                    ->create();
+
+        $nuevoCurso = factory(Curso::class)
+                    ->create();
+
+        $colaborador = factory(Colaborador::class, 1)
+                    ->create()
+                    ->each(function ($colaborador) use ($curso) {
+                        $colaborador->capacitaciones()->saveMany(factory(CursoColaborador::class, 4)
+                                    ->make([
+                                        'colaborador_id' => '',
+                                        'curso_id' => $curso->id,
+                                        'diploma' => null,
+                                        'url_diploma' => '',
+                                    ]));
+                    });
+
+        $url = '/api/capacitaciones/'.$colaborador[0]->capacitaciones[0]->id;
+
+        $parameters = [
+            'curso_id' => $nuevoCurso->id,
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'id' => $colaborador[0]->capacitaciones[0]->id,
+            'curso_id' => $parameters['curso_id'],
+            'colaborador_id' => $colaborador[0]->id,
+            'url_diploma' => '',
+            'diploma' => null,
+        ]);
+
+        $this->assertDatabaseMissing('cursos_colaborador', [
+            'id' => $colaborador[0]->capacitaciones[0]->id,
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaborador[0]->id,
+            'url_diploma' => '',
+            'diploma' => null,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarCursoColaboradorSinDiplomaAConDiploma()
+    {
+        $curso = factory(Curso::class)
+                    ->create();
+
+        $nuevoCurso = factory(Curso::class)
+                    ->create();
+
+        Storage::fake('local');
+
+        $diploma = UploadedFile::fake()->create('diploma.pdf');
+
+        $colaborador = factory(Colaborador::class, 1)
+                    ->create()
+                    ->each(function ($colaborador) use ($curso) {
+                        $colaborador->capacitaciones()->saveMany(factory(CursoColaborador::class, 4)
+                                    ->make([
+                                        'colaborador_id' => '',
+                                        'curso_id' => $curso->id,
+                                        'diploma' => null,
+                                        'url_diploma' => '',
+                                    ]));
+                    });
+
+        $url = '/api/capacitaciones/'.$colaborador[0]->capacitaciones[0]->id;
+
+        $parameters = [
+            'curso_id' => $nuevoCurso->id,
+            'diploma' => $diploma,
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador[0]->rut.'.'.$diploma->extension();
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'id' => $colaborador[0]->capacitaciones[0]->id,
+            'curso_id' => $parameters['curso_id'],
+            'colaborador_id' => $colaborador[0]->id,
+            'url_diploma' => $diplomaUrl,
+            'diploma' => Image::convertImage($diploma),
+        ]);
+
+        $this->assertDatabaseMissing('cursos_colaborador', [
+            'id' => $colaborador[0]->capacitaciones[0]->id,
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaborador[0]->id,
+            'url_diploma' => '',
+            'diploma' => null,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarCursoColaboradorConDiplomaASinDiploma()
+    {
+        $curso = factory(Curso::class)
+                    ->create();
+
+        $nuevoCurso = factory(Curso::class)
+                    ->create();
+
+        Storage::fake('local');
+
+        $colaborador = factory(Colaborador::class)
+                        ->create();
+
+        $diploma = UploadedFile::fake()->create('diploma.pdf');
+        $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.'.$diploma->extension();
+
+        $capacitacion = factory(CursoColaborador::class)
+                        ->create([
+                            'curso_id' => $curso->id,
+                            'diploma' => Image::convertImage($diploma),
+                            'url_diploma' => $diplomaUrl,
+                            'colaborador_id' => $colaborador->id,
+                        ]);
+
+        $url = '/api/capacitaciones/'.$capacitacion->id;
+
+        $parameters = [
+            'curso_id' => $nuevoCurso->id,
+            'diploma' => '',
+            'url_diploma' => '',
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'id' => $capacitacion->id,
+            'curso_id' => $parameters['curso_id'],
+            'colaborador_id' => $colaborador->id,
+            'url_diploma' => null,
+            'diploma' => null,
+        ]);
+
+        $this->assertDatabaseMissing('cursos_colaborador', [
+            'id' => $capacitacion->id,
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaborador->id,
+            'url_diploma' => $capacitacion->url_diploma,
+            'diploma' => $capacitacion->diploma,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarCursoColaboradorConDiplomaAOtroConDiploma()
+    {
+        $curso = factory(Curso::class)
+                    ->create();
+
+        $nuevoCurso = factory(Curso::class)
+                    ->create();
+
+        Storage::fake('local');
+
+        $colaborador = factory(Colaborador::class)
+                        ->create();
+
+        $diploma = UploadedFile::fake()->create('diploma.pdf');
+        $nuevoDiploma = UploadedFile::fake()->create('diploma2.pdf');
+
+        $diplomaUrl = 'public/diplomas/'.$curso->nombre.'_'.$colaborador->rut.'.'.$diploma->extension();
+
+        $capacitacion = factory(CursoColaborador::class)
+                        ->create([
+                            'curso_id' => $curso->id,
+                            'diploma' => Image::convertImage($diploma),
+                            'url_diploma' => $diplomaUrl,
+                            'colaborador_id' => $colaborador->id,
+                        ]);
+
+        $url = '/api/capacitaciones/'.$capacitacion->id;
+
+        $parameters = [
+            'curso_id' => $nuevoCurso->id,
+            'diploma' => $nuevoDiploma,
+            'url_diploma' => $diplomaUrl,
+        ];
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('cursos_colaborador', [
+            'id' => $capacitacion->id,
+            'curso_id' => $parameters['curso_id'],
+            'colaborador_id' => $colaborador->id,
+            'url_diploma' => $parameters['url_diploma'],
+            'diploma' => Image::convertImage($nuevoDiploma),
+        ]);
+
+        $this->assertDatabaseMissing('cursos_colaborador', [
+            'id' => $capacitacion->id,
+            'curso_id' => $curso->id,
+            'colaborador_id' => $colaborador->id,
+            'url_diploma' => $capacitacion->url_diploma,
+            'diploma' => $capacitacion->diploma,
         ]);
     }
 

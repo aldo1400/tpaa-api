@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Colaboradores\Capacitaciones;
+namespace App\Http\Controllers\Capacitaciones;
 
 use App\Curso;
-use App\Colaborador;
+use App\Helpers\Image;
+use App\CursoColaborador;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Intervention\Image\Facades\Image;
 
-class CreateProcessController extends Controller
+class UpdateProcessController extends Controller
 {
     public function __invoke(Request $request, $id)
     {
@@ -17,24 +17,24 @@ class CreateProcessController extends Controller
             'curso_id' => 'required|exists:cursos,id',
         ]);
 
-        $colaborador = Colaborador::findOrFail($id);
+        $capacitacion = CursoColaborador::findOrFail($id);
         $curso = Curso::findOrFail($request->curso_id);
 
         if ($request->diploma) {
             $extensiones = ['bmp', 'png', 'jpeg'];
             $extensionFile = $request->file('diploma')
-                            ->extension();
+                                ->extension();
 
             if (in_array($extensionFile, $extensiones)) {
                 Image::make(file_get_contents($request->file('diploma')->getRealPath()))
-                        ->encode($request->file('diploma')->extension(), 75);
+                                ->encode($request->file('diploma')->extension(), 75);
             }
         }
 
-        $file = $request->diploma;
+        $capacitacion->actualizarArchivo($request, 'diploma');
+        $capacitacion->curso()->associate($request->curso_id);
+        $capacitacion->save();
 
-        $curso->crearCapacitacion($colaborador->id, $file);
-
-        return response()->json(null, 201);
+        return response()->json();
     }
 }

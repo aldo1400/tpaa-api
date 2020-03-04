@@ -115,6 +115,7 @@ Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessControlle
 Route::get('/vista-pdf', 'TestingController');
 
 Route::post('/cursos/{id}/capacitaciones', 'Capacitaciones\CreateProcessController');
+Route::put('/capacitaciones/{id}', 'Capacitaciones\UpdateProcessController');
 Route::delete('/capacitaciones/{id}', 'Capacitaciones\DeleteProcessController');
 
 Route::get('/niveles-jerarquico', 'NivelesJerarquico\IndexController');

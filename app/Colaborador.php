@@ -208,6 +208,21 @@ class Colaborador extends Model
         return $url;
     }
 
+    public function actualizarArchivo($request, $tipo)
+    {
+        $tipoUrl = 'url_'.$tipo;
+
+        if ($request->file($tipo)) {
+            $this->$tipoUrl = $this->saveFile($request->file($tipo), $tipo);
+        } else {
+            if (!$request->$tipoUrl && $this->$tipoUrl) {
+                Storage::delete($this->$tipoUrl);
+                $this->$tipo = null;
+                $this->$tipoUrl = null;
+            }
+        }
+    }
+
     public function generarImagen()
     {
         if ($this->imagen) {
