@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Administrador extends Authenticatable implements JWTSubject
 {
     use SoftDeletes;
-    
+    protected $guard = 'api';
     /**
      * The table associated with the model.
      *
@@ -26,7 +26,7 @@ class Administrador extends Authenticatable implements JWTSubject
     protected $fillable = [
         'nombre',
         'username',
-        'estado'
+        'estado',
     ];
 
     /**
@@ -55,5 +55,4 @@ class Administrador extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
 }

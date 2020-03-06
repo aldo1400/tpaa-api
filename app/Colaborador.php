@@ -6,22 +6,45 @@ use Carbon\Carbon;
 use App\Helpers\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Colaborador extends Model
+class Colaborador extends Authenticatable implements JWTSubject
 {
     const DESVINCULADO = 'Desvinculado (a)';
     const RENUNCIA = 'Renuncia';
     const ACTIVO = 'Activo (a)';
 
+    protected $guard = 'colaboradores';
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'colaboradores';
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     /**
      * The attributes that are mass assignable.

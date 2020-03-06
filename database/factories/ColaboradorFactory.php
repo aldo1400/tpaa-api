@@ -16,7 +16,7 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
     return [
         'rut' => $rut->fix()->format(),
         'usuario' => $faker->userName,
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
         'primer_nombre' => $faker->name,
         'segundo_nombre' => $faker->name,
         'apellido_paterno' => $faker->lastName,
@@ -54,7 +54,7 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
         'contacto_emergencia_telefono' => $faker->tollFreePhoneNumber,
         'estado' => $faker->randomElement([
             '1',
-            '0'
+            '0',
         ]),
         'fecha_inactividad' => $faker->dateTime($max = 'now', $timezone = null),
         'credencial_vigilante' => $faker->randomElement([

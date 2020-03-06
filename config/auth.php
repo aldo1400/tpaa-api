@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -14,6 +13,7 @@ return [
     */
 
     'defaults' => [
+        // 'guard' => 'colaboradores',
         'guard' => 'api',
         'passwords' => 'users',
     ],
@@ -45,6 +45,11 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
+
+        'colaboradores' => [
+            'driver' => 'jwt',
+            'provider' => 'colaboradores',
+        ],
     ],
 
     /*
@@ -71,10 +76,10 @@ return [
             // 'model' => App\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'colaboradores' => [
+            'driver' => 'eloquent',
+            'model' => App\Colaborador::class,
+        ],
     ],
 
     /*
@@ -99,5 +104,4 @@ return [
             'expire' => 60,
         ],
     ],
-
 ];
