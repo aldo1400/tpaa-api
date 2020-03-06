@@ -13,12 +13,11 @@ class IndexController extends Controller
     {
         $colaboradores = Colaborador::all();
 
-        if(!empty($request->estado)){
-            if($request->estado=='true'){
-                $colaboradores=Colaborador::where('estado','1')->get();
-            }
-            else{
-                $colaboradores=Colaborador::where('estado','0')->get();
+        if (!empty($request->estado)) {
+            if ($request->estado == 'true') {
+                $colaboradores = Colaborador::where('estado', '1')->get();
+            } else {
+                $colaboradores = Colaborador::where('estado', '0')->get();
             }
         }
 

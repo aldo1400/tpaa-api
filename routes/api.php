@@ -30,7 +30,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => ['auth:colaboradores']], function () {
     Route::get('/colaborador', function (Request $request) {
-        return new ColaboradorResource(Auth::guard('colaboradores')->user());
+        return new ColaboradorResource(Auth::guard('colaboradores')->user(), 'tags');
     });
 });
 

@@ -9,14 +9,14 @@ use App\Http\Controllers\Controller;
 
 class IndexController extends Controller
 {
-    public function __invoke(Request $request,$id){
-        $colaborador=Colaborador::findOrFail($id);
+    public function __invoke(Request $request, $id)
+    {
+        $colaborador = Colaborador::findOrFail($id);
 
-        if($request->positivo){
-            $tags=$colaborador->tagsPositivos();
-        }
-        else{
-            $tags=$colaborador->tags;
+        if ($request->positivo) {
+            $tags = $colaborador->tagsPositivos();
+        } else {
+            $tags = $colaborador->tags;
         }
 
         return TagResource::collection($tags);

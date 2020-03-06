@@ -7,6 +7,26 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ColaboradorResource extends JsonResource
 {
     /**
+     * @var
+     */
+    private $tagsCompletos;
+
+    /**
+     * Create a new resource instance.
+     *
+     * @param mixed $resource
+     */
+    public function __construct($resource, $tags)
+    {
+        // Ensure you call the parent constructor
+        parent::__construct($resource);
+        $this->resource = $resource;
+
+        $this->tagsCompletos = $tags;
+        // dd($this->tagsCompletos);
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param \Illuminate\Http\Request $request
@@ -18,7 +38,7 @@ class ColaboradorResource extends JsonResource
         return [
             'id' => $this->id,
             'rut' => $this->rut,
-            'nombre_completo'=>$this->rut.' '.$this->primer_nombre.' '.$this->apellido_paterno.' '.$this->apellido_materno,
+            'nombre_completo' => $this->rut.' '.$this->primer_nombre.' '.$this->apellido_paterno.' '.$this->apellido_materno,
             'usuario' => $this->usuario ? $this->usuario : '',
             'primer_nombre' => $this->primer_nombre ? $this->primer_nombre : '',
             'segundo_nombre' => $this->segundo_nombre ? $this->segundo_nombre : '',
@@ -51,7 +71,7 @@ class ColaboradorResource extends JsonResource
             'fecha_inactividad' => $this->fecha_inactividad ? $this->fecha_inactividad->format('Y-m-d') : '',
             'nivelEducacion' => $this->nivelEducacion ? new NivelEducacionResource($this->nivelEducacion) : '',
             'estadoCivil' => $this->estadoCivil ? new EstadoCivilResource($this->estadoCivil) : '',
-            'tags' => TagResource::collection($this->tags)->pluck('id')->toArray(),
+            'tags' => $this->tagsCompletos ? TagResource::collection($this->tags) : TagResource::collection($this->tags)->pluck('id')->toArray(),
             'cargoActual' => $this->cargoActual() ? new CargoResource($this->cargoActual()) : '',
             'movilidadActual' => $this->movilidadActual() ? new MovilidadResource($this->movilidadActual()) : '',
             'credencial_vigilante' => $this->credencial_vigilante ? $this->credencial_vigilante : '',

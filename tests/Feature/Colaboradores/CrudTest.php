@@ -222,6 +222,9 @@ class CrudTest extends TestCase
     {
         $colaboradores = factory(Colaborador::class, 10)
                         ->create();
+        $tags = factory(Tag::class, 2)->create();
+
+        $colaboradores[1]->tags()->sync($tags);
 
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
         $response = $this->json('GET', $url);
@@ -258,7 +261,6 @@ class CrudTest extends TestCase
                         'anexo' => $colaboradores[1]->anexo,
                         'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
                         'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
-                        // 'estado' => $colaboradores[1]->estado,
                         'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('Y-m-d'),
                         'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
                         'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
@@ -1433,6 +1435,7 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador[0]->id.'/tags';
 
         $response = $this->json('GET', $url);
+
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
