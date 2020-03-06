@@ -619,6 +619,23 @@ paths:
     # ---------------------
     #   Colaboradores
     # ---------------------
+    "/colaborador":
+        get:
+            tags:
+                - colaboradores
+            summary: Get data of current colaborador logged
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Retrieved data succesfully
+                    schema:
+                        $ref: "#/definitions/ColaboradorResource"
+                401:
+                    description: unauthenticated
+
     "/colaboradores":
         get:
             tags:
@@ -2144,6 +2161,8 @@ definitions:
                 type: string
             curso_id:
                 type: integer
+            curso:
+                $ref: "#/definitions/CursoResource"
             curso_nombre:
                 type: string
             colaborador_id:
@@ -2799,6 +2818,9 @@ definitions:
                 type: string
             colaborador:
                 $ref: "#/definitions/ColaboradorResource"
+            updated_at:
+                type: string
+                format: date
 
     MovilidadResource:
         type: object
@@ -2902,6 +2924,9 @@ definitions:
                 format: email
             password:
                 type: string
+            rol:
+                type: string
+                enum: ["api", "colaboradores"]
 
     EmailRequest:
         type: object
