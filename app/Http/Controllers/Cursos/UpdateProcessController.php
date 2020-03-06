@@ -15,6 +15,10 @@ class UpdateProcessController extends Controller
             if (Carbon::parse($request->fecha_termino)->lt(Carbon::parse($request->fecha_inicio))) {
                 return response()->json([
                     'message' => 'Fecha de termino debe ser mayor a la fecha de inicio del curso.',
+                    'errors' => [
+                        'fecha_inicio' => 'Fecha inválida.',
+                        'fecha_termino' => 'Fecha inválida.',
+                    ],
                 ], 409);
             }
         }

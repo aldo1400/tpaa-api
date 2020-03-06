@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Colaborador;
 use App\Administrador;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ColaboradorResource;
 use App\Http\Resources\AdministradorResource;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -34,6 +36,22 @@ class LoginController extends Controller
     protected $redirectTo = '/home';
 
     /**
+     * Validate the user login request.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return void
+     */
+    protected function validateLogin(Request $request)
+    {
+        $this->validate($request, [
+            $this->username() => 'required',
+            'password' => 'required',
+            'rol' => 'required|in:colaboradores,api',
+        ]);
+    }
+
+    /**
      * Attempt to log the user into the application.
      *
      * @param \Illuminate\Http\Request $request
@@ -42,9 +60,13 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request): bool
     {
-        // config()->set( 'auth.defaults.guard', 'api' );
-        $user = Administrador::where('username', $request->username)
-                ->first();
+        if ($request->rol == 'colaboradores') {
+            $user = Colaborador::where('usuario', $request->username)
+            ->first();
+        } else {
+            $user = Administrador::where('username', $request->username)
+                    ->first();
+        }
 
         if (!$user) {
             return false;
@@ -54,13 +76,24 @@ class LoginController extends Controller
             return false;
         }
 
-        $token = $this->guard()->setTTL(1440)->attempt([
-            'username' => $request->username,
-            'password' => $request->password,
+        if ($request->rol == 'colaboradores') {
+            $token = Auth::guard('colaboradores')->claims([
+                'rol' => 'colaboradores',
+            ])->setTTL(1440)->attempt([
+                'usuario' => $request->username,
+                'password' => $request->password,
             ]);
+        } else {
+            $token = Auth::guard('api')->claims([
+                'rol' => 'api',
+            ])->setTTL(1440)->attempt([
+                'username' => $request->username,
+                'password' => $request->password,
+                ]);
+        }
 
         if ($token) {
-            $this->guard()->setToken($token);
+            Auth::guard($request->rol)->setToken($token);
 
             return true;
         }
@@ -97,15 +130,14 @@ class LoginController extends Controller
     {
         $this->clearLoginAttempts($request);
 
-        $token = (string) $this->guard()->getToken();
-        $expiration = $this->guard()->getPayload()->get('exp');
+        $token = (string) Auth::guard($request->rol)->getToken();
+        $expiration = Auth::guard($request->rol)->getPayload()->get('exp');
 
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $expiration - time(),
-            'user' => new AdministradorResource(Auth::user()),
-            // auth()->user()->load('typeUser'),
+            'user' => $request->rol == 'api' ? new AdministradorResource(Auth::guard($request->rol)->user()) : new ColaboradorResource(Auth::guard($request->rol)->user()),
         ]);
     }
 
@@ -128,8 +160,27 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        $this->guard()->logout();
+        // dd($request->rol);
+        // Auth::guard('api')->logout();
+        // \Config::set('jwt.user', Administrador::class);
 
-        return response()->json(['message' => 'Successfully logged out']);
+        Auth::guard($request->rol)->logout();
+        // Auth::guard('colaboradores')->logout();
+        // dd(Auth::guard('api')->check(), Auth::guard('colaboradores')->check());
+        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
+        // Auth::guard()->logout();
+        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
+
+        // Auth::logout();
+
+        return response()->json(['message' => 'Sesión cerrada.']);
+    }
+
+    public function logoutColaborador(Request $request): JsonResponse
+    {
+        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
+        // dd('aldo');
+
+        return response()->json(['message' => 'Sesión cerrada.']);
     }
 }

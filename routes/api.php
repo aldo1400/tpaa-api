@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ColaboradorResource;
 use App\Http\Resources\AdministradorResource;
 
 /*
@@ -19,22 +20,30 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => 'guest:api'], function () {
+// Route::group(['middleware' => 'guest:api'], function () {
     Route::post(
         'login',
         'Auth\LoginController@login'
     );
     Route::post('register', 'Auth\RegisterController@register');
+// });
+
+Route::group(['middleware' => ['auth:colaboradores']], function () {
+    Route::get('/colaborador', function (Request $request) {
+        return new ColaboradorResource(Auth::guard('colaboradores')->user());
+    });
+});
+
+Route::group(['middleware' => ['auth:colaboradores,api']], function () {
+    Route::post(
+        '/logout',
+        'Auth\LoginController@logout'
+    );
 });
 
 Route::group(['middleware' => ['auth:api']], function () {
-    Route::post(
-        'logout',
-        'Auth\LoginController@logout'
-    );
-
     Route::get('/administrador', function (Request $request) {
-        return new AdministradorResource(Auth::user());
+        return new AdministradorResource(Auth::guard('api')->user());
     });
 
     Route::post('/administradores', 'Administradores\CreateProcessController');
