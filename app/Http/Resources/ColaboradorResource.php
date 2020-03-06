@@ -16,7 +16,7 @@ class ColaboradorResource extends JsonResource
      *
      * @param mixed $resource
      */
-    public function __construct($resource, $tags)
+    public function __construct($resource, $tags = null)
     {
         // Ensure you call the parent constructor
         parent::__construct($resource);
