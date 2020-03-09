@@ -436,7 +436,7 @@ class CrudTest extends TestCase
         ]);
 
         $parameters = [
-            'fecha_termino' => '',
+            'fecha_termino' => now()->addDays(4)->format('Y-m-d'),
             'fecha_inicio' => now()->addDays(3)->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,

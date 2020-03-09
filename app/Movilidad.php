@@ -78,4 +78,26 @@ class Movilidad extends Model
     {
         return $this->tipoMovilidad->tipo === TipoMovilidad::TERMINO_DE_CONTRATO;
     }
+
+    public function isTipoExcluyente(): bool
+    {
+        if ($this->isRenuncia()) {
+            return true;
+        }
+
+        if ($this->isDesvinculado()) {
+            return true;
+        }
+
+        if ($this->isTerminoDeContrato()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isActivo(): bool
+    {
+        return $this->estado === 1;
+    }
 }
