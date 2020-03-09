@@ -76,6 +76,7 @@ class ColaboradorResource extends JsonResource
             'movilidadActual' => $this->movilidadActual() ? new MovilidadResource($this->movilidadActual()) : '',
             'credencial_vigilante' => $this->credencial_vigilante ? $this->credencial_vigilante : '',
             'vencimiento_credencial_vigilante' => $this->vencimiento_credencial_vigilante ? $this->vencimiento_credencial_vigilante->format('Y-m-d') : '',
+            // ''=>$cargo->obtenerCargosRelacionados();
         ];
     }
 }
