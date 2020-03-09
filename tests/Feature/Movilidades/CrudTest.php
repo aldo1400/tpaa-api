@@ -445,6 +445,7 @@ class CrudTest extends TestCase
         $url = '/api/movilidades/'.$movilidad->id;
 
         $response = $this->json('PUT', $url, $parameters);
+
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [
@@ -456,6 +457,49 @@ class CrudTest extends TestCase
             'fecha_inicio' => $parameters['fecha_inicio'],
             'tipo_movilidad_id' => $movilidad->tipoMovilidad->id,
         ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testValidarFechaDeInicioYFechaDeTerminoAlEditarMovilidadDeUnColaborador()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargo = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+
+        $movilidades = factory(Movilidad::class, 2)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'estado' => 0,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => now()->addDays(3)->format('Y-m-d'),
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'estado' => 1,
+            'fecha_termino' => null,
+        ]);
+
+        $parameters = [
+            'fecha_inicio' => now()->addDays(3)->format('Y-m-d'),
+            'fecha_termino' => now()->addDays(1)->format('Y-m-d'),
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => $cargoNuevo->id,
+        ];
+
+        $url = '/api/movilidades/'.$movilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
     }
 
     public function testObtenerTodasLasMovilidadDeUnColaborador()

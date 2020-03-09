@@ -63,4 +63,19 @@ class Movilidad extends Model
     {
         return $this->belongsTo('App\TipoMovilidad');
     }
+
+    public function isRenuncia(): bool
+    {
+        return $this->tipoMovilidad->tipo === TipoMovilidad::RENUNCIA;
+    }
+
+    public function isDesvinculado(): bool
+    {
+        return $this->tipoMovilidad->tipo === TipoMovilidad::DESVINCULADO;
+    }
+
+    public function isTerminoDeContrato(): bool
+    {
+        return $this->tipoMovilidad->tipo === TipoMovilidad::TERMINO_DE_CONTRATO;
+    }
 }

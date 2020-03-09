@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Colaboradores\Movilidades;
 
 use App\Movilidad;
-use App\TipoMovilidad;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,7 +11,26 @@ class UpdateProcessController extends Controller
 {
     public function __invoke(Request $request, $id)
     {
+        if ($request->fecha_inicio && $request->fecha_termino) {
+            if (Carbon::parse($request->fecha_termino)->lt(Carbon::parse($request->fecha_inicio))) {
+                return response()->json([
+                    'message' => 'Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.',
+                    'errors' => [
+                        'fecha_inicio' => 'Fecha inválida.',
+                        'fecha_termino' => 'Fecha inválida.',
+                    ],
+                ], 409);
+            }
+        }
+
         $movilidad = Movilidad::findOrFail($id);
+
+        if ($movilidad->isRenuncia() || $movilidad->isDesvinculado() || $movilidad->isTerminoDeContrato()) {
+            if ($request->cargo_id) {
+                return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
+            }
+        }
+
         $movilidad->fill([
             'fecha_inicio' => $request->fecha_inicio,
             'observaciones' => $request->observaciones,
@@ -21,12 +40,6 @@ class UpdateProcessController extends Controller
             $movilidad->fill([
                 'fecha_termino' => $request->fecha_termino,
             ]);
-        }
-
-        if ($movilidad->tipoMovilidad->tipo == TipoMovilidad::RENUNCIA || $movilidad->tipoMovilidad->tipo == TipoMovilidad::DESVINCULADO || $movilidad->tipoMovilidad->tipo == TipoMovilidad::TERMINO_DE_CONTRATO) {
-            if ($request->cargo_id) {
-                return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
-            }
         }
 
         $movilidad->cargo()->associate($request->cargo_id);
