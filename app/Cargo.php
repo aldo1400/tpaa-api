@@ -144,4 +144,29 @@ class Cargo extends Model
             }
         }
     }
+
+    public function obtenerCargosRelacionados()
+    {
+        $arregloCargos = collect();
+        $cargoEditar = Cargo::where('id', $this->id)->first();
+        $supervisor_id = $cargoEditar->supervisor_id;
+        $supervisor = $cargoEditar->supervisor;
+        if ($supervisor_id != null) {
+            $flag = 0;
+        } else {
+            $flag = 1;
+        }
+
+        while ($flag == 0) {
+            if (isset($supervisor_id)) {
+                $cargo = Cargo::with('nivelJerarquico')->where('id', $supervisor_id)->first();
+                $arregloCargos->push($cargo);
+                $supervisor_id = $cargo->supervisor_id;
+            } else {
+                $flag = 1;
+            }
+        }
+
+        return $arregloCargos;
+    }
 }

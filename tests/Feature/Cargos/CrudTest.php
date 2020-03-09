@@ -750,6 +750,53 @@ class CrudTest extends TestCase
             ]);
     }
 
+    public function testObtenerTodosLosPadresDeUnCargo()
+    {
+        $cargoSupervisor = factory(Cargo::class)
+                    ->create();
+
+        $cargoPadre = factory(Cargo::class)
+                    ->create([
+                        'supervisor_id' => $cargoSupervisor->id,
+                    ]);
+
+        $cargo = factory(Cargo::class)
+                        ->create([
+                            'supervisor_id' => $cargoPadre->id,
+                        ]);
+
+        $url = "/api/cargos/{$cargo->id}/supervisores";
+
+        $response = $this->json('GET', $url);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200)
+            ->assertJsonCount(3, 'data')
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'nombre',
+                        'supervisor_id',
+                        'nivelJerarquico' => [
+                            'id',
+                            'nivel_nombre',
+                            'estado',
+                        ],
+                        'organigrama_url',
+                        'descriptor_url',
+                        'estado',
+                        // 'area' => [
+                        //     'id',
+                        //     'nombre',
+                        //     'estado',
+                        // ],
+                        'nombre_fantasia',
+                    ],
+                ],
+            ]);
+    }
+
     public function testObtenerTodosLosPadresDeAreaDeUnCargoEnCasoElAreaNoTengaHijos()
     {
         $area = factory(Area::class)

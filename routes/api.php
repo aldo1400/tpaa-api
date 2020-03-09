@@ -80,6 +80,7 @@ Route::get('/cargos/{id}/validar-nombre', 'Cargos\ValidateUniqueUpdateController
 
 Route::get('/cargos/{id}', 'Cargos\ShowController');
 Route::get('/cargos/{id}/relacionados', 'Cargos\GetRelatedController');
+Route::get('/cargos/{id}/supervisores', 'Cargos\GetHierarchicalController');
 Route::patch('/cargos/{id}', 'Cargos\UpdateProcessController');
 Route::post('/cargos', 'Cargos\CreateProcessController');
 Route::delete('/cargos/{id}', 'Cargos\DeleteProcessController');
