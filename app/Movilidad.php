@@ -106,32 +106,44 @@ class Movilidad extends Model
     {
         $movilidades = self::where('id', '!=', $this->id)->get();
 
-        // dd(Carbon::parse($fecha_inicio));
-        $fecha_inicio_parse = Carbon::parse($fecha_inicio);
-        $checkDate = false;
+        if ($this->isActivo()) {
+            $movilidadPenultima = $movilidades
+                ->sortByDesc('id')
+                ->first();
+
+            if (!$movilidadPenultima) {
+                return true;
+            }
+
+            if (Carbon::parse($movilidadPenultima->fecha_termino)->lt(Carbon::parse($fecha_inicio))) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $checkDate = true;
         foreach ($movilidades as $movilidad) {
             $check = Carbon::parse($fecha_inicio)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
-            // dd($check);
 
             if ($check) {
-                $checkDate = true;
+                $checkDate = false;
                 break;
             }
 
             $checkTwo = Carbon::parse($fecha_termino)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
             if ($checkTwo) {
-                $checkDate = true;
+                $checkDate = false;
                 break;
             }
 
             $checkThree = Carbon::parse($movilidad->fecha_inicio)->between(Carbon::parse($fecha_inicio), Carbon::parse($fecha_termino));
             if ($checkThree) {
-                $checkDate = true;
+                $checkDate = false;
                 break;
             }
         }
 
         return $checkDate;
-        // $movilidades = Reservation::whereBetween('reservation_from', [$fecha_inicio, $fecha_termino])->get();
     }
 }
