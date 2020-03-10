@@ -4,6 +4,7 @@ namespace Tests\Feature\Movilidades;
 
 use App\Cargo;
 use App\Movilidad;
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Colaborador;
 use App\TipoMovilidad;
@@ -462,7 +463,7 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testValidarFechaDeInicioYFechaDeTerminoAlEditarMovilidadDeUnColaborador()
+    public function testValidarFechaDeInicioSeaMenorQueFechaDeTerminoAlEditarMovilidadDeUnColaborador()
     {
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
@@ -500,6 +501,91 @@ class CrudTest extends TestCase
 
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testValidarFechaDeInicioYFechaDeTerminoAlEditarMovilidadDeUnColaborador()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargo = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidadDesarrollo = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+        $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '05')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '03', '05')->format('Y-m-d'),
+        ]);
+
+        $segundaMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '07', '05')->format('Y-m-d'),
+        ]);
+
+        $terceraMovilidad = factory(Movilidad::class)->create([
+            'fecha_inicio' => Carbon::createFromDate('2018', '08', '05')->format('Y-m-d'),
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 1,
+            'fecha_termino' => null,
+        ]);
+
+        $parameters = [
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '15')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '03', '01')->format('Y-m-d'),
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => $cargoNuevo->id,
+        ];
+
+        $url = '/api/movilidades/'.$segundaMovilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('Fecha de inicio y termino de movilidad inválidas.'));
+
+        $parameters = [
+                    'fecha_inicio' => Carbon::createFromDate('2018', '01', '05')->format('Y-m-d'),
+                    'fecha_termino' => Carbon::createFromDate('2018', '03', '01')->format('Y-m-d'),
+                    'observaciones' => 'SUBIO DE GRADO',
+                    'cargo_id' => $cargoNuevo->id,
+                ];
+
+        $url = '/api/movilidades/'.$segundaMovilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                                ->assertSeeText(json_encode('Fecha de inicio y termino de movilidad inválidas.'));
+
+        $parameters = [
+                    'fecha_inicio' => Carbon::createFromDate('2018', '01', '05')->format('Y-m-d'),
+                    'fecha_termino' => Carbon::createFromDate('2019', '10', '01')->format('Y-m-d'),
+                    'observaciones' => 'SUBIO DE GRADO',
+                    'cargo_id' => $cargoNuevo->id,
+                ];
+
+        $url = '/api/movilidades/'.$segundaMovilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                                                ->assertSeeText(json_encode('Fecha de inicio y termino de movilidad inválidas.'));
     }
 
     public function testObtenerTodasLasMovilidadDeUnColaborador()

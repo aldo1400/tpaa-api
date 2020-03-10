@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -99,5 +100,38 @@ class Movilidad extends Model
     public function isActivo(): bool
     {
         return $this->estado === 1;
+    }
+
+    public function validarNuevasFechas($fecha_inicio, $fecha_termino)
+    {
+        $movilidades = self::where('id', '!=', $this->id)->get();
+
+        // dd(Carbon::parse($fecha_inicio));
+        $fecha_inicio_parse = Carbon::parse($fecha_inicio);
+        $checkDate = false;
+        foreach ($movilidades as $movilidad) {
+            $check = Carbon::parse($fecha_inicio)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
+            // dd($check);
+
+            if ($check) {
+                $checkDate = true;
+                break;
+            }
+
+            $checkTwo = Carbon::parse($fecha_termino)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
+            if ($checkTwo) {
+                $checkDate = true;
+                break;
+            }
+
+            $checkThree = Carbon::parse($movilidad->fecha_inicio)->between(Carbon::parse($fecha_inicio), Carbon::parse($fecha_termino));
+            if ($checkThree) {
+                $checkDate = true;
+                break;
+            }
+        }
+
+        return $checkDate;
+        // $movilidades = Reservation::whereBetween('reservation_from', [$fecha_inicio, $fecha_termino])->get();
     }
 }

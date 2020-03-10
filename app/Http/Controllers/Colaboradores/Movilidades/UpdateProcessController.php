@@ -31,6 +31,10 @@ class UpdateProcessController extends Controller
             return response()->json(['message' => 'Debe enviar fecha de termino es inválido.'], 409);
         }
 
+        if ($movilidad->validarNuevasFechas($request->fecha_inicio, $request->fecha_termino)) {
+            return response()->json(['message' => 'Fecha de inicio y termino de movilidad inválidas.'], 409);
+        }
+
         $movilidad->fill([
             'fecha_inicio' => $request->fecha_inicio,
             'observaciones' => $request->observaciones,
