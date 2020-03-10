@@ -459,7 +459,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'fecha_termino' => null,
-            'fecha_inicio' => Carbon::createFromDate('2018', '07', '02')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2018', '08', '02')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
         ];
@@ -467,17 +467,17 @@ class CrudTest extends TestCase
         $url = '/api/movilidades/'.$cuartaMovilidad->id;
 
         $response = $this->json('PUT', $url, $parameters);
-        dd($response->decodeResponseJson());
+
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [
-            'id' => $movilidad->id,
+            'id' => $cuartaMovilidad->id,
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $parameters['cargo_id'],
             'estado' => 1,
             'fecha_termino' => null,
             'fecha_inicio' => $parameters['fecha_inicio'],
-            'tipo_movilidad_id' => $movilidad->tipoMovilidad->id,
+            'tipo_movilidad_id' => $cuartaMovilidad->tipoMovilidad->id,
         ]);
     }
 
@@ -685,6 +685,79 @@ class CrudTest extends TestCase
         $parameters = [
             'fecha_inicio' => Carbon::createFromDate('2018', '04', '05')->format('Y-m-d'),
             'fecha_termino' => Carbon::createFromDate('2018', '06', '05')->format('Y-m-d'),
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => $cargoNuevo->id,
+        ];
+
+        $url = '/api/movilidades/'.$segundaMovilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $segundaMovilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $parameters['cargo_id'],
+            'estado' => 0,
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'fecha_termino' => $parameters['fecha_termino'],
+            'tipo_movilidad_id' => $segundaMovilidad->tipoMovilidad->id,
+        ]);
+
+        $this->assertDatabaseMissing('movilidades', [
+            'id' => $segundaMovilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $segundaMovilidad->cargo_id,
+            'estado' => 0,
+            'fecha_inicio' => $segundaMovilidad->fecha_inicio,
+            'fecha_termino' => $segundaMovilidad->fecha_termino,
+            'tipo_movilidad_id' => $segundaMovilidad->tipoMovilidad->id,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarMovilidadInactivaDeUnColaboradorConElMismoValor()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargo = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidadDesarrollo = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+        $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '01')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '02', '02')->format('Y-m-d'),
+        ]);
+
+        $segundaMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '05', '02')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+        ]);
+
+        $terceraMovilidad = factory(Movilidad::class)->create([
+            'fecha_inicio' => Carbon::createFromDate('2018', '08', '10')->format('Y-m-d'),
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 1,
+            'fecha_termino' => null,
+        ]);
+
+        $parameters = [
+            'fecha_inicio' => Carbon::createFromDate('2018', '05', '02')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
         ];

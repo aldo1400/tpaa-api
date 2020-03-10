@@ -108,8 +108,8 @@ class Movilidad extends Model
 
         if ($this->isActivo()) {
             $movilidadPenultima = $movilidades
-                ->sortByDesc('id')
-                ->first();
+            ->sortByDesc('id')
+            ->first();
 
             if (!$movilidadPenultima) {
                 return true;
