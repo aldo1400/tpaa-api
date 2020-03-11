@@ -3,11 +3,15 @@
 namespace Tests\Feature\Colaboradores;
 
 use App\Tag;
+use App\Cargo;
 use App\Curso;
+use App\Movilidad;
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Colaborador;
 use App\EstadoCivil;
 use App\Notificacion;
+use App\TipoMovilidad;
 use App\NivelEducacion;
 use App\CursoColaborador;
 use Freshwork\ChileanBundle\Rut;
@@ -274,6 +278,124 @@ class CrudTest extends TestCase
                             'tipo',
                             'estado',
                         ]),
+                ],
+            ]);
+    }
+
+    public function testObtenerDatosCompletosDeUnColaboradorLogeado()
+    {
+        $tags = factory(Tag::class, 2)->create();
+        $cargoSupervisor = factory(Cargo::class)->create([
+            'nombre' => 'Cargo Padre',
+        ]);
+
+        $cargo = factory(Cargo::class)->create([
+            'nombre' => 'Cargo Hijo',
+            'supervisor_id' => $cargoSupervisor->id,
+        ]);
+
+        $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        $colaborador = factory(Colaborador::class)->create([
+            'estado' => 1,
+            'usuario' => 'aldo1400',
+        ]);
+
+        $colaboradorSupervisor = factory(Colaborador::class)->create([
+            'estado' => 1,
+            'usuario' => 'aldo1401',
+            'primer_nombre' => 'Aldo Jordan Choque Ortigozo',
+        ]);
+
+        $movilidadSupervisor = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaboradorSupervisor->id,
+            'cargo_id' => $cargoSupervisor->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 1,
+            'fecha_inicio' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+            'fecha_termino' => null,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 1,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '05')->format('Y-m-d'),
+            'fecha_termino' => null,
+        ]);
+
+        $colaborador->tags()->sync($tags);
+
+        $url = '/api/login/';
+
+        $parameters = [
+            'username' => 'aldo1400',
+            'password' => 'secret',
+            'rol' => 'colaboradores',
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        // dd($response->decodeResponseJson());
+
+        $response->assertStatus(200);
+        $data = $response->json();
+        $token = $data['token'];
+
+        $url = '/api/colaborador';
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer '.$token,
+            ])
+            ->json('GET', $url);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $colaborador->id,
+                        'rut' => $colaborador->rut,
+                        'usuario' => $colaborador->usuario,
+                        'primer_nombre' => $colaborador->primer_nombre,
+                        'segundo_nombre' => $colaborador->segundo_nombre,
+                        'apellido_paterno' => $colaborador->apellido_paterno,
+                        // 'apellido_materno' => $colaboradores[1]->apellido_materno,
+                        // 'sexo' => $colaboradores[1]->sexo,
+                        // 'nacionalidad' => $colaboradores[1]->nacionalidad,
+                        // 'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('Y-m-d'),
+                        // 'edad_colaborador' => $colaboradores[1]->edad_colaborador,
+                        // 'email' => $colaboradores[1]->email,
+                        // 'domicilio' => $colaboradores[1]->domicilio,
+                        // 'licencia_b' => $colaboradores[1]->licencia_b,
+                        // 'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('Y-m-d'),
+                        // 'licencia_d' => $colaboradores[1]->licencia_d,
+                        // 'vencimiento_licencia_d' => $colaboradores[1]->vencimiento_licencia_d->format('Y-m-d'),
+                        // 'carnet_portuario' => $colaboradores[1]->carnet_portuario,
+                        // 'vencimiento_carnet_portuario' => $colaboradores[1]->vencimiento_carnet_portuario->format('Y-m-d'),
+                        // 'talla_calzado' => $colaboradores[1]->talla_calzado,
+                        // 'talla_chaleco' => $colaboradores[1]->talla_chaleco,
+                        // 'talla_polera' => $colaboradores[1]->talla_polera,
+                        // 'talla_pantalon' => $colaboradores[1]->talla_pantalon,
+                        // 'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('Y-m-d'),
+                        // 'telefono' => $colaboradores[1]->telefono,
+                        // 'celular' => $colaboradores[1]->celular,
+                        // 'anexo' => $colaboradores[1]->anexo,
+                        // 'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
+                        // 'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
+                        // 'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('Y-m-d'),
+                        // 'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
+                        // 'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
+                        // 'nivelEducacion' => $colaboradores[1]->nivelEducacion->only([
+                        //     'id',
+                        //     'nivel_tipo',
+                        //     'estado',
+                        // ]),
+                        // 'estadoCivil' => $colaboradores[1]->estadoCivil->only([
+                        //     'id',
+                        //     'tipo',
+                        //     'estado',
+                        // ]),
                 ],
             ]);
     }

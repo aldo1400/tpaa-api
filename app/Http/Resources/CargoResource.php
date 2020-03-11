@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CargoResource extends JsonResource
@@ -17,13 +18,13 @@ class CargoResource extends JsonResource
      *
      * @param mixed $resource
      */
-    public function __construct($resource, $getColaborador = null)
+    public function __construct($resource)
     {
         // Ensure you call the parent constructor
         parent::__construct($resource);
         $this->resource = $resource;
-
-        $this->getColaborador = $getColaborador;
+        // var_dump($colaborador);
+        // $this->getColaborador = $colaborador;
     }
 
     /**
@@ -35,14 +36,15 @@ class CargoResource extends JsonResource
      */
     public function toArray($request)
     {
-        if ($getColaborador) {
-            $movilidad = $this->movilidades
+        // if ($this->getColaborador) {
+        $movilidad = $this->movilidades
                 ->where('estado', 1)
                     ->first();
-            if ($movilidad) {
-                $colaborador = $movilidad->colaborador;
-            }
+        // dd($movilidad->colaborador);
+        if ($movilidad) {
+            $colaborador = $movilidad->colaborador;
         }
+        // }
 
         return [
             'id' => $this->id,
@@ -59,7 +61,11 @@ class CargoResource extends JsonResource
             'movilidades' => $this->movilidades()->where('estado', 1)->count() ? true : false,
             'updated_at' => $this->updated_at->format('d/m/Y'),
             'nombre_fantasia' => $this->nombre_fantasia ? $this->nombre_fantasia : '',
-            'colaboradorActual' => $colaborador ? new ColaboradorResource($colaborador) : '',
+            'colaborador_actual_rut' => isset($colaborador) ? $colaborador->rut : '',
+            'colaborador_actual_primer_nombre' => isset($colaborador) ? $colaborador->primer_nombre : '',
+            'colaborador_actual_segundo_nombre' => isset($colaborador) ? $colaborador->segundo_nombre : '',
+            'colaborador_actual_imagen_url' => isset($colaborador) ? $colaborador->imagen_url : '',
+            // 'colaborador_actual_segundo_nombre' => isset($colaborador) ? $colaborador->rut : '',
         ];
     }
 }

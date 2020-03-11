@@ -33,7 +33,7 @@ class CargaFamiliarRequest extends FormRequest
             'rut' => ['nullable',
             Rule::unique('cargas_familiares')
             ->ignore($this->id),
-            'max:255', 'cl_rut', ],
+            'max:255', ],
         ];
 
         // if ($this->method()=='POST') {
