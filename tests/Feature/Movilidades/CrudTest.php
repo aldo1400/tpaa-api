@@ -733,8 +733,8 @@ class CrudTest extends TestCase
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
             'estado' => 0,
-            'fecha_inicio' => Carbon::createFromDate('2018', '02', '01')->format('Y-m-d'),
-            'fecha_termino' => Carbon::createFromDate('2018', '02', '02')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2020', '02', '01')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2020', '02', '02')->format('Y-m-d'),
         ]);
 
         $segundaMovilidad = factory(Movilidad::class)->create([
@@ -742,12 +742,12 @@ class CrudTest extends TestCase
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
             'estado' => 0,
-            'fecha_inicio' => Carbon::createFromDate('2018', '05', '02')->format('Y-m-d'),
-            'fecha_termino' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2020', '05', '02')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2020', '05', '05')->format('Y-m-d'),
         ]);
 
         $terceraMovilidad = factory(Movilidad::class)->create([
-            'fecha_inicio' => Carbon::createFromDate('2018', '08', '10')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2020', '08', '10')->format('Y-m-d'),
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
@@ -756,8 +756,8 @@ class CrudTest extends TestCase
         ]);
 
         $parameters = [
-            'fecha_inicio' => Carbon::createFromDate('2018', '05', '02')->format('Y-m-d'),
-            'fecha_termino' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2020', '05', '02')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2020', '05', '05')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
         ];
@@ -766,6 +766,7 @@ class CrudTest extends TestCase
 
         $response = $this->json('PUT', $url, $parameters);
 
+        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [
