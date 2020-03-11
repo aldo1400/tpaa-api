@@ -9,21 +9,20 @@ class ColaboradorResource extends JsonResource
     /**
      * @var
      */
-    private $tagsCompletos;
+    private $datosCompletos;
 
     /**
      * Create a new resource instance.
      *
      * @param mixed $resource
      */
-    public function __construct($resource, $tags = null)
+    public function __construct($resource, $datos = null)
     {
         // Ensure you call the parent constructor
         parent::__construct($resource);
         $this->resource = $resource;
 
-        $this->tagsCompletos = $tags;
-        // dd($this->tagsCompletos);
+        $this->datosCompletos = $datos;
     }
 
     /**
@@ -35,6 +34,14 @@ class ColaboradorResource extends JsonResource
      */
     public function toArray($request)
     {
+        if ($this->datosCompletos) {
+            $movilidad = $this->movilidades->where('estado', 1)->first();
+            if ($movilidad) {
+                $cargo = $movilidad->cargo;
+                $cargos = CargoResource::collection($cargo->obtenerCargosRelacionados(), true);
+            }
+        }
+
         return [
             'id' => $this->id,
             'rut' => $this->rut,
@@ -71,12 +78,12 @@ class ColaboradorResource extends JsonResource
             'fecha_inactividad' => $this->fecha_inactividad ? $this->fecha_inactividad->format('Y-m-d') : '',
             'nivelEducacion' => $this->nivelEducacion ? new NivelEducacionResource($this->nivelEducacion) : '',
             'estadoCivil' => $this->estadoCivil ? new EstadoCivilResource($this->estadoCivil) : '',
-            'tags' => $this->tagsCompletos ? TagResource::collection($this->tags) : TagResource::collection($this->tags)->pluck('id')->toArray(),
+            'tags' => $this->datosCompletos ? TagResource::collection($this->tags) : TagResource::collection($this->tags)->pluck('id')->toArray(),
             'cargoActual' => $this->cargoActual() ? new CargoResource($this->cargoActual()) : '',
             'movilidadActual' => $this->movilidadActual() ? new MovilidadResource($this->movilidadActual()) : '',
             'credencial_vigilante' => $this->credencial_vigilante ? $this->credencial_vigilante : '',
             'vencimiento_credencial_vigilante' => $this->vencimiento_credencial_vigilante ? $this->vencimiento_credencial_vigilante->format('Y-m-d') : '',
-            // ''=>$cargo->obtenerCargosRelacionados();
+            'cargosPadres' => isset($cargos) ? $cargos : '',
         ];
     }
 }
