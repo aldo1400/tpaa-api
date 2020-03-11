@@ -641,6 +641,20 @@ class CrudTest extends TestCase
 
         $response->assertStatus(409)
                 ->assertSeeText(json_encode('Fecha de inicio y termino de movilidad inválidas.'));
+
+        $parameters = [
+            'fecha_inicio' => Carbon::createFromDate('2021', '01', '05')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2021', '07', '24')->format('Y-m-d'),
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => $cargoNuevo->id,
+        ];
+
+        $url = '/api/movilidades/'.$segundaMovilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(409)
+                ->assertSeeText(json_encode('Fecha de inicio y termino de movilidad inválidas.'));
     }
 
     /**
@@ -747,7 +761,7 @@ class CrudTest extends TestCase
         ]);
 
         $terceraMovilidad = factory(Movilidad::class)->create([
-            'fecha_inicio' => Carbon::createFromDate('2020', '08', '10')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2020', '10', '08')->format('Y-m-d'),
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
@@ -766,7 +780,6 @@ class CrudTest extends TestCase
 
         $response = $this->json('PUT', $url, $parameters);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [

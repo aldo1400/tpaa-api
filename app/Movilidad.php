@@ -105,11 +105,11 @@ class Movilidad extends Model
     public function validarNuevasFechas($fecha_inicio, $fecha_termino)
     {
         $movilidades = self::where('id', '!=', $this->id)->get();
-
+        // dd($movilidades);
         if ($this->isActivo()) {
             $movilidadPenultima = $movilidades
-            ->sortByDesc('id')
-            ->first();
+                                ->sortByDesc('id')
+                                ->first();
 
             if (!$movilidadPenultima) {
                 return true;
@@ -131,6 +131,7 @@ class Movilidad extends Model
                 }
                 continue;
             }
+
             $check = Carbon::parse($fecha_inicio)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
             if ($check) {
                 $checkDate = false;
