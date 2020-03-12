@@ -65,7 +65,6 @@ class CargoResource extends JsonResource
             'colaborador_actual_primer_nombre' => isset($colaborador) ? $colaborador->primer_nombre : '',
             'colaborador_actual_segundo_nombre' => isset($colaborador) ? $colaborador->segundo_nombre : '',
             'colaborador_actual_imagen_url' => isset($colaborador) ? $colaborador->imagen_url : '',
-            // 'colaborador_actual_segundo_nombre' => isset($colaborador) ? $colaborador->rut : '',
         ];
     }
 }

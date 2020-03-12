@@ -76,7 +76,7 @@ class ColaboradorResource extends JsonResource
             'anexo' => $this->anexo ? $this->anexo : '',
             'contacto_emergencia_nombre' => $this->contacto_emergencia_nombre ? $this->contacto_emergencia_nombre : '',
             'contacto_emergencia_telefono' => $this->contacto_emergencia_telefono ? $this->contacto_emergencia_telefono : '',
-            // 'estado' => $this->estado,
+            'estado' => $this->estado,
             'fecha_inactividad' => $this->fecha_inactividad ? $this->fecha_inactividad->format('Y-m-d') : '',
             'nivelEducacion' => $this->nivelEducacion ? new NivelEducacionResource($this->nivelEducacion) : '',
             'estadoCivil' => $this->estadoCivil ? new EstadoCivilResource($this->estadoCivil) : '',
