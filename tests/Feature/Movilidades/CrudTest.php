@@ -407,6 +407,101 @@ class CrudTest extends TestCase
             'estado' => 1,
             'fecha_termino' => null,
         ]);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaborador->id,
+            'estado' => 1,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarMovilidadDeUnColaboradorDetipoRenuncia()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+            'estado' => 0,
+        ]);
+
+        $cargo = factory(Cargo::class)->create();
+
+        $tipoMovilidadRenuncia = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+
+        $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        $movilidades = factory(Movilidad::class, 3)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 0,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadRenuncia->id,
+            'estado' => 1,
+        ]);
+
+        $url = '/api/movilidades/'.$movilidad->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('movilidades', [
+            'id' => $movilidad->id,
+        ]);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $movilidades[2]->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'estado' => 1,
+            'fecha_termino' => null,
+        ]);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaborador->id,
+            'estado' => 1,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarUnicaMovilidadDeUnColaborador()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+            'estado' => 1,
+        ]);
+
+        $cargo = factory(Cargo::class)->create();
+
+        $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+
+        $movilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 1,
+        ]);
+
+        $url = '/api/movilidades/'.$movilidad->id;
+
+        $response = $this->json('DELETE', $url);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('movilidades', [
+            'id' => $movilidad->id,
+        ]);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaborador->id,
+            'estado' => 0,
+        ]);
     }
 
     /**

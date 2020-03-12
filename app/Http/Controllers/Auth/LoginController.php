@@ -84,12 +84,12 @@ class LoginController extends Controller
                 'password' => $request->password,
             ]);
 
-            $token = Auth::guard('colaboradores')->claims([
-                'rol' => 'colaboradores',
-            ])->setTTL(1440)->attempt([
-                'usuario' => $request->username,
-                'password' => $request->password,
-            ]);
+        // $token = Auth::guard('colaboradores')->claims([
+            //     'rol' => 'colaboradores',
+            // ])->setTTL(1440)->attempt([
+            //     'usuario' => $request->username,
+            //     'password' => $request->password,
+            // ]);
         } else {
             $token = Auth::guard('api')->claims([
                 'rol' => 'api',

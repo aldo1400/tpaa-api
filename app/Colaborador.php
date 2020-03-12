@@ -170,6 +170,24 @@ class Colaborador extends Authenticatable implements JWTSubject
         $this->attributes['imagen'] = $imagen ? is_string($imagen) ? base64_encode($imagen) : Image::convertImage($imagen) : '';
     }
 
+    public function actualizarEstadoSegunMovilidad($movilidad)
+    {
+        if (!$this->movilidades->count()) {
+            $this->update([
+                'estado' => 0,
+            ]);
+        }
+        // dd($movilidad);
+        if ($movilidad->isTipoExcluyente()) {
+            // dd('hola');
+            $this->update([
+                'estado' => 1,
+            ]);
+        }
+
+        return true;
+    }
+
     public function saveImage($request)
     {
         $imagePath = $request->file('imagen')
