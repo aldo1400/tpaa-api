@@ -446,7 +446,7 @@ class CrudTest extends TestCase
     /**
      * A basic test example.
      */
-    public function testEliminarMovilidadDeUnColaborador()
+    public function testEliminarMovilidadActivaDeUnColaborador()
     {
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
@@ -488,6 +488,50 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('colaboradores', [
             'id' => $colaborador->id,
             'estado' => 1,
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEliminarMovilidadInactivaDeUnColaborador()
+    {
+        $colaborador = factory(Colaborador::class)->create();
+        $cargo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+
+        $movilidades = factory(Movilidad::class, 3)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'estado' => 0,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'estado' => 1,
+        ]);
+
+        $url = '/api/movilidades/'.$movilidades[1]->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(200);
+
+        $this->assertSoftDeleted('movilidades', [
+            'id' => $movilidades[1]->id,
+        ]);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $movilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'estado' => 1,
+            'fecha_termino' => $movilidad->fecha_termino,
+            'fecha_inicio' => $movilidad->fecha_inicio,
         ]);
     }
 

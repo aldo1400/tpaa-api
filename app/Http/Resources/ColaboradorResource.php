@@ -38,9 +38,11 @@ class ColaboradorResource extends JsonResource
             $movilidad = $this->movilidades->where('estado', 1)->first();
             if ($movilidad) {
                 $cargo = $movilidad->cargo;
-                $cargos = $cargo->obtenerCargosRelacionados();
+                if ($cargo) {
+                    $cargos = $cargo->obtenerCargosRelacionados();
+                    $cargos = CargoResource::collection($cargos);
+                }
                 // var_dump($cargos);
-                $cargos = CargoResource::collection($cargos);
             }
         }
 
