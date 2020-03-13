@@ -12,21 +12,27 @@ class DeleteProcessController extends Controller
         $movilidad = Movilidad::findOrFail($id);
         $colaborador = $movilidad->colaborador;
 
-        $colaborador->movilidadActual()
+        if ($movilidad->isActivo()) {
+            $colaborador->movilidadActual()
                 ->delete();
 
-        $movilidadAnterior = $colaborador->movilidades()
-                    ->orderBy('id', 'desc')
-                    ->first();
+            $movilidadAnterior = $colaborador->movilidades()
+            ->orderBy('id', 'desc')
+            ->first();
 
-        if ($movilidadAnterior) {
-            $movilidadAnterior->update([
-                'fecha_termino' => null,
-                'estado' => 1,
-            ]);
+            if ($movilidadAnterior) {
+                $movilidadAnterior->update([
+                    'fecha_termino' => null,
+                    'estado' => 1,
+                ]);
+            }
+
+            $colaborador->actualizarEstadoSegunMovilidad($movilidad);
+
+            return response()->json();
         }
 
-        $colaborador->actualizarEstadoSegunMovilidad($movilidad);
+        $movilidad->delete();
 
         return response()->json();
     }
