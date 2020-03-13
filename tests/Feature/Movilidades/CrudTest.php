@@ -72,6 +72,7 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('movilidades', [
@@ -104,7 +105,7 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-
+        // dd($response->decodeResponseJson());
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('El tipo de movilidad es inválido.'));
     }
@@ -288,6 +289,82 @@ class CrudTest extends TestCase
             'id' => $colaborador->id,
             'estado' => 0,
         ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testNoSePuedeCrearSegundaMovilidadAUnColaboradorSiLaFechaDeTerminoEsMenorQueLaFechaDeLaMovilidadActual()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+                            'estado' => 1,
+                        ]);
+
+        $cargoAnterior = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => now()->subDays(1)->format('Y-m-d'),
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => '',
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testNoSePuedeCrearSegundaMovilidadAUnColaboradorSiLaFechaDeInicioDeLaNuevaMovilidadEsMenorQueLaFechaDeTerminoLaMovilidadActual()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+                            'estado' => 1,
+                        ]);
+
+        $cargoAnterior = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargoAnterior->id,
+            'fecha_inicio' => now()->format('Y-m-d'),
+            'fecha_termino' => null,
+            'tipo_movilidad_id' => 1,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => now()->addDays(3)->format('Y-m-d'),
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'tipo_movilidad_id' => $tipoMovilidad->id,
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => '',
+        ];
+
+        $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
+
+        $response = $this->json('POST', $url, $parameters);
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
     }
 
     /**

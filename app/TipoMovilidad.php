@@ -25,4 +25,41 @@ class TipoMovilidad extends Model
     {
         return $this->hasMany('App\Movilidad');
     }
+
+    public function isNuevo(): bool
+    {
+        return $this->tipo === TipoMovilidad::NUEVO;
+    }
+
+    public function isRenuncia(): bool
+    {
+        return $this->tipo === TipoMovilidad::RENUNCIA;
+    }
+
+    public function isDesvinculado(): bool
+    {
+        return $this->tipo === TipoMovilidad::DESVINCULADO;
+    }
+
+    public function isTerminoDeContrato(): bool
+    {
+        return $this->tipo === TipoMovilidad::TERMINO_DE_CONTRATO;
+    }
+
+    public function isExcluyente(): bool
+    {
+        if ($this->isRenuncia()) {
+            return true;
+        }
+
+        if ($this->isDesvinculado()) {
+            return true;
+        }
+
+        if ($this->isTerminoDeContrato()) {
+            return true;
+        }
+
+        return false;
+    }
 }

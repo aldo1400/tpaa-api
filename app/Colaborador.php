@@ -170,6 +170,11 @@ class Colaborador extends Authenticatable implements JWTSubject
         $this->attributes['imagen'] = $imagen ? is_string($imagen) ? base64_encode($imagen) : Image::convertImage($imagen) : '';
     }
 
+    public function tieneMovilidades(): bool
+    {
+        return $this->movilidades()->count();
+    }
+
     public function actualizarEstadoSegunMovilidad($movilidad)
     {
         if (!$this->movilidades->count()) {
@@ -177,9 +182,8 @@ class Colaborador extends Authenticatable implements JWTSubject
                 'estado' => 0,
             ]);
         }
-        // dd($movilidad);
+
         if ($movilidad->isTipoExcluyente()) {
-            // dd('hola');
             $this->update([
                 'estado' => 1,
             ]);

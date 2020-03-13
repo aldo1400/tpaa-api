@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Colaboradores\Movilidades;
 
 use App\Movilidad;
+use Carbon\Carbon;
 use App\Colaborador;
 use App\TipoMovilidad;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,25 @@ class CreateProcessController extends Controller
     {
         $colaborador = Colaborador::findOrFail($id);
 
-        if ($colaborador->movilidades()->count()) {
+        $tipoMovilidad = TipoMovilidad::findOrFail($request->tipo_movilidad_id);
+
+        if (!$colaborador->tieneMovilidades() && !$tipoMovilidad->isNuevo()) {
+            return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
+        }
+
+        if ($tipoMovilidad->isExcluyente() && $request->cargo_id) {
+            return response()->json(['message' => 'El cargo es inválido.'], 409);
+        }
+
+        if ($colaborador->tieneMovilidades()) {
+            if (Carbon::parse($request->fecha_termino)->lt($colaborador->movilidadActual()->fecha_inicio)) {
+                return response()->json(['message' => 'Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'], 409);
+            }
+
+            if (Carbon::parse($request->fecha_inicio)->lt(Carbon::parse($request->fecha_termino))) {
+                return response()->json(['message' => 'Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'], 409);
+            }
+
             $colaborador->movilidadActual()
                         ->update([
                             'estado' => 0,
@@ -22,32 +41,16 @@ class CreateProcessController extends Controller
                         ]);
         }
 
-        $tipoMovilidad = TipoMovilidad::findOrFail($request->tipo_movilidad_id);
-
-        if (!$colaborador->movilidades()->count() && $tipoMovilidad->tipo != TipoMovilidad::NUEVO) {
-            return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
-        }
-
         $movilidad = Movilidad::make([
             'observaciones' => $request->observaciones,
             'fecha_inicio' => $request->fecha_inicio,
         ]);
-
-        $colaborador->estado = 1;
-
-        if ($tipoMovilidad->tipo == TipoMovilidad::DESVINCULADO || $tipoMovilidad->tipo == TipoMovilidad::RENUNCIA || $tipoMovilidad->tipo == TipoMovilidad::TERMINO_DE_CONTRATO) {
-            $colaborador->estado = 0;
-            if ($request->cargo_id) {
-                return response()->json(['message' => 'El cargo es inválido.'], 409);
-            }
-        }
 
         $movilidad->tipoMovilidad()->associate($request->tipo_movilidad_id);
         $movilidad->cargo()->associate($request->cargo_id);
         $movilidad->colaborador()->associate($colaborador);
 
         $movilidad->save();
-        $colaborador->save();
 
         return response()->json(null, 201);
     }
