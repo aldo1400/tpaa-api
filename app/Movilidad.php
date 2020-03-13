@@ -125,7 +125,7 @@ class Movilidad extends Model
         $checkDate = true;
         foreach ($movilidades as $movilidad) {
             if ($movilidad->isActivo()) {
-                if (Carbon::parse($movilidad->fecha_inicio)->lt(Carbon::parse($fecha_termino))) {
+                if (Carbon::parse($movilidad->fecha_inicio)->lte(Carbon::parse($fecha_termino))) {
                     $checkDate = false;
                     break;
                 }

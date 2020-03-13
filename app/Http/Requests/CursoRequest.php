@@ -25,11 +25,11 @@ class CursoRequest extends FormRequest
     {
         return [
             'nombre' => ['required', 'string', 'max:255'],
-            'titulo' => ['nullable', 'string', 'max:255'],
-            'horas_cronologicas' => ['nullable', 'string'],
+            'titulo' => ['required', 'string', 'max:255'],
+            'horas_cronologicas' => ['required', 'string'],
             'realizado' => ['nullable', 'string'],
-            'fecha_inicio' => ['nullable', 'date', 'date_format:Y-m-d'],
-            'fecha_termino' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'fecha_inicio' => ['required', 'date', 'date_format:Y-m-d'],
+            'fecha_termino' => ['required', 'date', 'date_format:Y-m-d'],
             'estado' => ['required', 'boolean'],
             'anio' => ['nullable', 'string'],
             'interno' => ['required', 'boolean'],
