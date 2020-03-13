@@ -126,7 +126,6 @@ class Movilidad extends Model
         foreach ($movilidades as $movilidad) {
             if ($movilidad->isActivo()) {
                 if (Carbon::parse($movilidad->fecha_inicio)->lt(Carbon::parse($fecha_termino))) {
-                    var_dump('check4', Carbon::parse($movilidad->fecha_inicio), Carbon::parse($fecha_termino));
                     $checkDate = false;
                     break;
                 }
@@ -135,22 +134,18 @@ class Movilidad extends Model
 
             $check = Carbon::parse($fecha_inicio)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
             if ($check) {
-                var_dump('check1');
                 $checkDate = false;
                 break;
             }
 
             $checkTwo = Carbon::parse($fecha_termino)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
             if ($checkTwo) {
-                var_dump('check2');
-
                 $checkDate = false;
                 break;
             }
 
             $checkThree = Carbon::parse($movilidad->fecha_inicio)->between(Carbon::parse($fecha_inicio), Carbon::parse($fecha_termino));
             if ($checkThree) {
-                var_dump('check3');
                 $checkDate = false;
                 break;
             }
