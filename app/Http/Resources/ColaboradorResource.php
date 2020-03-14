@@ -42,7 +42,6 @@ class ColaboradorResource extends JsonResource
                     $cargos = $cargo->obtenerCargosRelacionados();
                     $cargos = CargoResource::collection($cargos);
                 }
-                // var_dump($cargos);
             }
         }
 
