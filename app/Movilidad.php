@@ -106,11 +106,10 @@ class Movilidad extends Model
     {
         $movilidades = self::where('id', '!=', $this->id)->get();
 
-        var_dump($fecha_inicio,Carbon::parse($fecha_inicio), $fecha_termino,Carbon::parse($fecha_termino));
         if ($this->isActivo()) {
             $movilidadPenultima = $movilidades
-                                    ->sortByDesc('id')
-                                    ->first();
+            ->sortByDesc('id')
+            ->first();
 
             if (!$movilidadPenultima) {
                 return true;
@@ -127,6 +126,7 @@ class Movilidad extends Model
         foreach ($movilidades as $movilidad) {
             if ($movilidad->isActivo()) {
                 if (Carbon::parse($movilidad->fecha_inicio)->lte(Carbon::parse($fecha_termino))) {
+                    var_dump($fecha_inicio, Carbon::parse($fecha_inicio), $fecha_termino, Carbon::parse($fecha_termino));
                     $checkDate = false;
                     break;
                 }
