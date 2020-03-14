@@ -58,21 +58,20 @@ class CrudTest extends TestCase
         $colaborador = factory(Colaborador::class)->create();
         $cargo = factory(Cargo::class)->create();
 
-        $tipoMovilidad = TipoMovilidad::first(); //Nuevo (a)
+        $tipoMovilidad = TipoMovilidad::first();
 
         $parameters = [
             'fecha_termino' => '',
             'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
             'tipo_movilidad_id' => $tipoMovilidad->id,
             'observaciones' => 'NINGUNA OBSERVACION',
-            // 'estado' => 1,
             'cargo_id' => $cargo->id,
         ];
 
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('movilidades', [
@@ -105,7 +104,7 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('El tipo de movilidad es inválido.'));
     }
@@ -324,7 +323,7 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
     }
@@ -362,7 +361,7 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaborador->id.'/movilidades';
 
         $response = $this->json('POST', $url, $parameters);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(409)
                     ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
     }
@@ -612,7 +611,6 @@ class CrudTest extends TestCase
 
         $response = $this->json('DELETE', $url);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertSoftDeleted('movilidades', [
@@ -996,7 +994,6 @@ class CrudTest extends TestCase
 
         $response = $this->json('PUT', $url, $parameters);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [

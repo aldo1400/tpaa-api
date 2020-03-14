@@ -7,7 +7,6 @@ use Tests\TestCase;
 use App\Colaborador;
 use App\Administrador;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Auth;
 
 class LoginTest extends TestCase
 {
@@ -47,7 +46,6 @@ class LoginTest extends TestCase
         $admin = factory(Administrador::class)->create([
             'estado' => 1,
         ]);
-        // $admin = factory(User::class)->create();
 
         $url = '/api/login/';
 
@@ -254,76 +252,6 @@ class LoginTest extends TestCase
                 ])->json('POST', 'api/logout')
                     ->assertStatus(200)
                     ->assertJsonStructure(['message']);
-
-        $this->assertGuest('api');
-    }
-
-    /**
-     * Test if user can logout trough internal api.
-     */
-    public function testLogoutColaboradorSiAdministradorEstaConectado()
-    {
-        $admin = factory(Administrador::class)->create([
-            'estado' => 1,
-        ]);
-
-        $url = '/api/login/';
-
-        $parameters = [
-            'username' => $admin->username,
-            'password' => 'secret',
-            'rol' => 'api',
-        ];
-
-        $response = $this->json('POST', $url, $parameters);
-
-        $response->assertStatus(200);
-        $data = $response->json();
-        $tokenAdmin = $data['token'];
-
-        $colaborador = factory(Colaborador::class)->create([
-            'estado' => 1,
-            'usuario' => 'aldo1400',
-        ]);
-
-        $url = '/api/login/';
-
-        $parameters = [
-            'username' => $colaborador->usuario,
-            'password' => 'secret',
-            'rol' => 'colaboradores',
-        ];
-
-        $response = $this->json('POST', $url, $parameters);
-        $response->assertStatus(200);
-        $data = $response->json();
-        $tokenColaborador = $data['token'];
-
-        $parameters = [
-            'rol' => 'api',
-        ];
-
-        // Auth::guard('api')->logout();
-        // \Config::set('jwt.user', 'App\Administrador');
-
-        // dd(\Config::get('jwt.user'));
-        // Auth::guard('colaboradores')->logout();
-        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
-
-        $this->withHeaders([
-                    'Authorization' => 'Bearer '.$tokenAdmin,
-                ])->json('POST', 'api/logout')
-                    ->assertStatus(200)
-                    ->assertJsonStructure(['message']);
-
-        $url = '/api/administradores';
-
-        $response = $this->withHeaders([
-                    'Authorization' => 'Bearer '.$tokenAdmin,
-                ])
-                ->json('GET', $url);
-
-        $response->assertStatus(401);
 
         $this->assertGuest('api');
     }

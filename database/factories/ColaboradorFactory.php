@@ -46,7 +46,7 @@ $factory->define(App\Colaborador::class, function (Faker $faker) {
         'talla_chaleco' => $faker->company,
         'talla_polera' => $faker->company,
         'talla_pantalon' => $faker->company,
-        'fecha_ingreso' => $faker->dateTime($max = 'now', $timezone = null),
+        'fecha_ingreso' => null,
         'telefono' => $faker->tollFreePhoneNumber,
         'celular' => $faker->tollFreePhoneNumber,
         'anexo' => $faker->company,

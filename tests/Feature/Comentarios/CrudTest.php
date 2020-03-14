@@ -142,7 +142,7 @@ class CrudTest extends TestCase
         $response = $this->json('POST', $url, $parameters);
 
         $response->assertStatus(409)
-                ->assertSeeText(json_encode('La fecha del comentario es inválida.'));
+                ->assertSeeText(json_encode('La fecha del comentario debe ser posterior a la Fecha de Inicio del Cargo del Colaborador.'));
     }
 
     public function testObtenerTodosLosComentarios()

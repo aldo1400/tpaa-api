@@ -23,8 +23,6 @@ class CargoResource extends JsonResource
         // Ensure you call the parent constructor
         parent::__construct($resource);
         $this->resource = $resource;
-        // var_dump($colaborador);
-        // $this->getColaborador = $colaborador;
     }
 
     /**
@@ -36,15 +34,13 @@ class CargoResource extends JsonResource
      */
     public function toArray($request)
     {
-        // if ($this->getColaborador) {
         $movilidad = $this->movilidades
                 ->where('estado', 1)
                     ->first();
-        // dd($movilidad->colaborador);
+
         if ($movilidad) {
             $colaborador = $movilidad->colaborador;
         }
-        // }
 
         return [
             'id' => $this->id,

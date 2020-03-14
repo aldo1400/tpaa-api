@@ -120,7 +120,6 @@ class CrudTest extends TestCase
             'estado' => 1,
             'tipo_carga_id' => $tipoCarga->id,
             'rut' => $cargaFamiliar->rut,
-            // 'colaborador_id' => $colaborador->id
         ];
 
         $response = $this->json('PATCH', $url, $parameters);
@@ -171,7 +170,6 @@ class CrudTest extends TestCase
             'estado' => 1,
             'tipo_carga_id' => $tipoCarga->id,
             'rut' => '12870631-3',
-            // 'colaborador_id' => $colaborador->id
         ];
 
         $response = $this->json('PATCH', $url, $parameters);

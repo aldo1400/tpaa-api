@@ -71,7 +71,6 @@ class ColaboradorResource extends JsonResource
             'talla_chaleco' => $this->talla_chaleco ? $this->talla_chaleco : '',
             'talla_polera' => $this->talla_polera ? $this->talla_polera : '',
             'talla_pantalon' => $this->talla_pantalon ? $this->talla_pantalon : '',
-            'fecha_ingreso' => $this->fecha_ingreso ? $this->fecha_ingreso->format('Y-m-d') : '',
             'telefono' => $this->telefono ? $this->telefono : '',
             'celular' => $this->celular ? $this->celular : '',
             'anexo' => $this->anexo ? $this->anexo : '',
@@ -87,6 +86,7 @@ class ColaboradorResource extends JsonResource
             'credencial_vigilante' => $this->credencial_vigilante ? $this->credencial_vigilante : '',
             'vencimiento_credencial_vigilante' => $this->vencimiento_credencial_vigilante ? $this->vencimiento_credencial_vigilante->format('Y-m-d') : '',
             'cargosPadres' => isset($cargos) ? $cargos : '',
+            'fecha_ingreso' => $this->obtenerFechaDeIngreso() ? $this->obtenerFechaDeIngreso() : '',
         ];
     }
 }

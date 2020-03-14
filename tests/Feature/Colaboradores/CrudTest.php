@@ -60,7 +60,7 @@ class CrudTest extends TestCase
                         'anexo',
                         'contacto_emergencia_nombre',
                         'contacto_emergencia_telefono',
-                        // 'estado',
+
                         'fecha_inactividad',
                         'nivelEducacion' => [
                             'id',
@@ -130,7 +130,7 @@ class CrudTest extends TestCase
                         'anexo',
                         'contacto_emergencia_nombre',
                         'contacto_emergencia_telefono',
-                        // 'estado',
+
                         'fecha_inactividad',
                         'nivelEducacion' => [
                             'id',
@@ -200,7 +200,7 @@ class CrudTest extends TestCase
                         'anexo',
                         'contacto_emergencia_nombre',
                         'contacto_emergencia_telefono',
-                        // 'estado',
+
                         'fecha_inactividad',
                         'nivelEducacion' => [
                             'id',
@@ -232,7 +232,7 @@ class CrudTest extends TestCase
 
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
         $response = $this->json('GET', $url);
-        // dd($response->decodeResponseJson());
+
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
@@ -259,7 +259,7 @@ class CrudTest extends TestCase
                         'talla_chaleco' => $colaboradores[1]->talla_chaleco,
                         'talla_polera' => $colaboradores[1]->talla_polera,
                         'talla_pantalon' => $colaboradores[1]->talla_pantalon,
-                        'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('Y-m-d'),
+                        'fecha_ingreso' => $colaboradores[1]->fecha_ingreso,
                         'telefono' => $colaboradores[1]->telefono,
                         'celular' => $colaboradores[1]->celular,
                         'anexo' => $colaboradores[1]->anexo,
@@ -278,6 +278,92 @@ class CrudTest extends TestCase
                             'tipo',
                             'estado',
                         ]),
+                ],
+            ]);
+    }
+
+    public function testObtenerFechaDeIngresoDeUnColaborador()
+    {
+        $colaboradores = factory(Colaborador::class, 10)
+                        ->create();
+
+        $tags = factory(Tag::class, 2)
+                    ->create();
+
+        $colaboradores[1]->tags()
+                    ->sync($tags);
+
+        $cargo = factory(Cargo::class)
+                ->create();
+
+        $tipoMovilidadDesarrollo = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaboradores[1]->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '01')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '03', '05')->format('Y-m-d'),
+        ]);
+
+        $segundaMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaboradores[1]->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+            'fecha_termino' => null,
+        ]);
+
+        $url = '/api/colaboradores/'.$colaboradores[1]->id;
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                        'id' => $colaboradores[1]->id,
+                        'rut' => $colaboradores[1]->rut,
+                        'usuario' => $colaboradores[1]->usuario,
+                        'primer_nombre' => $colaboradores[1]->primer_nombre,
+                        'segundo_nombre' => $colaboradores[1]->segundo_nombre,
+                        'apellido_paterno' => $colaboradores[1]->apellido_paterno,
+                        'apellido_materno' => $colaboradores[1]->apellido_materno,
+                        'sexo' => $colaboradores[1]->sexo,
+                        'nacionalidad' => $colaboradores[1]->nacionalidad,
+                        'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('Y-m-d'),
+                        'edad_colaborador' => $colaboradores[1]->edad_colaborador,
+                        'email' => $colaboradores[1]->email,
+                        'domicilio' => $colaboradores[1]->domicilio,
+                        'licencia_b' => $colaboradores[1]->licencia_b,
+                        'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('Y-m-d'),
+                        'licencia_d' => $colaboradores[1]->licencia_d,
+                        'vencimiento_licencia_d' => $colaboradores[1]->vencimiento_licencia_d->format('Y-m-d'),
+                        'carnet_portuario' => $colaboradores[1]->carnet_portuario,
+                        'vencimiento_carnet_portuario' => $colaboradores[1]->vencimiento_carnet_portuario->format('Y-m-d'),
+                        'talla_calzado' => $colaboradores[1]->talla_calzado,
+                        'talla_chaleco' => $colaboradores[1]->talla_chaleco,
+                        'talla_polera' => $colaboradores[1]->talla_polera,
+                        'talla_pantalon' => $colaboradores[1]->talla_pantalon,
+                        'telefono' => $colaboradores[1]->telefono,
+                        'celular' => $colaboradores[1]->celular,
+                        'anexo' => $colaboradores[1]->anexo,
+                        'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
+                        'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
+                        'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('Y-m-d'),
+                        'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
+                        'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
+                        'nivelEducacion' => $colaboradores[1]->nivelEducacion->only([
+                            'id',
+                            'nivel_tipo',
+                            'estado',
+                        ]),
+                        'estadoCivil' => $colaboradores[1]->estadoCivil->only([
+                            'id',
+                            'tipo',
+                            'estado',
+                        ]),
+                        'fecha_ingreso' => $primeraMovilidad->fecha_inicio->format('Y-m-d'),
                 ],
             ]);
     }
@@ -337,8 +423,6 @@ class CrudTest extends TestCase
 
         $response = $this->json('POST', $url, $parameters);
 
-        // dd($response->decodeResponseJson());
-
         $response->assertStatus(200);
         $data = $response->json();
         $token = $data['token'];
@@ -350,7 +434,6 @@ class CrudTest extends TestCase
             ])
             ->json('GET', $url);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
@@ -360,42 +443,6 @@ class CrudTest extends TestCase
                         'primer_nombre' => $colaborador->primer_nombre,
                         'segundo_nombre' => $colaborador->segundo_nombre,
                         'apellido_paterno' => $colaborador->apellido_paterno,
-                        // 'apellido_materno' => $colaboradores[1]->apellido_materno,
-                        // 'sexo' => $colaboradores[1]->sexo,
-                        // 'nacionalidad' => $colaboradores[1]->nacionalidad,
-                        // 'fecha_nacimiento' => $colaboradores[1]->fecha_nacimiento->format('Y-m-d'),
-                        // 'edad_colaborador' => $colaboradores[1]->edad_colaborador,
-                        // 'email' => $colaboradores[1]->email,
-                        // 'domicilio' => $colaboradores[1]->domicilio,
-                        // 'licencia_b' => $colaboradores[1]->licencia_b,
-                        // 'vencimiento_licencia_b' => $colaboradores[1]->vencimiento_licencia_b->format('Y-m-d'),
-                        // 'licencia_d' => $colaboradores[1]->licencia_d,
-                        // 'vencimiento_licencia_d' => $colaboradores[1]->vencimiento_licencia_d->format('Y-m-d'),
-                        // 'carnet_portuario' => $colaboradores[1]->carnet_portuario,
-                        // 'vencimiento_carnet_portuario' => $colaboradores[1]->vencimiento_carnet_portuario->format('Y-m-d'),
-                        // 'talla_calzado' => $colaboradores[1]->talla_calzado,
-                        // 'talla_chaleco' => $colaboradores[1]->talla_chaleco,
-                        // 'talla_polera' => $colaboradores[1]->talla_polera,
-                        // 'talla_pantalon' => $colaboradores[1]->talla_pantalon,
-                        // 'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('Y-m-d'),
-                        // 'telefono' => $colaboradores[1]->telefono,
-                        // 'celular' => $colaboradores[1]->celular,
-                        // 'anexo' => $colaboradores[1]->anexo,
-                        // 'contacto_emergencia_nombre' => $colaboradores[1]->contacto_emergencia_nombre,
-                        // 'contacto_emergencia_telefono' => $colaboradores[1]->contacto_emergencia_telefono,
-                        // 'fecha_inactividad' => $colaboradores[1]->fecha_inactividad->format('Y-m-d'),
-                        // 'credencial_vigilante' => $colaboradores[1]->credencial_vigilante,
-                        // 'vencimiento_credencial_vigilante' => $colaboradores[1]->vencimiento_credencial_vigilante->format('Y-m-d'),
-                        // 'nivelEducacion' => $colaboradores[1]->nivelEducacion->only([
-                        //     'id',
-                        //     'nivel_tipo',
-                        //     'estado',
-                        // ]),
-                        // 'estadoCivil' => $colaboradores[1]->estadoCivil->only([
-                        //     'id',
-                        //     'tipo',
-                        //     'estado',
-                        // ]),
                 ],
             ]);
     }
@@ -437,7 +484,7 @@ class CrudTest extends TestCase
                         'talla_chaleco' => $colaboradores[1]->talla_chaleco,
                         'talla_polera' => $colaboradores[1]->talla_polera,
                         'talla_pantalon' => $colaboradores[1]->talla_pantalon,
-                        'fecha_ingreso' => $colaboradores[1]->fecha_ingreso->format('Y-m-d'),
+                        'fecha_ingreso' => $colaboradores[1]->fecha_ingreso,
                         'telefono' => $colaboradores[1]->telefono,
                         'celular' => $colaboradores[1]->celular,
                         'anexo' => $colaboradores[1]->anexo,
@@ -496,7 +543,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => $colaborador->talla_chaleco,
             'talla_polera' => $colaborador->talla_polera,
             'talla_pantalon' => $colaborador->talla_pantalon,
-            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaborador->fecha_ingreso,
             'telefono' => $colaborador->telefono,
             'celular' => $colaborador->celular,
             'anexo' => $colaborador->anexo,
@@ -617,7 +664,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => $colaborador->talla_chaleco,
             'talla_polera' => $colaborador->talla_polera,
             'talla_pantalon' => $colaborador->talla_pantalon,
-            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaborador->fecha_ingreso,
             'telefono' => $colaborador->telefono,
             'celular' => $colaborador->celular,
             'anexo' => $colaborador->anexo,
@@ -672,11 +719,11 @@ class CrudTest extends TestCase
             'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
             'estado' => 0,
             'fecha_inactividad' => null,
-            // 'estado_civil_id' => $parameters['estado_civil_id'],
-            // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
-            // 'credencial_vigilante' => $parameters['credencial_vigilante'],
-            // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
-            // 'imagen_url' => url(Storage::url($imageUrl)),
+            'estado_civil_id' => $parameters['estado_civil_id'],
+            'nivel_educacion_id' => $parameters['nivel_educacion_id'],
+            'credencial_vigilante' => $parameters['credencial_vigilante'],
+            'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
+            'imagen_url' => url(Storage::url($imageUrl)),
             'password' => '',
         ]);
 
@@ -740,7 +787,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => $colaborador->talla_chaleco,
             'talla_polera' => $colaborador->talla_polera,
             'talla_pantalon' => $colaborador->talla_pantalon,
-            'fecha_ingreso' => $colaborador->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaborador->fecha_ingreso,
             'telefono' => $colaborador->telefono,
             'celular' => $colaborador->celular,
             'anexo' => $colaborador->anexo,
@@ -865,7 +912,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => 'S',
             'talla_polera' => 'S',
             'talla_pantalon' => '30',
-            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso,
             'telefono' => '00000123',
             'celular' => '931245655',
             'anexo' => $colaboradores[0]->anexo,
@@ -936,35 +983,6 @@ class CrudTest extends TestCase
                 'apellido_paterno' => $colaboradores[0]->apellido_paterno,
                 'imagen_url' => null,
                 'imagen' => null,
-                // 'apellido_materno' => null,
-                // 'sexo' => $parameters['sexo'],
-                // 'nacionalidad' => $parameters['nacionalidad'],
-                // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
-                // 'edad' => $parameters['edad'],
-                // 'email' => $parameters['email'],
-                // 'domicilio' => $parameters['domicilio'],
-                // 'licencia_b' => $parameters['licencia_b'],
-                // 'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
-                // 'licencia_d' => $parameters['licencia_d'],
-                // 'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
-                // 'carnet_portuario' => $parameters['carnet_portuario'],
-                // 'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
-                // 'talla_calzado' => $parameters['talla_calzado'],
-                // 'talla_chaleco' => $parameters['talla_chaleco'],
-                // 'talla_polera' => $parameters['talla_polera'],
-                // 'talla_pantalon' => $parameters['talla_pantalon'],
-                // 'fecha_ingreso' => $parameters['fecha_ingreso'],
-                // 'telefono' => $parameters['telefono'],
-                // 'celular' => $parameters['celular'],
-                // 'anexo' => $parameters['anexo'],
-                // 'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
-                // 'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
-                // 'estado' => $colaboradores[0]->estado,
-                // 'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
-                // 'estado_civil_id' => $parameters['estado_civil_id'],
-                // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
-                // 'credencial_vigilante' => $parameters['credencial_vigilante'],
-                // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
                 ]);
 
         $this->assertDatabaseHas('colaborador_tag', [
@@ -1041,7 +1059,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => 'S',
             'talla_polera' => 'S',
             'talla_pantalon' => '30',
-            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso,
             'telefono' => '00000123',
             'celular' => '931245655',
             'anexo' => $colaboradores[0]->anexo,
@@ -1105,7 +1123,6 @@ class CrudTest extends TestCase
 
         $this->assertDatabaseMissing('notificaciones', [
             'id' => $notificacion->id,
-            // 'rut' => $colaboradores[0]->rut,
         ]);
 
         $this->assertDatabaseMissing('colaboradores', [
@@ -1183,7 +1200,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => 'S',
             'talla_polera' => 'S',
             'talla_pantalon' => '30',
-            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso,
             'telefono' => '00000123',
             'celular' => '931245655',
             'anexo' => $colaboradores[0]->anexo,
@@ -1252,35 +1269,6 @@ class CrudTest extends TestCase
                 'apellido_paterno' => $colaboradores[0]->apellido_paterno,
                 'imagen_url' => null,
                 'imagen' => null,
-                // 'apellido_materno' => null,
-                // 'sexo' => $parameters['sexo'],
-                // 'nacionalidad' => $parameters['nacionalidad'],
-                // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
-                // 'edad' => $parameters['edad'],
-                // 'email' => $parameters['email'],
-                // 'domicilio' => $parameters['domicilio'],
-                // 'licencia_b' => $parameters['licencia_b'],
-                // 'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
-                // 'licencia_d' => $parameters['licencia_d'],
-                // 'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
-                // 'carnet_portuario' => $parameters['carnet_portuario'],
-                // 'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
-                // 'talla_calzado' => $parameters['talla_calzado'],
-                // 'talla_chaleco' => $parameters['talla_chaleco'],
-                // 'talla_polera' => $parameters['talla_polera'],
-                // 'talla_pantalon' => $parameters['talla_pantalon'],
-                // 'fecha_ingreso' => $parameters['fecha_ingreso'],
-                // 'telefono' => $parameters['telefono'],
-                // 'celular' => $parameters['celular'],
-                // 'anexo' => $parameters['anexo'],
-                // 'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
-                // 'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
-                // 'estado' => $colaboradores[0]->estado,
-                // 'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
-                // 'estado_civil_id' => $parameters['estado_civil_id'],
-                // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
-                // 'credencial_vigilante' => $parameters['credencial_vigilante'],
-                // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
                 ]);
 
         $this->assertDatabaseHas('colaborador_tag', [
@@ -1353,7 +1341,7 @@ class CrudTest extends TestCase
             'talla_chaleco' => 'S',
             'talla_polera' => 'S',
             'talla_pantalon' => '30',
-            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso->format('Y-m-d'),
+            'fecha_ingreso' => $colaboradores[0]->fecha_ingreso,
             'telefono' => '00000123',
             'celular' => '931245655',
             'anexo' => $colaboradores[0]->anexo,
@@ -1422,35 +1410,6 @@ class CrudTest extends TestCase
                 'apellido_paterno' => $colaboradores[0]->apellido_paterno,
                 'imagen_url' => $colaboradores[0]->imagen_url,
                 'imagen' => $colaboradores[0]->imagen,
-                // 'apellido_materno' => null,
-                // 'sexo' => $parameters['sexo'],
-                // 'nacionalidad' => $parameters['nacionalidad'],
-                // 'fecha_nacimiento' => $parameters['fecha_nacimiento'],
-                // 'edad' => $parameters['edad'],
-                // 'email' => $parameters['email'],
-                // 'domicilio' => $parameters['domicilio'],
-                // 'licencia_b' => $parameters['licencia_b'],
-                // 'vencimiento_licencia_b' => $parameters['vencimiento_licencia_b'],
-                // 'licencia_d' => $parameters['licencia_d'],
-                // 'vencimiento_licencia_d' => $parameters['vencimiento_licencia_d'],
-                // 'carnet_portuario' => $parameters['carnet_portuario'],
-                // 'vencimiento_carnet_portuario' => $parameters['vencimiento_carnet_portuario'],
-                // 'talla_calzado' => $parameters['talla_calzado'],
-                // 'talla_chaleco' => $parameters['talla_chaleco'],
-                // 'talla_polera' => $parameters['talla_polera'],
-                // 'talla_pantalon' => $parameters['talla_pantalon'],
-                // 'fecha_ingreso' => $parameters['fecha_ingreso'],
-                // 'telefono' => $parameters['telefono'],
-                // 'celular' => $parameters['celular'],
-                // 'anexo' => $parameters['anexo'],
-                // 'contacto_emergencia_nombre' => $parameters['contacto_emergencia_nombre'],
-                // 'contacto_emergencia_telefono' => $parameters['contacto_emergencia_telefono'],
-                // 'estado' => $colaboradores[0]->estado,
-                // 'fecha_inactividad' => $colaboradores[0]->fecha_inactividad,
-                // 'estado_civil_id' => $parameters['estado_civil_id'],
-                // 'nivel_educacion_id' => $parameters['nivel_educacion_id'],
-                // 'credencial_vigilante' => $parameters['credencial_vigilante'],
-                // 'vencimiento_credencial_vigilante' => $parameters['vencimiento_credencial_vigilante'],
                 ]);
 
         $this->assertDatabaseHas('colaborador_tag', [

@@ -785,11 +785,6 @@ class CrudTest extends TestCase
                         'organigrama_url',
                         'descriptor_url',
                         'estado',
-                        // 'area' => [
-                        //     'id',
-                        //     'nombre',
-                        //     'estado',
-                        // ],
                         'nombre_fantasia',
                     ],
                 ],

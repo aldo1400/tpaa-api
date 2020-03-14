@@ -36,11 +36,6 @@ class CargaFamiliarRequest extends FormRequest
             'max:255', ],
         ];
 
-        // if ($this->method()=='POST') {
-
-        //     $rules['rut'] = 'nullable|unique:colaboradores,rut|max:255|cl_rut';
-        // }
-
         return $rules;
     }
 }

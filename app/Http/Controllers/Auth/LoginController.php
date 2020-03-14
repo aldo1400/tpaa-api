@@ -167,26 +167,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request): JsonResponse
     {
-        // dd($request->rol);
-        // Auth::guard('api')->logout();
-        // \Config::set('jwt.user', Administrador::class);
-
         Auth::guard($request->rol)->logout();
-        // Auth::guard('colaboradores')->logout();
-        // dd(Auth::guard('api')->check(), Auth::guard('colaboradores')->check());
-        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
-        // Auth::guard()->logout();
-        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
-
-        // Auth::logout();
-
-        return response()->json(['message' => 'Sesión cerrada.']);
-    }
-
-    public function logoutColaborador(Request $request): JsonResponse
-    {
-        // dd(Auth::guard('api')->user(), Auth::guard('colaboradores')->user());
-        // dd('aldo');
 
         return response()->json(['message' => 'Sesión cerrada.']);
     }
