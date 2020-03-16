@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use App\Helpers\Image;
+use App\Http\Traits\DateTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Colaborador extends Authenticatable implements JWTSubject
 {
+    use DateTrait;
     const DESVINCULADO = 'Desvinculado (a)';
     const RENUNCIA = 'Renuncia';
     const ACTIVO = 'Activo (a)';

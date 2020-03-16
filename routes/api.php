@@ -110,6 +110,7 @@ Route::get('/movilidades/import', 'Movilidades\ImportDataController');
 Route::get('/movilidades/{id}', 'Movilidades\ShowController');
 Route::get('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\IndexController');
 Route::post('/colaboradores/{id}/movilidades', 'Colaboradores\Movilidades\CreateProcessController');
+Route::post('/colaboradores/{id}/movilidades/historicos', 'Colaboradores\Movilidades\CreateHistoricController');
 Route::delete('/movilidades/{id}', 'Colaboradores\Movilidades\DeleteProcessController');
 
 Route::get('/colaboradores/{id}/capacitaciones', 'Colaboradores\Capacitaciones\IndexController');

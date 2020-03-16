@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use App\Http\Traits\DateTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Movilidad extends Model
 {
     use SoftDeletes;
-
+    use DateTrait;
     /**
      * The table associated with the model.
      *
@@ -105,7 +106,8 @@ class Movilidad extends Model
     public function validarNuevasFechas($fecha_inicio, $fecha_termino)
     {
         $colaborador = $this->colaborador;
-        $movilidades = $colaborador->movilidades->where('id', '!=', $this->id);
+        $movilidades = $colaborador->movilidades
+                        ->where('id', '!=', $this->id);
 
         if ($this->isActivo()) {
             $movilidadPenultima = $movilidades
@@ -123,34 +125,7 @@ class Movilidad extends Model
             return false;
         }
 
-        $checkDate = true;
-        foreach ($movilidades as $movilidad) {
-            if ($movilidad->isActivo()) {
-                if (Carbon::parse($movilidad->fecha_inicio)->lte(Carbon::parse($fecha_termino))) {
-                    $checkDate = false;
-                    break;
-                }
-                continue;
-            }
-
-            $check = Carbon::parse($fecha_inicio)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
-            if ($check) {
-                $checkDate = false;
-                break;
-            }
-
-            $checkTwo = Carbon::parse($fecha_termino)->between(Carbon::parse($movilidad->fecha_inicio), Carbon::parse($movilidad->fecha_termino));
-            if ($checkTwo) {
-                $checkDate = false;
-                break;
-            }
-
-            $checkThree = Carbon::parse($movilidad->fecha_inicio)->between(Carbon::parse($fecha_inicio), Carbon::parse($fecha_termino));
-            if ($checkThree) {
-                $checkDate = false;
-                break;
-            }
-        }
+        $checkDate = $this->validarLimitesDeFecha($movilidades, $fecha_inicio, $fecha_termino);
 
         return $checkDate;
     }
