@@ -116,7 +116,7 @@ class Movilidad extends Model
                 return true;
             }
 
-            if (Carbon::parse($movilidadPenultima->fecha_termino)->lte(Carbon::parse($fecha_inicio))) {
+            if (Carbon::parse($movilidadPenultima->fecha_termino)->lt(Carbon::parse($fecha_inicio))) {
                 return true;
             }
 
