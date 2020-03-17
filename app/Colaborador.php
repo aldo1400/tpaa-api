@@ -179,15 +179,26 @@ class Colaborador extends Authenticatable implements JWTSubject
 
     public function obtenerFechaDeIngreso()
     {
-        $movilidad = $this->movilidades
-                        ->sortBy('fecha_inicio')
-                        ->first();
-
-        if (!$movilidad) {
+        if (!$this->tieneMovilidades()) {
             return null;
         }
 
-        return $movilidad->fecha_inicio->format('Y-m-d');
+        $movilidad = $this->movilidades
+                        ->whereHas('tipoMovilidad', function ($query) {
+                            $query->where('tipo', TipoMovilidad::NUEVO);
+                        })
+                        ->sortBy('fecha_inicio')
+                        ->first();
+
+        if ($movilidad) {
+            return $movilidad->fecha_inicio->format('Y-m-d');
+        }
+
+        $primeraMovilidad = $this->movilidades
+                            ->sortBy('fecha_inicio')
+                            ->first();
+
+        return $primeraMovilidad->fecha_inicio->format('Y-m-d');
     }
 
     public function actualizarEstadoSegunMovilidad($movilidad)
