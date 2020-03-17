@@ -2371,7 +2371,7 @@ definitions:
         properties:
             id:
                 type: integer
-            diploma_url:
+            url_diploma:
                 type: string
             diploma_path:
                 type: string
@@ -2400,6 +2400,8 @@ definitions:
             curso_id:
                 type: integer
             diploma:
+                type: string
+            url_diploma:
                 type: string
 
     CapacitacionFromColaboradorCreateRequest:
