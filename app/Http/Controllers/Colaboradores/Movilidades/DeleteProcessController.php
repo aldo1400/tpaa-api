@@ -27,7 +27,7 @@ class DeleteProcessController extends Controller
                 ]);
             }
 
-            $colaborador->actualizarEstadoSegunMovilidad($movilidad);
+            $colaborador->actualizarEstadoSegunMovilidad($movilidadAnterior);
 
             return response()->json();
         }
