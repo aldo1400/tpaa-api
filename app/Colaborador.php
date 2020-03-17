@@ -183,11 +183,11 @@ class Colaborador extends Authenticatable implements JWTSubject
             return null;
         }
 
-        $movilidad = $this->movilidades
+        $movilidad = $this->movilidades()
                         ->whereHas('tipoMovilidad', function ($query) {
                             $query->where('tipo', TipoMovilidad::NUEVO);
                         })
-                        ->sortByDesc('fecha_inicio')
+                        ->orderBy('fecha_inicio', 'desc')
                         ->first();
 
         if ($movilidad) {

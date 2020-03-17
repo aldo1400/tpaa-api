@@ -319,6 +319,8 @@ class CrudTest extends TestCase
         $url = '/api/colaboradores/'.$colaboradores[1]->id;
         $response = $this->json('GET', $url);
 
+        // dd($response->decodeResponseJson());
+
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
