@@ -28,6 +28,8 @@ tags:
       description: Everything about colaboradores
     - name: comentarios
       description: Everything about comentarios
+    - name: consultas
+      description: Everything about consultas
     - name: cursos
       description: Everything about cursos
     - name: estado civiles
@@ -48,6 +50,8 @@ tags:
       description: Everything about tipo de area
     - name: tipo comentarios
       description: Everything about tipo comentarios
+    - name: tipo consultas
+      description: Everything about tipo consultas
     - name: tipo cursos
       description: Everything about tipo cursos
     - name: tipo movilidades
@@ -993,6 +997,147 @@ paths:
                 401:
                     description: Unauthenticated
 
+    # ---------------------
+    #   Consultas
+    # ---------------------
+    "/colaboradores/{id}/consultas":
+        get:
+            tags:
+                - consultas
+            summary: Obtener las consultas de un colaborador
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                  description: colaborador ID
+            responses:
+                200:
+                    description: Data retrieved successfully
+                    schema:
+                        $ref: "#/definitions/ConsultaResource"
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
+    "/consultas":
+        get:
+            tags:
+                - consultas
+            summary: Obtener todos las consultas
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Retrieved data succesfully
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/ConsultaResource"
+                401:
+                    description: unauthenticated
+
+        post:
+            tags:
+                - consultas
+            summary: Añadir un consulta
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/ConsultaCreateRequest"
+            responses:
+                201:
+                    description: Data was inserted succesfully
+                400:
+                    description: Invalid input, object invalid
+                401:
+                    description: Unauthenticated
+                403:
+                    description: Forbidden access
+
+    "/consultas/{id}":
+        get:
+            tags:
+                - consultas
+            summary: Obtener una consulta
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Data retrieved successfully
+                    schema:
+                        $ref: "#/definitions/ConsultaResource"
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
+        put:
+            tags:
+                - consultas
+            summary: Editar datos de una consulta
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                  description: Consulta ID
+                - in: body
+                  name: body
+                  required: true
+                  schema:
+                      $ref: "#/definitions/ConsultaUpdateRequest"
+            responses:
+                200:
+                    description: Data modified succesfully
+                401:
+                    description: Unauthenticated
+                403:
+                    description: Forbidden Access
+
+        delete:
+            tags:
+                - consultas
+            summary: Eliminar consulta
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Consulta deleted
+                404:
+                    description: Route not found
+                409:
+                    description: Departure has children
     # ---------------------
     #   Cursos
     # ---------------------
@@ -2002,6 +2147,27 @@ paths:
                             $ref: "#/definitions/TipoComentarioResource"
                 401:
                     description: unauthenticated
+        # ---------------------
+    #   Tipo Consultas
+    # ---------------------
+    "/tipo-consultas":
+        get:
+            tags:
+                - tipo consultas
+            summary: Obtener todos los tipos de consultas
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Retrieved data succesfully
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/TipoConsultaResource"
+                401:
+                    description: unauthenticated
 
     # ---------------------
     #   Tipo Cursos
@@ -2405,6 +2571,34 @@ definitions:
                 type: integer
             nombre_fantasia:
                 type: string
+
+    ConsultaCreateRequest:
+        type: object
+        properties:
+            texto:
+                type: string
+            tipo_consulta_id:
+                type: integer
+
+    ConsultaUpdateRequest:
+        type: object
+        properties:
+            texto:
+                type: string
+            tipo_consulta_id:
+                type: integer
+            colaborador_id:
+                type: integer
+
+    ConsultaResource:
+        type: object
+        properties:
+            texto:
+                type: string
+            tipoConsulta:
+                $ref: "#/definitions/TipoConsultaResource"
+            colaborador:
+                $ref: "#/definitions/ColaboradorResource"
 
     ColaboradorCreateRequest:
         type: object
@@ -2853,6 +3047,16 @@ definitions:
                 enum: [0, 1]
 
     TipoComentarioResource:
+        type: object
+        properties:
+            id:
+                type: integer
+            tipo:
+                type: string
+            estado:
+                type: string
+
+    TipoConsultaResource:
         type: object
         properties:
             id:

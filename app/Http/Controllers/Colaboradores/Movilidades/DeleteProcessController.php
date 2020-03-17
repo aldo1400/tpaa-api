@@ -17,11 +17,9 @@ class DeleteProcessController extends Controller
                 ->delete();
 
             $movilidadAnterior = $colaborador->movilidades()
-                                ->orderBy('id', 'desc')
+                                ->orderBy('fecha_inicio', 'desc')
                                 ->first();
 
-            //         ->sortBy('fecha_inicio')
-            // ->first();
             if ($movilidadAnterior) {
                 $movilidadAnterior->update([
                     'fecha_termino' => null,

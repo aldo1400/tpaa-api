@@ -23,9 +23,9 @@ class UpdateProcessController extends Controller
 
         $movilidad = Movilidad::findOrFail($id);
 
-        if ($movilidad->isTipoExcluyente() && $request->cargo_id) {
-            return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
-        }
+        // if ($movilidad->isTipoExcluyente() && $request->cargo_id) {
+        //     return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
+        // }
 
         if (!$movilidad->isActivo() && !$request->fecha_termino) {
             return response()->json(['message' => 'Debe enviar fecha de termino es inválido.'], 409);
@@ -42,6 +42,7 @@ class UpdateProcessController extends Controller
         ]);
 
         $movilidad->cargo()->associate($request->cargo_id);
+        $movilidad->tipoMovilidad()->associate($request->tipo_movilidad_id);
         $movilidad->save();
 
         return response()->json();
