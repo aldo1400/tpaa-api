@@ -187,7 +187,7 @@ class Colaborador extends Authenticatable implements JWTSubject
                         ->whereHas('tipoMovilidad', function ($query) {
                             $query->where('tipo', TipoMovilidad::NUEVO);
                         })
-                        ->sortBy('fecha_inicio')
+                        ->sortByDesc('fecha_inicio')
                         ->first();
 
         if ($movilidad) {
