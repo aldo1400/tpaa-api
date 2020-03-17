@@ -143,6 +143,7 @@ Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Comentarios\IndexCo
 Route::get('/colaboradores/{id}/consultas', 'Colaboradores\Consultas\IndexController');
 Route::post('/colaboradores/{id}/consultas', 'Colaboradores\Consultas\CreateProcessController');
 Route::get('/consultas/{id}', 'Consultas\ShowController');
+Route::patch('/consultas/{id}', 'Consultas\UpdateProcessController');
 Route::delete('/consultas/{id}', 'Consultas\DeleteProcessController');
 Route::post('/consultas', 'Colaboradores\Consultas\CreateProcessController');
 Route::get('/consultas', 'Consultas\IndexController');

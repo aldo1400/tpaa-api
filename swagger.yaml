@@ -1091,7 +1091,7 @@ paths:
                 401:
                     description: Unauthenticated
 
-        put:
+        patch:
             tags:
                 - consultas
             summary: Editar datos de una consulta
@@ -2588,8 +2588,6 @@ definitions:
             texto:
                 type: string
             tipo_consulta_id:
-                type: integer
-            colaborador_id:
                 type: integer
 
     ConsultaResource:
