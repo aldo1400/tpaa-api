@@ -351,7 +351,7 @@ class Colaborador extends Authenticatable implements JWTSubject
                 if (!$notificaciones) {
                     $tipoSeparado = ucwords(str_replace('_', ' ', $tipo));
 
-                    $mensaje = 'Su '.$tipoSeparado.' vencerá pronto.';
+                    $mensaje = 'Su '.$tipoSeparado.' vencerá el '.$this->tipo->format('d-m-Y').'.';
                     $notificacion = Notificacion::make([
                         'mensaje' => $mensaje,
                         'tipo' => $tipo,
