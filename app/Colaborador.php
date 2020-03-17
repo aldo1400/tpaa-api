@@ -212,13 +212,21 @@ class Colaborador extends Authenticatable implements JWTSubject
             $this->update([
                 'estado' => 0,
             ]);
+
+            return true;
         }
 
         if ($movilidad->isTipoExcluyente()) {
             $this->update([
-                'estado' => 1,
+                'estado' => 0,
             ]);
+
+            return true;
         }
+
+        $this->update([
+            'estado' => 1,
+        ]);
 
         return true;
     }
