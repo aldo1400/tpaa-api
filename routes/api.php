@@ -126,6 +126,7 @@ Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessControlle
 Route::get('/vista-pdf', 'TestingController');
 
 Route::post('/cursos/{id}/capacitaciones', 'Capacitaciones\CreateProcessController');
+Route::get('/capacitaciones/{id}', 'Capacitaciones\ShowController');
 Route::put('/capacitaciones/{id}', 'Capacitaciones\UpdateProcessController');
 Route::delete('/capacitaciones/{id}', 'Capacitaciones\DeleteProcessController');
 
@@ -136,6 +137,7 @@ Route::put('/niveles-jerarquico/{id}', 'NivelesJerarquico\UpdateProcessControlle
 Route::delete('/niveles-jerarquico/{id}', 'NivelesJerarquico\DeleteProcessController');
 
 Route::get('/colaboradores/{id}/tags', 'Colaboradores\Tags\IndexController');
+Route::get('/colaboradores/{id}/consultas', 'Colaboradores\Consultas\IndexController');
 Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Comentarios\IndexController');
 // Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
 
@@ -163,3 +165,4 @@ Route::get('/estado-civiles', 'EstadoCiviles\IndexController');
 Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
 Route::get('/tipo-movilidades', 'TipoMovilidades\IndexController');
 Route::get('/tipo-cargas', 'TipoCargas\IndexController');
+Route::get('/tipo-consultas', 'TipoConsultas\IndexController');

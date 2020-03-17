@@ -134,6 +134,11 @@ class Colaborador extends Authenticatable implements JWTSubject
         return $this->belongsTo('App\EstadoCivil');
     }
 
+    public function consultas(): HasMany
+    {
+        return $this->hasMany('App\Consulta');
+    }
+
     /**
      * Get the estado civil for the colaborador.
      */
