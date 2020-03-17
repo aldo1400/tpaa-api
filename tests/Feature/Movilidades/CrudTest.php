@@ -452,7 +452,7 @@ class CrudTest extends TestCase
 
         $tipoMovilidad = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
 
-        $movilidades = factory(Movilidad::class, 3)->create([
+        $movilidadAnterior = factory(Movilidad::class)->create([
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidad->id,
@@ -477,7 +477,7 @@ class CrudTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('movilidades', [
-            'id' => $movilidades[2]->id,
+            'id' => $movilidadAnterior->id,
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'estado' => 1,
@@ -676,6 +676,7 @@ class CrudTest extends TestCase
             'fecha_inicio' => Carbon::createFromDate('2018', '08', '02')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
         ];
 
         $url = '/api/movilidades/'.$cuartaMovilidad->id;
@@ -691,7 +692,89 @@ class CrudTest extends TestCase
             'estado' => 1,
             'fecha_termino' => null,
             'fecha_inicio' => $parameters['fecha_inicio'],
-            'tipo_movilidad_id' => $cuartaMovilidad->tipoMovilidad->id,
+            'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
+        ]);
+    }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarMovilidadActivaDeUnColaboradorYVerificarElEstadoDelColaborador()
+    {
+        $colaborador = factory(Colaborador::class)->create([
+            'estado' => 1,
+        ]);
+
+        $cargo = factory(Cargo::class)->create();
+        $cargoNuevo = factory(Cargo::class)->create();
+
+        $tipoMovilidadDesarrollo = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
+        $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
+        $tipoMovilidadRenuncia = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+
+        $primeraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '02', '05')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '03', '05')->format('Y-m-d'),
+        ]);
+
+        $segundaMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '05', '05')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '07', '05')->format('Y-m-d'),
+        ]);
+
+        $terceraMovilidad = factory(Movilidad::class)->create([
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 0,
+            'fecha_inicio' => Carbon::createFromDate('2018', '07', '06')->format('Y-m-d'),
+            'fecha_termino' => Carbon::createFromDate('2018', '08', '01')->format('Y-m-d'),
+        ]);
+
+        $cuartaMovilidad = factory(Movilidad::class)->create([
+            'fecha_inicio' => Carbon::createFromDate('2018', '08', '05')->format('Y-m-d'),
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $cargo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
+            'estado' => 1,
+            'fecha_termino' => null,
+        ]);
+
+        $parameters = [
+            'fecha_termino' => null,
+            'fecha_inicio' => Carbon::createFromDate('2018', '08', '02')->format('Y-m-d'),
+            'observaciones' => 'SUBIO DE GRADO',
+            'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidadRenuncia->id,
+        ];
+
+        $url = '/api/movilidades/'.$cuartaMovilidad->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('movilidades', [
+            'id' => $cuartaMovilidad->id,
+            'colaborador_id' => $colaborador->id,
+            'cargo_id' => $parameters['cargo_id'],
+            'estado' => 1,
+            'fecha_termino' => null,
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
+        ]);
+
+        $this->assertDatabaseHas('colaboradores', [
+            'id' => $colaborador->id,
+            'estado' => 0,
         ]);
     }
 
@@ -728,6 +811,7 @@ class CrudTest extends TestCase
             'fecha_termino' => now()->addDays(1)->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidad->id,
         ];
 
         $url = '/api/movilidades/'.$movilidad->id;
@@ -791,6 +875,7 @@ class CrudTest extends TestCase
             'fecha_termino' => Carbon::createFromDate('2018', '03', '01')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
         ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -805,6 +890,7 @@ class CrudTest extends TestCase
                     'fecha_termino' => Carbon::createFromDate('2018', '03', '01')->format('Y-m-d'),
                     'observaciones' => 'SUBIO DE GRADO',
                     'cargo_id' => $cargoNuevo->id,
+                    'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
                 ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -819,6 +905,7 @@ class CrudTest extends TestCase
                     'fecha_termino' => Carbon::createFromDate('2019', '10', '01')->format('Y-m-d'),
                     'observaciones' => 'SUBIO DE GRADO',
                     'cargo_id' => $cargoNuevo->id,
+                    'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
                 ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -833,6 +920,7 @@ class CrudTest extends TestCase
                     'fecha_termino' => Carbon::createFromDate('2018', '08', '04')->format('Y-m-d'),
                     'observaciones' => 'SUBIO DE GRADO',
                     'cargo_id' => $cargoNuevo->id,
+                    'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
                 ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -847,6 +935,7 @@ class CrudTest extends TestCase
                     'fecha_termino' => Carbon::createFromDate('2018', '07', '24')->format('Y-m-d'),
                     'observaciones' => 'SUBIO DE GRADO',
                     'cargo_id' => $cargoNuevo->id,
+                    'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
                 ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -861,6 +950,7 @@ class CrudTest extends TestCase
             'fecha_termino' => Carbon::createFromDate('2021', '07', '24')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
         ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -915,6 +1005,7 @@ class CrudTest extends TestCase
             'fecha_termino' => Carbon::createFromDate('2018', '06', '05')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
         ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -930,7 +1021,7 @@ class CrudTest extends TestCase
             'estado' => 0,
             'fecha_inicio' => $parameters['fecha_inicio'],
             'fecha_termino' => $parameters['fecha_termino'],
-            'tipo_movilidad_id' => $segundaMovilidad->tipoMovilidad->id,
+            'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
         ]);
 
         $this->assertDatabaseMissing('movilidades', [
@@ -988,6 +1079,7 @@ class CrudTest extends TestCase
             'fecha_termino' => Carbon::createFromDate('2020', '05', '05')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
+            'tipo_movilidad_id' => $tipoMovilidadDesarrollo->id,
         ];
 
         $url = '/api/movilidades/'.$segundaMovilidad->id;
@@ -1003,7 +1095,7 @@ class CrudTest extends TestCase
             'estado' => 0,
             'fecha_inicio' => $parameters['fecha_inicio'],
             'fecha_termino' => $parameters['fecha_termino'],
-            'tipo_movilidad_id' => $segundaMovilidad->tipoMovilidad->id,
+            'tipo_movilidad_id' => $parameters['tipo_movilidad_id'],
         ]);
 
         $this->assertDatabaseMissing('movilidades', [

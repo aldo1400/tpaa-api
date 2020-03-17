@@ -45,6 +45,11 @@ class UpdateProcessController extends Controller
         $movilidad->tipoMovilidad()->associate($request->tipo_movilidad_id);
         $movilidad->save();
 
+        if ($movilidad->isActivo()) {
+            $colaborador = $movilidad->colaborador;
+            $colaborador->actualizarEstadoSegunMovilidad($movilidad);
+        }
+
         return response()->json();
     }
 }

@@ -223,7 +223,7 @@ class Colaborador extends Authenticatable implements JWTSubject
 
             return true;
         }
-
+        // dd('aldo');
         $this->update([
             'estado' => 1,
         ]);
