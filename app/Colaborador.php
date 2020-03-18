@@ -341,20 +341,21 @@ class Colaborador extends Authenticatable implements JWTSubject
         $now = Carbon::now();
         if ($this->$tipo) {
             if ($this->$tipo->diffInDays($now) < Notificacion::DIAS_LIMITE) {
-                $tipo = str_replace('vencimiento_', '', $tipo);
+                $tipoCorto = str_replace('vencimiento_', '', $tipo);
 
                 $notificaciones = $this->notificaciones()
-                        ->where('tipo', $tipo)
+                        ->where('tipo', $tipoCorto)
                         ->get()
                         ->count();
 
                 if (!$notificaciones) {
-                    $tipoSeparado = ucwords(str_replace('_', ' ', $tipo));
+                    $tipoSeparado = ucwords(str_replace('_', ' ', $tipoCorto));
 
-                    $mensaje = 'Su '.$tipoSeparado.' vencerá el '.$this->tipo->format('d-m-Y').'.';
+                    // dd($tipo);
+                    $mensaje = 'Su '.$tipoSeparado.' vencerá el '.$this->$tipo->format('d-m-Y').'.';
                     $notificacion = Notificacion::make([
                         'mensaje' => $mensaje,
-                        'tipo' => $tipo,
+                        'tipo' => $tipoCorto,
                     ]);
                     $notificacion->colaborador()->associate($this);
                     $notificacion->save();
