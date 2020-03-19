@@ -16,7 +16,11 @@ class CreateProcessController extends Controller
         // validar colaboradores añadidos
         DB::transaction(function () use ($curso,$request) {
             foreach ($request->colaboradores as $colaborador) {
-                $file = $curso->generarPDFCapacitacion($colaborador);
+                if ($curso->interno) {
+                    $file = $curso->generarPDFCapacitacion($colaborador);
+                } else {
+                    $file = '';
+                }
                 $curso->crearCapacitacion($colaborador, $file);
             }
         });

@@ -59,7 +59,7 @@ class Curso extends Model
         return $this->belongsTo('App\TipoCurso');
     }
 
-    public function crearCapacitacion($colaborador, $file)
+    public function crearCapacitacion($colaborador, $file = null)
     {
         if ($file) {
             $cursoColaborador = CursoColaborador::make([

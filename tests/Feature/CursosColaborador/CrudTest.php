@@ -71,11 +71,13 @@ class CrudTest extends TestCase
         ]);
     }
 
-    public function testCrearCursoColaboradorMasivo()
+    public function testCrearCursoColaboradorMasivoInterno()
     {
         $colaborador = factory(Colaborador::class)->create();
         $segundoColaborador = factory(Colaborador::class)->create();
-        $curso = factory(Curso::class)->create();
+        $curso = factory(Curso::class)->create([
+            'interno' => 1,
+        ]);
         $cursoColaborador = factory(CursoColaborador::class)->make();
 
         Storage::fake('local');

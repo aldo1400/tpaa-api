@@ -549,7 +549,7 @@ class CrudTest extends TestCase
 
         $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
 
-        $movilidades = factory(Movilidad::class, 3)->create([
+        $movilidades = factory(Movilidad::class)->create([
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'tipo_movilidad_id' => $tipoMovilidadNuevo->id,
@@ -574,7 +574,7 @@ class CrudTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('movilidades', [
-            'id' => $movilidades[2]->id,
+            'id' => $movilidades->id,
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
             'estado' => 1,
