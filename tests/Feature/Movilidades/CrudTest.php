@@ -750,7 +750,7 @@ class CrudTest extends TestCase
 
         $parameters = [
             'fecha_termino' => null,
-            'fecha_inicio' => Carbon::createFromDate('2018', '08', '02')->format('Y-m-d'),
+            'fecha_inicio' => Carbon::createFromDate('2019', '08', '02')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
             'tipo_movilidad_id' => $tipoMovilidadRenuncia->id,
@@ -760,12 +760,13 @@ class CrudTest extends TestCase
 
         $response = $this->json('PUT', $url, $parameters);
 
+        // dd($response->decodeResponseJson());
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('movilidades', [
             'id' => $cuartaMovilidad->id,
             'colaborador_id' => $colaborador->id,
-            'cargo_id' => $parameters['cargo_id'],
+            'cargo_id' => null,
             'estado' => 1,
             'fecha_termino' => null,
             'fecha_inicio' => $parameters['fecha_inicio'],

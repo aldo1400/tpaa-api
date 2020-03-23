@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Colaboradores\Movilidades;
 
 use App\Movilidad;
 use App\Helpers\Date;
+use App\TipoMovilidad;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -22,10 +23,16 @@ class UpdateProcessController extends Controller
         }
 
         $movilidad = Movilidad::findOrFail($id);
+        $tipoMovilidad = TipoMovilidad::findOrFail($request->tipo_movilidad_id);
 
-        // if ($movilidad->isTipoExcluyente() && $request->cargo_id) {
-        //     return response()->json(['message' => 'El tipo de movilidad es inválido.'], 409);
-        // }
+        if (!$movilidad->isTipoExcluyente() && !$request->cargo_id) {
+            return response()->json([
+                'message' => 'El campo cargo es obligatorio.',
+                'errors' => [
+                    'cargo_id' => 'El campo cargo es obligatorio',
+                ],
+            ], 409);
+        }
 
         if (!$movilidad->isActivo() && !$request->fecha_termino) {
             return response()->json(['message' => 'Debe enviar fecha de termino es inválido.'], 409);
@@ -41,8 +48,10 @@ class UpdateProcessController extends Controller
             'fecha_termino' => $movilidad->isActivo() ? $movilidad->fecha_termino : $request->fecha_termino,
         ]);
 
-        $movilidad->cargo()->associate($request->cargo_id);
-        $movilidad->tipoMovilidad()->associate($request->tipo_movilidad_id);
+        $cargo = $tipoMovilidad->isExcluyente() ? null : $request->cargo_id;
+
+        $movilidad->cargo()->associate($cargo);
+        $movilidad->tipoMovilidad()->associate($tipoMovilidad);
         $movilidad->save();
 
         if ($movilidad->isActivo()) {
