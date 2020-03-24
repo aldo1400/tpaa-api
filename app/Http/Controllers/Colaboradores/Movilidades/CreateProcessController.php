@@ -27,11 +27,11 @@ class CreateProcessController extends Controller
 
         if ($colaborador->tieneMovilidades()) {
             if (Carbon::parse($request->fecha_termino)->lte($colaborador->movilidadActual()->fecha_inicio)) {
-                return response()->json(['message' => 'Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'], 409);
+                return response()->json(['message' => 'Fecha de Termino debe ser mayor a la Fecha de Inicio del Cargo Actual.'], 409);
             }
 
             if (Carbon::parse($request->fecha_inicio)->lte(Carbon::parse($request->fecha_termino))) {
-                return response()->json(['message' => 'Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'], 409);
+                return response()->json(['message' => 'Fecha de inicio de Cargo Nuevo debe ser posterior a la Fecha de Termino de Cargo Actual'], 409);
             }
 
             $colaborador->movilidadActual()

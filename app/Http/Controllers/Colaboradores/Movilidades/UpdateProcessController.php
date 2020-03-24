@@ -35,7 +35,7 @@ class UpdateProcessController extends Controller
         }
 
         if (!$movilidad->isActivo() && !$request->fecha_termino) {
-            return response()->json(['message' => 'Debe enviar fecha de termino es inválido.'], 409);
+            return response()->json(['message' => 'Debe enviar fecha de termino.'], 409);
         }
 
         if (!$movilidad->validarNuevasFechas($request->fecha_inicio, $request->fecha_termino)) {
