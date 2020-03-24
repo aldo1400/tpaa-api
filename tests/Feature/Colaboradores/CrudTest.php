@@ -1620,4 +1620,67 @@ class CrudTest extends TestCase
                 ],
         ]);
     }
+
+    public function testObtenerTodosColaboradoresHijos()
+    {
+        // $curso = factory(Curso::class)->create();
+
+        $colaborador = factory(Colaborador::class)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        $colaboradorHijoPrimero = factory(Colaborador::class)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        $colaboradorHijoSegundo = factory(Colaborador::class)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        $cargoSupervisor = factory(Cargo::class)->create([
+            'estado' => 1,
+        ]);
+
+        $cargoHijo = factory(Cargo::class)->create([
+            'nombre' => 'Cargo Hijo',
+            'estado' => 1,
+            'supervisor_id' => $cargoSupervisor->id,
+        ]);
+
+        $cargoNieto = factory(Cargo::class)->create([
+            'nombre' => 'Cargo Nieto',
+            'estado' => 0,
+            'supervisor_id' => $cargoHijo->id,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'estado' => 1,
+            'cargo_id' => $cargoSupervisor->id,
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        $movilidadHijoPrimero = factory(Movilidad::class)->create([
+            'estado' => 1,
+            'cargo_id' => $cargoHijo->id,
+            'colaborador_id' => $colaboradorHijoPrimero->id,
+        ]);
+
+        $movilidadHijoSegundo = factory(Movilidad::class)->create([
+            'estado' => 1,
+            'cargo_id' => $cargoHijo->id,
+            'colaborador_id' => $colaboradorHijoSegundo->id,
+        ]);
+
+        $url = '/api/colaboradores-hijos/'.$colaborador->rut;
+
+        $response = $this->json('GET', $url);
+        // dd($response->decodeResponseJson());
+        //
+        // $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data');
+    }
 }

@@ -124,6 +124,7 @@ Route::delete('/cargas-familiares/{id}', 'CargasFamiliares\DeleteProcessControll
 Route::patch('/cargas-familiares/{id}', 'CargasFamiliares\UpdateProcessController');
 
 Route::get('/vista-pdf', 'TestingController');
+Route::get('/colaboradores-hijos/{rut}', 'Colaboradores\Testing');
 
 Route::post('/cursos/{id}/capacitaciones', 'Capacitaciones\CreateProcessController');
 Route::get('/capacitaciones/{id}', 'Capacitaciones\ShowController');
