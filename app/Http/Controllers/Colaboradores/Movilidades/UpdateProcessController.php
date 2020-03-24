@@ -25,6 +25,15 @@ class UpdateProcessController extends Controller
         $movilidad = Movilidad::findOrFail($id);
         $tipoMovilidad = TipoMovilidad::findOrFail($request->tipo_movilidad_id);
 
+        if (!$tipoMovilidad->isExcluyente() && !$request->cargo_id) {
+            return response()->json([
+                'message' => 'El campo cargo es obligatorio.',
+                'errors' => [
+                    'cargo_id' => 'El campo cargo es obligatorio',
+                ],
+            ], 409);
+        }
+
         if (!$movilidad->isTipoExcluyente() && !$request->cargo_id) {
             return response()->json([
                 'message' => 'El campo cargo es obligatorio.',

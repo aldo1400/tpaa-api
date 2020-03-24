@@ -31,7 +31,7 @@ class CreateProcessController extends Controller
             }
 
             if (Carbon::parse($request->fecha_inicio)->lte(Carbon::parse($request->fecha_termino))) {
-                return response()->json(['message' => 'Fecha de inicio de Cargo Nuevo debe ser posterior a la Fecha de Termino de Cargo Actual'], 409);
+                return response()->json(['message' => 'Fecha de inicio de Cargo Nuevo debe ser posterior a la Fecha de Termino de Cargo Actual.'], 409);
             }
 
             $colaborador->movilidadActual()

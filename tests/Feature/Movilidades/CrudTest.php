@@ -325,7 +325,7 @@ class CrudTest extends TestCase
         $response = $this->json('POST', $url, $parameters);
 
         $response->assertStatus(409)
-                    ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
+                    ->assertSeeText(json_encode('Fecha de Termino debe ser mayor a la Fecha de Inicio del Cargo Actual.'));
     }
 
     /**
@@ -363,7 +363,7 @@ class CrudTest extends TestCase
         $response = $this->json('POST', $url, $parameters);
 
         $response->assertStatus(409)
-                    ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio de la movilidad.'));
+                    ->assertSeeText(json_encode('Fecha de inicio de Cargo Nuevo debe ser posterior a la Fecha de Termino de Cargo Actual.'));
     }
 
     /**
@@ -711,7 +711,9 @@ class CrudTest extends TestCase
         $tipoMovilidadDesarrollo = TipoMovilidad::where('tipo', TipoMovilidad::DESARROLLO)->first();
         $tipoMovilidadNuevo = TipoMovilidad::where('tipo', TipoMovilidad::NUEVO)->first();
         $tipoMovilidadRenuncia = TipoMovilidad::where('tipo', TipoMovilidad::RENUNCIA)->first();
+        $tipoMovilidadTerminoDeContrato = TipoMovilidad::where('tipo', TipoMovilidad::TERMINO_DE_CONTRATO)->first();
 
+        // dd($tipoMovilidadTerminoDeContrato->id);
         $primeraMovilidad = factory(Movilidad::class)->create([
             'colaborador_id' => $colaborador->id,
             'cargo_id' => $cargo->id,
@@ -753,7 +755,7 @@ class CrudTest extends TestCase
             'fecha_inicio' => Carbon::createFromDate('2019', '08', '02')->format('Y-m-d'),
             'observaciones' => 'SUBIO DE GRADO',
             'cargo_id' => $cargoNuevo->id,
-            'tipo_movilidad_id' => $tipoMovilidadRenuncia->id,
+            'tipo_movilidad_id' => $tipoMovilidadTerminoDeContrato->id,
         ];
 
         $url = '/api/movilidades/'.$cuartaMovilidad->id;
