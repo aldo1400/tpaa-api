@@ -11,7 +11,7 @@ class UpdateStatusReadController extends Controller
     public function __invoke($id, Request $request)
     {
         $this->validate($request, [
-            'leido' => 'required|boolean',
+            'leido' => 'required|in:0,1',
         ]);
 
         $consulta = Consulta::findOrFail($id);
