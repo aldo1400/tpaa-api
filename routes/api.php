@@ -145,6 +145,7 @@ Route::get('/colaboradores/{id}/consultas', 'Colaboradores\Consultas\IndexContro
 Route::post('/colaboradores/{id}/consultas', 'Colaboradores\Consultas\CreateProcessController');
 Route::get('/consultas/{id}', 'Consultas\ShowController');
 Route::patch('/consultas/{id}', 'Consultas\UpdateProcessController');
+Route::patch('/consultas/{id}/estado', 'Consultas\UpdateStatusReadController');
 Route::delete('/consultas/{id}', 'Consultas\DeleteProcessController');
 Route::post('/consultas', 'Colaboradores\Consultas\CreateProcessController');
 Route::get('/consultas', 'Consultas\IndexController');

@@ -18,6 +18,7 @@ class ConsultaResource extends JsonResource
         return [
             'id' => $this->id,
             'texto' => $this->texto,
+            'leido' => $this->leido,
             'colaborador' => new ColaboradorResource($this->colaborador),
             'tipoConsulta' => new TipoConsultaResource($this->tipoConsulta),
         ];

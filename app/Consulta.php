@@ -16,6 +16,7 @@ class Consulta extends Model
      */
     protected $fillable = [
         'texto',
+        'leido',
     ];
 
     /**

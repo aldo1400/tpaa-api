@@ -260,4 +260,48 @@ class CrudTest extends TestCase
                 'texto',
             ]);
     }
+
+    /**
+     * A basic test example.
+     */
+    public function testEditarEstadoLeidoDeUnaConsulta()
+    {
+        $colaborador = factory(Colaborador::class)
+                        ->create();
+
+        $tipoConsulta = TipoConsulta::first();
+
+        $consultas = factory(Consulta::class, 3)
+                        ->create()
+                        ->each(function ($consulta) use ($colaborador) {
+                            $consulta->colaborador()->associate($colaborador);
+                            $consulta->save();
+                        });
+
+        $url = '/api/consultas/'.$consultas[1]->id.'/estado';
+
+        $parameters = [
+            'leido' => 1,
+        ];
+
+        $response = $this->json('PATCH', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('consultas', [
+            'id' => $consultas[1]->id,
+            'texto' => $consultas[1]->texto,
+            'colaborador_id' => $colaborador->id,
+            'tipo_consulta_id' => $consultas[1]->tipo_consulta_id,
+            'leido' => $parameters['leido'],
+        ]);
+
+        $this->assertDatabaseMissing('consultas', [
+            'id' => $consultas[1]->id,
+            'texto' => $consultas[1]->texto,
+            'colaborador_id' => $colaborador->id,
+            'tipo_consulta_id' => $consultas[1]->tipo_consulta_id,
+            'leido' => 0,
+        ]);
+    }
 }
