@@ -24,6 +24,9 @@ class EstadoCivil extends Model
         'estado',
     ];
 
+    /**
+     * Get the colaboradores for the estado civil.
+     */
     public function colaboradores(): HasMany
     {
         return $this->hasMany('App\Colaborador');

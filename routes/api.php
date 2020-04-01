@@ -175,3 +175,10 @@ Route::get('/niveles-educacion', 'NivelesEducacion\IndexController');
 Route::get('/tipo-movilidades', 'TipoMovilidades\IndexController');
 Route::get('/tipo-cargas', 'TipoCargas\IndexController');
 Route::get('/tipo-consultas', 'TipoConsultas\IndexController');
+
+Route::get('/encuesta-plantillas', 'EncuestaPlantillas\IndexController');
+Route::get('/encuesta-plantillas/{id}/preguntas', 'EncuestaPlantillas\Preguntas\IndexController');
+
+Route::get('/encuestas', 'Encuestas\IndexController');
+Route::post('/encuestas', 'Encuestas\CreateProcessController');
+Route::get('/encuestas/{id}', 'Encuestas\ShowController');
