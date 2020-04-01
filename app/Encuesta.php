@@ -13,7 +13,7 @@ class Encuesta extends Model
      * @var array
      */
     protected $fillable = [
-        'periodo',
+        'nombre',
         'descripcion',
         'fecha_inicio',
         'fecha_fin',
@@ -31,10 +31,10 @@ class Encuesta extends Model
     ];
 
     /**
-     * Get the encuesta plantilla that owns the encuesta.
+     * Get the periodo that owns the encuesta.
      */
-    public function encuestaPlantilla(): BelongsTo
+    public function periodo(): BelongsTo
     {
-        return $this->belongsTo('App\EncuestaPlantilla');
+        return $this->belongsTo('App\Periodo');
     }
 }

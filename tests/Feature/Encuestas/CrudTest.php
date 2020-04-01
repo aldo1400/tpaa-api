@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Encuestas;
 
+use App\Periodo;
 use App\Encuesta;
 use Tests\TestCase;
-use App\EncuestaPlantilla;
 
 class CrudTest extends TestCase
 {
@@ -21,19 +21,17 @@ class CrudTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
-                        'periodo',
+                        'nombre',
                         'descripcion',
                         'fecha_inicio',
                         'fecha_fin',
                         'encuesta_facil_id',
-                        'encuestaPlantilla' => [
+                        'periodo' => [
                             'id',
                             'nombre',
-                            'evaluacion',
+                            'year',
+                            'detalle',
                             'descripcion',
-                            'tipo_puntaje',
-                            'tiene_item',
-                            'numero_preguntas',
                         ],
                     ],
                 ],
@@ -56,14 +54,12 @@ class CrudTest extends TestCase
                         'fecha_inicio' => $encuestas[0]->fecha_inicio->format('Y-m-d'),
                         'fecha_fin' => $encuestas[0]->fecha_fin->format('Y-m-d'),
                         'encuesta_facil_id' => $encuestas[0]->encuesta_facil_id,
-                        'encuestaPlantilla' => $encuestas[0]->encuestaPlantilla->only([
+                        'periodo' => $encuestas[0]->periodo->only([
                             'id',
                             'nombre',
-                            'evaluacion',
+                            'year',
+                            'detalle',
                             'descripcion',
-                            'tipo_puntaje',
-                            'tiene_item',
-                            'numero_preguntas',
                         ]),
                 ],
             ]);
@@ -71,33 +67,32 @@ class CrudTest extends TestCase
 
     public function testCrearEncuesta()
     {
-        $encuestaPlantilla = factory(EncuestaPlantilla::class)->create();
+        $periodo = factory(Periodo::class)->create();
         $encuesta = factory(Encuesta::class)->make();
 
         $parameters = [
-            'periodo' => $encuesta->periodo,
+            'nombre' => $encuesta->nombre,
             'descripcion' => $encuesta->descripcion,
             'fecha_inicio' => $encuesta->fecha_inicio->format('Y-m-d'),
             'fecha_fin' => $encuesta->fecha_fin->format('Y-m-d'),
             'encuesta_facil_id' => '45454',
-            'encuesta_plantilla_id' => $encuestaPlantilla->id,
+            'periodo_id' => $periodo->id,
         ];
 
         $url = '/api/encuestas';
 
         $response = $this->json('POST', $url, $parameters);
 
-        // dd($response->decodeResponseJson());
         $response->assertStatus(201);
 
         $this->assertDatabaseHas('encuestas', [
             'id' => Encuesta::latest()->first()->id,
-            'periodo' => $parameters['periodo'],
+            'nombre' => $parameters['nombre'],
             'descripcion' => $parameters['descripcion'],
             'fecha_inicio' => $parameters['fecha_inicio'],
             'fecha_fin' => $parameters['fecha_fin'],
             'encuesta_facil_id' => $parameters['encuesta_facil_id'],
-            'encuesta_plantilla_id' => $parameters['encuesta_plantilla_id'],
+            'periodo_id' => $parameters['periodo_id'],
         ]);
     }
 }

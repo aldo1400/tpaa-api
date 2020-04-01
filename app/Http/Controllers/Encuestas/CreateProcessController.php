@@ -11,7 +11,7 @@ class CreateProcessController extends Controller
     public function __invoke(EncuestaRequest $request)
     {
         $encuesta = Encuesta::make($request->validated());
-        $encuesta->encuestaPlantilla()->associate($request->encuesta_plantilla_id);
+        $encuesta->periodo()->associate($request->periodo_id);
         $encuesta->save();
 
         return response()->json(null, 201);
