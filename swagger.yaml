@@ -36,6 +36,8 @@ tags:
       description: Everything about niveles estado civiles
     - name: encuesta plantillas
       description: Everything about encuesta plantillas
+    - name: encuestas
+      description: Everything about encuestas
     - name: movilidades
       description: Everything about movilidades
     - name: niveles educacion
@@ -1729,6 +1731,76 @@ paths:
                 409:
                     description: Departure has children
 
+    # ---------------------
+    #   Encuestas
+    # ---------------------
+    "/encuestas":
+        get:
+            tags:
+                - encuestas
+            summary: Obtener todas los encuestas
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Retrieved data succesfully
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/EncuestaResource"
+                401:
+                    description: unauthenticated
+
+        post:
+            tags:
+                - encuestas
+            summary: Añadir una encuesta
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/EncuestaCreateRequest"
+            responses:
+                201:
+                    description: Data was inserted succesfully
+                400:
+                    description: Invalid input, object invalid
+                401:
+                    description: Unauthenticated
+                403:
+                    description: Forbidden access
+
+    "/encuestas/{id}":
+        get:
+            tags:
+                - encuestas
+            summary: Obtener una encuesta en especifico
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                  description: Encuesta ID
+            responses:
+                200:
+                    description: Data retrieved successfully
+                    schema:
+                        $ref: "#/definitions/EncuestaResource"
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
     "/movilidades/{id}":
         get:
             tags:
@@ -3378,6 +3450,46 @@ definitions:
                 type: boolean
             tipoArea:
                 $ref: "#/definitions/TipoAreaResource"
+
+    EncuestaResource:
+        type: object
+        properties:
+            id:
+                type: integer
+            nombre:
+                type: string
+            descripcion:
+                type: string
+            fecha_inicio:
+                type: string
+                format: date
+            fecha_fin:
+                type: string
+                format: date
+            encuesta_facil_id:
+                type: string
+            periodo:
+                $ref: "#/definitions/PeriodoResource"
+
+    EncuestaCreateRequest:
+        type: object
+        properties:
+            id:
+                type: integer
+            nombre:
+                type: string
+            descripcion:
+                type: string
+            fecha_inicio:
+                type: string
+                format: date
+            fecha_fin:
+                type: string
+                format: date
+            encuesta_facil_id:
+                type: string
+            periodo_id:
+                type: integer
 
     NotificacionResource:
         type: object

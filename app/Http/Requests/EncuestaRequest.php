@@ -23,13 +23,18 @@ class EncuestaRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'nombre' => ['required', 'string', 'max:255'],
             'descripcion' => ['required', 'string', 'max:255'],
             'fecha_inicio' => ['required', 'date', 'date_format:Y-m-d'],
             'fecha_fin' => ['required', 'date', 'date_format:Y-m-d'],
             'encuesta_facil_id' => ['required', 'string'],
-            'periodo_id' => ['required', 'exists:periodos,id'],
         ];
+
+        if ($this->method == 'POST') {
+            $rules['periodo_id'] = 'required|exists:periodos,id';
+        }
+
+        return $rules;
     }
 }
