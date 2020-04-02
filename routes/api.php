@@ -182,3 +182,9 @@ Route::get('/encuesta-plantillas/{id}/preguntas', 'EncuestaPlantillas\Preguntas\
 Route::get('/encuestas', 'Encuestas\IndexController');
 Route::post('/encuestas', 'Encuestas\CreateProcessController');
 Route::get('/encuestas/{id}', 'Encuestas\ShowController');
+
+Route::get('/periodos', 'Periodos\IndexController');
+Route::post('/periodos', 'Periodos\CreateProcessController');
+Route::get('/periodos/{id}', 'Periodos\ShowController');
+Route::put('/periodos/{id}', 'Periodos\UpdateProcessController');
+Route::delete('/periodos/{id}', 'Periodos\DeleteProcessController');

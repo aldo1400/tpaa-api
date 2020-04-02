@@ -32,4 +32,9 @@ class Periodo extends Model
     {
         return $this->hasMany('App\Encuesta');
     }
+
+    public function encuestasRelacionadas()
+    {
+        return $this->encuestas->count();
+    }
 }

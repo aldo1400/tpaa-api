@@ -34,6 +34,8 @@ tags:
       description: Everything about cursos
     - name: estado civiles
       description: Everything about niveles estado civiles
+    - name: encuesta plantillas
+      description: Everything about encuesta plantillas
     - name: movilidades
       description: Everything about movilidades
     - name: niveles educacion
@@ -56,6 +58,8 @@ tags:
       description: Everything about tipo cursos
     - name: tipo movilidades
       description: Everything about tipo de movilidades
+    - name: periodos
+      description: Everything about periodos
 
 schemes:
     - https
@@ -1511,6 +1515,28 @@ paths:
                     description: unauthenticated
 
     # ---------------------
+    #   Encuesta plantillas
+    # ---------------------
+    "/encuesta-plantillas":
+        get:
+            tags:
+                - encuesta plantillas
+            summary: Obtener todos las encuestas plantillas
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Retrieved data succesfully
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/EncuestaPlantillaResource"
+                401:
+                    description: unauthenticated
+
+    # ---------------------
     #   Users
     # ---------------------
 
@@ -2245,6 +2271,123 @@ paths:
                             $ref: "#/definitions/TipoMovilidadResource"
                 401:
                     description: unauthenticated
+
+    # ---------------------
+    #   Periodos
+    # ---------------------
+    "/periodos":
+        get:
+            tags:
+                - periodos
+            summary: Obtener todos los periodos
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Retrieved data succesfully
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/PeriodoResource"
+                401:
+                    description: unauthenticated
+
+        post:
+            tags:
+                - periodos
+            summary: Añadir un periodo
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/PeriodoCreateRequest"
+            responses:
+                201:
+                    description: Data was inserted succesfully
+                400:
+                    description: Invalid input, object invalid
+                401:
+                    description: Unauthenticated
+                403:
+                    description: Forbidden access
+
+    "/periodos/{id}":
+        get:
+            tags:
+                - periodos
+            summary: Obtener un periodo
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Data retrieved successfully
+                    schema:
+                        $ref: "#/definitions/PeriodoResource"
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
+        put:
+            tags:
+                - periodos
+            summary: Editar un periodo
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                  description: Periodo ID
+                - in: body
+                  name: body
+                  required: true
+                  schema:
+                      $ref: "#/definitions/PeriodoUpdateRequest"
+            responses:
+                200:
+                    description: Data modified succesfully
+                401:
+                    description: Unauthenticated
+                403:
+                    description: Forbidden Access
+
+        delete:
+            tags:
+                - periodos
+            summary: Eliminar periodo
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Periodo deleted
+                404:
+                    description: Route not found
+                409:
+                    description: Departure has children
 
     "/user":
         get:
@@ -3345,6 +3488,26 @@ definitions:
                 type: string
                 enum: [0, 1]
 
+    EncuestaPlantillaResource:
+        type: object
+        properties:
+            id:
+                type: integer
+            nombre:
+                type: string
+            evaluacion:
+                type: string
+                enum: [TOP, DOWN]
+            descripcion:
+                type: string
+            tipo_puntaje:
+                type: string
+                enum: [1, 2]
+            tiene_item:
+                type: integer
+            numero_preguntas:
+                type: integer
+
     LoginRequest:
         type: object
         properties:
@@ -3514,12 +3677,63 @@ definitions:
         type: object
         properties:
             id:
-                type: string
+                type: integer
             tipo:
                 type: string
             estado:
                 type: string
                 enum: [0, 1]
+
+    PeriodoResource:
+        type: object
+        properties:
+            id:
+                type: integer
+            nombre:
+                type: string
+            year:
+                type: string
+                example: 2019
+            detalle:
+                type: string
+            descripcion:
+                type: string
+            nombre_completo:
+                type: string
+            encuestaPlantilla:
+                $ref: "#/definitions/EncuestaPlantillaResource"
+            encuestas:
+                type: boolean
+
+    PeriodoCreateRequest:
+        type: object
+        properties:
+            nombre:
+                type: string
+            year:
+                type: string
+                example: 2019
+            detalle:
+                type: string
+            descripcion:
+                type: string
+            encuesta_plantilla_id:
+                type: integer
+
+    PeriodoUpdateRequest:
+        type: object
+        properties:
+            nombre:
+                type: string
+            year:
+                type: string
+                example: 2019
+            detalle:
+                type: string
+            descripcion:
+                type: string
+            encuesta_plantilla_id:
+                type: integer
 
     AdministradorCreateRequest:
         type: object
