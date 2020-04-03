@@ -21,7 +21,6 @@ class PeriodoResource extends JsonResource
             'year' => $this->year,
             'detalle' => $this->detalle,
             'descripcion' => $this->descripcion,
-            'nombre_completo' => $this->nombre.'-'.$this->year.'-'.$this->detalle,
             'encuestaPlantilla' => new EncuestaPlantillaResource($this->encuestaPlantilla),
             'encuestas' => $this->encuestasRelacionadas() ? true : false,
         ];

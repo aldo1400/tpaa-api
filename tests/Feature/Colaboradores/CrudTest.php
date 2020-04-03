@@ -5,6 +5,7 @@ namespace Tests\Feature\Colaboradores;
 use App\Tag;
 use App\Cargo;
 use App\Curso;
+use App\Encuesta;
 use App\Movilidad;
 use Carbon\Carbon;
 use Tests\TestCase;
@@ -1682,5 +1683,82 @@ class CrudTest extends TestCase
         // $response->assertStatus(200);
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data');
+    }
+
+    public function testObtenerTodosLasEncuestasRelacionadosConUnColaborador()
+    {
+        $encuestas = factory(Encuesta::class, 3)->create();
+
+        $encuestasId = $encuestas->pluck('id')->toArray();
+
+        $datos = [];
+        $url = 'URL PROVISIONAL';
+
+        foreach ($encuestasId as $encuesta) {
+            $datos[$encuesta] = ['estado' => '4', 'url' => $url];
+        }
+
+        $colaboradores = factory(Colaborador::class, 3)
+                        ->create()
+                        ->each(function ($colaborador) use ($datos) {
+                            $colaborador->encuestas()
+                                        ->sync($datos);
+                        });
+
+        $url = '/api/colaboradores/'.$colaboradores[0]->id.'/encuestas';
+
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+                ->assertJsonCount('3', 'data')
+                ->assertJson([
+                    'data' => [
+                        '0' => [
+                            'id' => $encuestas[0]->id,
+                            'nombre' => $encuestas[0]->nombre,
+                            'descripcion' => $encuestas[0]->descripcion,
+                            'fecha_inicio' => $encuestas[0]->fecha_inicio->format('Y-m-d'),
+                            'fecha_fin' => $encuestas[0]->fecha_fin->format('Y-m-d'),
+                            'encuesta_facil_id' => $encuestas[0]->encuesta_facil_id,
+                            'periodo' => $encuestas[0]->periodo->only([
+                                'id',
+                                'nombre',
+                                'year',
+                                'detalle',
+                                'descripcion',
+                            ]),
+                        ],
+                        '1' => [
+                            'id' => $encuestas[1]->id,
+                            'nombre' => $encuestas[1]->nombre,
+                            'descripcion' => $encuestas[1]->descripcion,
+                            'fecha_inicio' => $encuestas[1]->fecha_inicio->format('Y-m-d'),
+                            'fecha_fin' => $encuestas[1]->fecha_fin->format('Y-m-d'),
+                            'encuesta_facil_id' => $encuestas[1]->encuesta_facil_id,
+                            'periodo' => $encuestas[1]->periodo->only([
+                                'id',
+                                'nombre',
+                                'year',
+                                'detalle',
+                                'descripcion',
+                            ]),
+                        ],
+                        '2' => [
+                            'id' => $encuestas[2]->id,
+                            'nombre' => $encuestas[2]->nombre,
+                            'descripcion' => $encuestas[2]->descripcion,
+                            'fecha_inicio' => $encuestas[2]->fecha_inicio->format('Y-m-d'),
+                            'fecha_fin' => $encuestas[2]->fecha_fin->format('Y-m-d'),
+                            'encuesta_facil_id' => $encuestas[2]->encuesta_facil_id,
+                            'periodo' => $encuestas[2]->periodo->only([
+                                'id',
+                                'nombre',
+                                'year',
+                                'detalle',
+                                'descripcion',
+                            ]),
+                        ],
+                    ],
+                ]);
     }
 }

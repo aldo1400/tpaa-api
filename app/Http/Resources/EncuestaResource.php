@@ -23,6 +23,7 @@ class EncuestaResource extends JsonResource
             'fecha_fin' => $this->fecha_fin->format('Y-m-d'),
             'encuesta_facil_id' => $this->encuesta_facil_id,
             'periodo' => new PeriodoResource($this->periodo),
+            'colaboradoresAsignados' => $this->colaboradores ? true : false,
         ];
     }
 }

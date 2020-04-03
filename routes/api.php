@@ -139,6 +139,8 @@ Route::delete('/niveles-jerarquico/{id}', 'NivelesJerarquico\DeleteProcessContro
 
 Route::get('/colaboradores/{id}/tags', 'Colaboradores\Tags\IndexController');
 Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Comentarios\IndexController');
+Route::get('/colaboradores/{id}/encuestas', 'Colaboradores\Encuestas\IndexController');
+
 // Route::get('/colaboradores/{id}/comentarios', 'Colaboradores\Tags\IndexController');
 
 Route::get('/colaboradores/{id}/consultas', 'Colaboradores\Consultas\IndexController');
@@ -184,6 +186,8 @@ Route::post('/encuestas', 'Encuestas\CreateProcessController');
 Route::get('/encuestas/{id}', 'Encuestas\ShowController');
 Route::patch('/encuestas/{id}', 'Encuestas\UpdateProcessController');
 Route::post('/encuestas/{id}/colaboradores', 'Encuestas\Colaboradores\CreateProcessController');
+Route::get('/encuestas/{id}/colaboradores', 'Encuestas\Colaboradores\IndexController');
+Route::delete('/encuestas/{id}/colaboradores', 'Encuestas\Colaboradores\DeleteProcessController');
 
 Route::get('/periodos', 'Periodos\IndexController');
 Route::post('/periodos', 'Periodos\CreateProcessController');

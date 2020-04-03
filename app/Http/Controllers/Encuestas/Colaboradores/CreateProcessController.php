@@ -11,13 +11,15 @@ class CreateProcessController extends Controller
     public function __invoke(Request $request, $id)
     {
         $encuesta = Encuesta::findOrFail($id);
-        // $request->users =
         $datos = [];
-        // dd($request->colaboradores);
+
         foreach ($request->colaboradores as $colaborador) {
-            $datos[$colaborador] = ['valory' => 'vasdasalue'];
+            $url = $encuesta->generarUrl($colaborador);
+            $datos[$colaborador] = ['estado' => '4', 'url' => $url];
         }
-        dd($datos);
-        // $colaborador->tags()->sync($request->);
+
+        $encuesta->colaboradores()->sync($datos);
+
+        return response()->json();
     }
 }

@@ -48,4 +48,13 @@ class Encuesta extends Model
                 ->withPivot('estado', 'url')
                 ->withTimestamps();
     }
+
+    public function generarUrl($colaboradorId)
+    {
+        $colaborador = Colaborador::findOrFail($colaboradorId);
+
+        $url = 'http://www.encuestafacil.com/RespWeb/Qn.aspx?EID='.$this->encuesta_facil_id.'&ParamID='.$colaborador->rut;
+
+        return $url;
+    }
 }
