@@ -172,6 +172,16 @@ class Colaborador extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Comentario', 'colaborador_id');
     }
 
+    /**
+     * The encuestas that belong to the colaborador.
+     */
+    public function encuestas(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Encuesta')
+                ->withPivot('estado', 'url')
+                ->withTimestamps();
+    }
+
     public function setImagenAttribute($imagen)
     {
         $this->attributes['imagen'] = $imagen ? is_string($imagen) ? base64_encode($imagen) : Image::convertImage($imagen) : '';

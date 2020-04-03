@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Encuesta extends Model
 {
@@ -36,5 +37,15 @@ class Encuesta extends Model
     public function periodo(): BelongsTo
     {
         return $this->belongsTo('App\Periodo');
+    }
+
+    /**
+     * The colaboradores that belong to the encuesta.
+     */
+    public function colaboradores(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Colaborador')
+                ->withPivot('estado', 'url')
+                ->withTimestamps();
     }
 }

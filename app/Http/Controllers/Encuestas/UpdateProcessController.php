@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Encuestas;
 
+use App\Encuesta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EncuestaRequest;
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Periodos;
 
 use App\Periodo;
+use App\Encuesta;
 use Tests\TestCase;
 use App\EncuestaPlantilla;
 
@@ -63,6 +64,49 @@ class CrudTest extends TestCase
                                                 'tiene_item',
                                                 'numero_preguntas',
                         ]),
+                ],
+            ]);
+    }
+
+    public function testObtenerEncuestasDeUnPeriodo()
+    {
+        $periodos = factory(Periodo::class, 5)
+                    ->create()
+                    ->each(function ($periodo) {
+                        $periodo->encuestas()->saveMany(factory(Encuesta::class, 3)->make());
+                    });
+
+        $url = '/api/periodos/'.$periodos[0]->id.'/encuestas';
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(3, 'data')
+            ->assertJson([
+                'data' => [
+                    '0' => [
+                        'id' => $periodos[0]->encuestas[0]->id,
+                        'nombre' => $periodos[0]->encuestas[0]->nombre,
+                        'descripcion' => $periodos[0]->encuestas[0]->descripcion,
+                        'fecha_inicio' => $periodos[0]->encuestas[0]->fecha_inicio->format('Y-m-d'),
+                        'fecha_fin' => $periodos[0]->encuestas[0]->fecha_fin->format('Y-m-d'),
+                        'encuesta_facil_id' => $periodos[0]->encuestas[0]->encuesta_facil_id,
+                    ],
+                    '1' => [
+                        'id' => $periodos[0]->encuestas[1]->id,
+                        'nombre' => $periodos[0]->encuestas[1]->nombre,
+                        'descripcion' => $periodos[0]->encuestas[1]->descripcion,
+                        'fecha_inicio' => $periodos[0]->encuestas[1]->fecha_inicio->format('Y-m-d'),
+                        'fecha_fin' => $periodos[0]->encuestas[1]->fecha_fin->format('Y-m-d'),
+                        'encuesta_facil_id' => $periodos[0]->encuestas[1]->encuesta_facil_id,
+                    ],
+                    '2' => [
+                        'id' => $periodos[0]->encuestas[2]->id,
+                        'nombre' => $periodos[0]->encuestas[2]->nombre,
+                        'descripcion' => $periodos[0]->encuestas[2]->descripcion,
+                        'fecha_inicio' => $periodos[0]->encuestas[2]->fecha_inicio->format('Y-m-d'),
+                        'fecha_fin' => $periodos[0]->encuestas[2]->fecha_fin->format('Y-m-d'),
+                        'encuesta_facil_id' => $periodos[0]->encuestas[2]->encuesta_facil_id,
+                    ],
                 ],
             ]);
     }
