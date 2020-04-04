@@ -10,6 +10,11 @@ class CreateProcessController extends Controller
 {
     public function __invoke(Request $request, $id)
     {
+        $this->validate($request, [
+            'colaboradores' => 'required|array',
+            'colaboradores.*' => 'required|distinct|exists:colaboradores,id',
+        ]);
+
         $encuesta = Encuesta::findOrFail($id);
         $datos = [];
 

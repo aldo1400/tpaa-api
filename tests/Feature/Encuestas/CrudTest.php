@@ -156,6 +156,26 @@ class CrudTest extends TestCase
         ]);
     }
 
+    public function testValidarAsignarColaboradoresDeFormaMasivaAUnaEncuesta()
+    {
+        $encuestas = factory(Encuesta::class, 5)->create();
+
+        $url = '/api/encuestas/'.$encuestas[0]->id.'/colaboradores';
+
+        $parameters = [
+            'colaboradores' => [1, 2, 3],
+        ];
+
+        $response = $this->json('POST', $url, $parameters);
+
+        $response->assertStatus(422)
+        ->assertJsonValidationErrors([
+            'colaboradores.0',
+            'colaboradores.1',
+            'colaboradores.2',
+        ]);
+    }
+
     public function testDeasignarColaboradoresDeFormaMasivaAUnaEncuesta()
     {
         $encuestas = factory(Encuesta::class, 5)->create();
@@ -221,6 +241,43 @@ class CrudTest extends TestCase
             'colaborador_id' => $colaboradores[2]->id,
             'encuesta_id' => $encuestas[2]->id,
             'estado' => '4',
+        ]);
+    }
+
+    public function testValidarDeasignarColaboradoresDeFormaMasivaAUnaEncuesta()
+    {
+        $encuestas = factory(Encuesta::class, 5)->create();
+
+        $encuestasId = $encuestas->pluck('id')->toArray();
+
+        $datos = [];
+        $url = 'URL PROVISIONAL';
+
+        foreach ($encuestasId as $encuesta) {
+            $datos[$encuesta] = ['estado' => '4', 'url' => $url];
+        }
+
+        $colaboradores = factory(Colaborador::class, 4)
+                        ->create()
+                        ->each(function ($colaborador) use ($datos) {
+                            $colaborador->encuestas()
+                                        ->sync($datos);
+                        });
+
+        $url = '/api/encuestas/'.$encuestas[0]->id.'/colaboradores';
+
+        $parameters = [
+            'colaboradores' => [1, 2, 3],
+        ];
+
+        $response = $this->json('DELETE', $url, $parameters);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(422)
+        ->assertJsonValidationErrors([
+            'colaboradores.0',
+            'colaboradores.1',
+            'colaboradores.2',
         ]);
     }
 

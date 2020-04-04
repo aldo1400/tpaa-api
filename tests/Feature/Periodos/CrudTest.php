@@ -182,6 +182,35 @@ class CrudTest extends TestCase
         ]);
     }
 
+    public function testValidarNoSePuedeEditarPeriodoSiHayEncuestasRelacionadas()
+    {
+        $encuestaPlantilla = factory(EncuestaPlantilla::class)->create();
+        $encuestaPlantillaNueva = factory(EncuestaPlantilla::class)->create();
+
+        $periodo = factory(Periodo::class)->create([
+            'encuesta_plantilla_id' => $encuestaPlantilla->id,
+        ]);
+
+        $encuesta = factory(Encuesta::class)->create([
+            'periodo_id' => $periodo->id,
+        ]);
+
+        $parameters = [
+                'nombre' => 'Encuesta plantilla #3',
+                'year' => 2020,
+                'detalle' => 'Semestre II',
+                'descripcion' => 'Una muy corta y breve descripcion',
+                'encuesta_plantilla_id' => $encuestaPlantillaNueva->id,
+        ];
+
+        $url = '/api/periodos/'.$periodo->id;
+
+        $response = $this->json('PUT', $url, $parameters);
+
+        $response->assertStatus(409)
+            ->assertSeeText(json_encode('El periodo tiene encuestas relacionadas.'));
+    }
+
     public function testEliminarPeriodo()
     {
         $periodos = factory(Periodo::class, 5)->create();
@@ -208,5 +237,26 @@ class CrudTest extends TestCase
                     '3' => ['id' => $periodos[4]->id],
                 ],
             ]);
+    }
+
+    public function testValidarNoSePuedeEliminarPeriodoSiHayEncuestasRelacionadas()
+    {
+        $encuestaPlantilla = factory(EncuestaPlantilla::class)->create();
+        $encuestaPlantillaNueva = factory(EncuestaPlantilla::class)->create();
+
+        $periodo = factory(Periodo::class)->create([
+            'encuesta_plantilla_id' => $encuestaPlantilla->id,
+        ]);
+
+        $encuesta = factory(Encuesta::class)->create([
+            'periodo_id' => $periodo->id,
+        ]);
+
+        $url = '/api/periodos/'.$periodo->id;
+
+        $response = $this->json('DELETE', $url);
+
+        $response->assertStatus(409)
+            ->assertSeeText(json_encode('El periodo tiene encuestas relacionadas.'));
     }
 }
