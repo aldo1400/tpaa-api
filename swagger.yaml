@@ -1827,6 +1827,33 @@ paths:
                 401:
                     description: Unauthenticated
 
+    "/encuestas/{id}/colaboradores-disponibles":
+        get:
+            tags:
+                - encuestas
+            summary: Obtener los colaboradores disponables para asignar
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                  description: Encuesta ID
+            responses:
+                200:
+                    description: Data retrieved successfully
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/ColaboradorShortResource"
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
     "/encuestas/{id}/colaboradores":
         get:
             tags:
@@ -3974,6 +4001,9 @@ definitions:
                 $ref: "#/definitions/EncuestaPlantillaResource"
             encuestas:
                 type: boolean
+            publicado:
+                type: string
+                enum: [0, 1]
 
     PeriodoCreateRequest:
         type: object
@@ -3989,6 +4019,9 @@ definitions:
                 type: string
             encuesta_plantilla_id:
                 type: integer
+            publicado:
+                type: string
+                enum: [0, 1]
 
     PeriodoUpdateRequest:
         type: object
@@ -4004,6 +4037,9 @@ definitions:
                 type: string
             encuesta_plantilla_id:
                 type: integer
+            publicado:
+                type: string
+                enum: [0, 1]
 
     AdministradorCreateRequest:
         type: object

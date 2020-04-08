@@ -23,6 +23,7 @@ class PeriodoResource extends JsonResource
             'descripcion' => $this->descripcion,
             'encuestaPlantilla' => new EncuestaPlantillaResource($this->encuestaPlantilla),
             'encuestas' => $this->encuestasRelacionadas() ? true : false,
+            'publicado' => $this->publicado,
         ];
     }
 }

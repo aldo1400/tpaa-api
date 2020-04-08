@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->command('colaboradores:vencimiento')
             ->everyMinute();
+        // $schedule->command('encuestas:estado')
+        //     ->everyMinute();
         // ->dailyAt('2:00');
     }
 

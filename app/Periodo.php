@@ -18,6 +18,7 @@ class Periodo extends Model
         'year',
         'detalle',
         'descripcion',
+        'publicado',
     ];
 
     /**

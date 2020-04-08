@@ -13,5 +13,8 @@ $factory->define(Periodo::class, function (Faker $faker) {
         'encuesta_plantilla_id' => function () {
             return factory(EncuestaPlantilla::class)->create()->id;
         },
+        'publicado' => $faker->randomElement([
+            0, 1,
+        ]),
     ];
 });

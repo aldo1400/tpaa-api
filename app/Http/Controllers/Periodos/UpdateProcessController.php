@@ -12,12 +12,16 @@ class UpdateProcessController extends Controller
     {
         $periodo = Periodo::findOrFail($id);
 
-        if ($periodo->encuestasRelacionadas()) {
-            return response()->json(['message' => 'El periodo tiene encuestas relacionadas.'], 409);
-        }
+        // if ($periodo->encuestasRelacionadas()) {
+        //     return response()->json(['message' => 'El periodo tiene encuestas relacionadas.'], 409);
+        // }
 
         $periodo->fill($request->validated());
-        $periodo->encuestaPlantilla()->associate($request->encuesta_plantilla_id);
+
+        if (!$periodo->encuestasRelacionadas()) {
+            $periodo->encuestaPlantilla()->associate($request->encuesta_plantilla_id);
+        }
+
         $periodo->save();
 
         return response()->json();

@@ -61,6 +61,9 @@ Route::get('/cursos/{id}/colaboradores-disponibles', 'Cursos\Colaboradores\GetAv
 
 Route::get('/colaboradores/import-data', 'Colaboradores\ImportDataController');
 
+Route::get('/preguntas/import', 'Preguntas\ImportDataController');
+Route::get('/encuesta-plantillas/import', 'EncuestaPlantillas\ImportDataController');
+
 // Areas
 Route::get('/areas', 'Areas\IndexController');
 Route::get('/areas/import', 'Areas\ImportDataController');
@@ -185,6 +188,9 @@ Route::get('/encuestas', 'Encuestas\IndexController');
 Route::post('/encuestas', 'Encuestas\CreateProcessController');
 Route::get('/encuestas/{id}', 'Encuestas\ShowController');
 Route::patch('/encuestas/{id}', 'Encuestas\UpdateProcessController');
+
+Route::get('/encuestas/{id}/colaboradores-disponibles', 'Encuestas\Colaboradores\GetAvailableController');
+
 Route::post('/encuestas/{id}/colaboradores', 'Encuestas\Colaboradores\CreateProcessController');
 Route::get('/encuestas/{id}/colaboradores', 'Encuestas\Colaboradores\IndexController');
 Route::delete('/encuestas/{id}/colaboradores', 'Encuestas\Colaboradores\DeleteProcessController');

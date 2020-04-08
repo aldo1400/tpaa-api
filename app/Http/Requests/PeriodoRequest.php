@@ -29,6 +29,7 @@ class PeriodoRequest extends FormRequest
             'detalle' => ['nullable', 'string'],
             'descripcion' => ['required', 'string'],
             'encuesta_plantilla_id' => ['required', 'exists:encuesta_plantillas,id'],
+            'publicado' => ['required', 'boolean'],
         ];
     }
 }

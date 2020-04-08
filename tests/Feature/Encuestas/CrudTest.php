@@ -372,4 +372,53 @@ class CrudTest extends TestCase
             'periodo_id' => $encuesta->periodo_id,
         ]);
     }
+
+    public function testObtenerColaboradoresDisponiblesPorEncuesta()
+    {
+        $colaboradores = factory(Colaborador::class, 3)
+                        ->create([
+                            'estado' => 1,
+                        ]);
+
+        $encuestas = factory(Encuesta::class, 2)
+                    ->create();
+
+        $encuestasId = $encuestas->pluck('id')->toArray();
+
+        $datos = [];
+        $url = 'URL PROVISIONAL';
+
+        foreach ($encuestasId as $encuesta) {
+            $datos[$encuesta] = ['estado' => '4', 'url' => $url];
+        }
+
+        $colaboradores[0]->encuestas()->sync($datos);
+
+        $url = '/api/encuestas/'.$encuestas[0]->id.'/colaboradores-disponibles';
+
+        $response = $this->json('GET', $url);
+
+        $response->assertStatus(200)
+                ->assertJsonCount('2', 'data')
+                ->assertJson([
+                    'data' => [
+                        '0' => [
+                            'id' => $colaboradores[1]->id,
+                            'rut' => $colaboradores[1]->rut,
+                            'primer_nombre' => $colaboradores[1]->primer_nombre,
+                            'segundo_nombre' => $colaboradores[1]->segundo_nombre,
+                            'apellido_paterno' => $colaboradores[1]->apellido_paterno,
+                            'apellido_materno' => $colaboradores[1]->apellido_materno,
+                        ],
+                        '1' => [
+                            'id' => $colaboradores[2]->id,
+                            'rut' => $colaboradores[2]->rut,
+                            'primer_nombre' => $colaboradores[2]->primer_nombre,
+                            'segundo_nombre' => $colaboradores[2]->segundo_nombre,
+                            'apellido_paterno' => $colaboradores[2]->apellido_paterno,
+                            'apellido_materno' => $colaboradores[2]->apellido_materno,
+                        ],
+                    ],
+                ]);
+    }
 }
