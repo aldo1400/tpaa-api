@@ -51,16 +51,39 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
         // dd($this->periodo);
         //    dd($rows->toArray());
 
+        // if (!$rows) {
+        //     throw ValidationException::withMessages(['message' => 'El excel esta vacio.']);
+        // }
         // dd($rows);
         foreach ($rows as $row) {
+            $keys = $row->keys();
+
+            if ($keys->count() != 17) {
+                throw ValidationException::withMessages(['message' => 'La cantidad de columnas es menor a la esperada.']);
+            }
+
+            if ($keys[1] != 'encuesta_facil_id') {
+                throw ValidationException::withMessages(['message' => 'No se encuentra la columna encuesta fácil id']);
+            }
+
+            if ($keys[2] != 'rut_evaluador') {
+                throw ValidationException::withMessages(['message' => 'No se encuentra la columna rut evaluador']);
+            }
+
+            if ($keys[3] != 'tipo') {
+                throw ValidationException::withMessages(['message' => 'No se encuentra la columna tipo']);
+            }
+
+            if ($keys[4] != 'nombre_tipo') {
+                throw ValidationException::withMessages(['message' => 'No se encuentra la columna nombre tipo']);
+            }
+
             $customMessages = [
                 'required' => 'El campo :attribute es obligatorio : '.$row['rut_evaluador'],
                 'exists' => 'El campo :attribute es inválido : '.$row['rut_evaluador'],
             ];
 
             Validator::make($row->toArray(), $this->rules2($row), $customMessages)->validate();
-
-            $keys = $row->keys();
 
             // dd($row['rut_evaluador']);
             // $validator = Validator::make($row->toArray(), $this->rules());
