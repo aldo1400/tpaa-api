@@ -136,6 +136,7 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
                 $detalleRespuesta->tipo_area_id = $cargo->area->tipoArea->id;
 
                 $areas = $cargo->area->obtenerAreasRelacionadas();
+                $areas->push($cargo->area);
 
                 foreach ($areas as $area) {
                     if ($area->tipoArea->tipo_nombre == 'Gerencia') {
