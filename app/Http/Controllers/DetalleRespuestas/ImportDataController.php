@@ -13,13 +13,6 @@ class ImportDataController extends Controller
 {
     public function __invoke($id, Request $request)
     {
-        $nombre = 'ENCUESTA';
-
-        $ruta = $request->file->storeAs(
-            'public/detalle_respuestas',
-            $nombre.'.'.$request->file->extension()
-        );
-
         // dd($ruta);
 
         $periodo = Periodo::findOrFail($id);
@@ -29,16 +22,27 @@ class ImportDataController extends Controller
         switch ($encuestaPlantilla->id) {
             case 1:
 
+                if ($request->file->getClientOriginalName() != 'plantilla_cliente_interno.xlsx') {
+                    return response()->json(['message' => 'El nombre del archivo es incorrecto.'], 409);
+                }
+
+                $ruta = $request->file->storeAs(
+                    'public/detalle_respuestas',
+                    'plantilla_cliente_interno.xlsx'
+                );
+
+                // dd($ruta);
                 // try {
                     // $import->import('import-users.xlsx');
-                    Excel::import(new ClienteInternoImport($periodo), $ruta);
-
+                    $import = new ClienteInternoImport($periodo);
+                    Excel::import($import, $ruta);
+                    // dd($import->data);
                     // Excel::import(new CargasFamiliaresImport(), 'public/CargasFamiliares.xlsx');
                 // } catch (ValidationException $e) {
                 //     return response()->json(['success' => 'errorList', 'message' => $e->errors()]);
                 // }
 
-                    return response()->json();
+                    return response()->json(['data' => $import->data], 200);
                     // return redirect('/')->with('success', 'All good!');
                 break;
 

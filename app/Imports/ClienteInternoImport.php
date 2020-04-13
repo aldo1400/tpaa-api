@@ -24,6 +24,7 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
 {
     use Importable;
     protected $periodo;
+    public $data;
 
     public function __construct($periodo)
     {
@@ -48,6 +49,7 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
      */
     public function collection(Collection $rows)
     {
+        $this->data = $rows;
         // dd($this->periodo);
         //    dd($rows->toArray());
 
