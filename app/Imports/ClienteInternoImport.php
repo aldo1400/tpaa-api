@@ -1,0 +1,363 @@
+<?php
+
+namespace App\Imports;
+
+use App\Area;
+use App\Cargo;
+use App\Encuesta;
+use App\Pregunta;
+use App\Respuesta;
+use App\Colaborador;
+use App\DetalleRespuesta;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
+
+HeadingRowFormatter::default('none');
+
+class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingRow
+{
+    use Importable;
+    protected $periodo;
+
+    public function __construct($periodo)
+    {
+        $this->periodo = $periodo;
+    }
+
+    // /**
+    //  * @param array $row
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Model|null
+    //  */
+    // public function model(array $row)
+    // {
+    //     return new DetalleRespuesta([
+    //     ]);
+    // }
+
+    /**
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function collection(Collection $rows)
+    {
+        // dd($this->periodo);
+        //    dd($rows->toArray());
+
+        // dd($rows);
+        foreach ($rows as $row) {
+            $customMessages = [
+                'required' => 'El campo :attribute es obligatorio : '.$row['rut_evaluador'],
+                'exists' => 'El campo :attribute es inválido : '.$row['rut_evaluador'],
+            ];
+
+            Validator::make($row->toArray(), $this->rules2($row), $customMessages)->validate();
+
+            $keys = $row->keys();
+
+            // dd($row['rut_evaluador']);
+            // $validator = Validator::make($row->toArray(), $this->rules());
+
+            // foreach ($validator->errors()->messages() as $messages) {
+            //     foreach ($messages as $error) {
+            //         // accumulating errors:
+            //         // $this->errors[] = $error;
+            //         throw new \Maatwebsite\Excel\Validators\ValidationException($validator->errors());
+            //     }
+            // }
+
+            $encuesta = Encuesta::where('encuesta_facil_id', $row['encuesta_facil_id'])
+                        ->first();
+            $colaborador = Colaborador::where('rut', $row['rut_evaluador'])
+                            ->first();
+
+            $cargo = $colaborador->cargoActual();
+
+            // dd($cargo);
+            $areas = $cargo->area->obtenerAreasRelacionadas();
+
+            $detalleRespuesta = DetalleRespuesta::make([
+                'evaluador_id' => $colaborador->id,
+                'cargo_evaluador_id' => $cargo->id,
+                'gerencia_evaluador_id',
+                'subgerencia_evaluador_id',
+                'area_evaluador_id',
+                'subarea_evaluador_id',
+                'evaluado_id',
+                'cargo_evaluado_id',
+                'gerencia_evaluado_id',
+                'subgerencia_evaluado_id',
+                'area_evaluado_id',
+                'subarea_evaluado_id',
+                'cargo_polifuncionalidad_id',
+                'horas_turno_polifuncionalidad',
+                'fecha' => now()->format('Y-m-d'),
+                'encuesta_id' => $encuesta->id,
+                'cargo_id',
+                'area_id',
+                'tipo_area_id',
+            ]);
+
+            foreach ($areas as $area) {
+                // if ($area->tipoArea->tipo_nombre = 'Gerencia General') {
+                //     $detalleRespuesta->gerecia
+                // }
+
+                if ($area->tipoArea->tipo_nombre == 'Gerencia') {
+                    $detalleRespuesta->gerencia_evaluador_id = $area->id;
+                }
+
+                if ($area->tipoArea->tipo_nombre == 'Subgerencia') {
+                    $detalleRespuesta->subgerencia_evaluador_id = $area->id;
+                }
+
+                if ($area->tipoArea->tipo_nombre == 'Area') {
+                    $detalleRespuesta->area_evaluador_id = $area->id;
+                }
+
+                if ($area->tipoArea->tipo_nombre == 'Subárea') {
+                    $detalleRespuesta->subarea_evaluador_id = $area->id;
+                }
+            }
+
+            // evaluaddor
+            if ($row['tipo'] == 'cargo') {
+                $cargo = Cargo::where('nombre', $row['nombre_tipo'])
+                        ->first();
+                // dd($cargo);
+                $detalleRespuesta->cargo_id = $cargo->id;
+                $detalleRespuesta->tipo_area_id = $cargo->area->tipoArea->id;
+
+                $areas = $cargo->area->obtenerAreasRelacionadas();
+
+                foreach ($areas as $area) {
+                    if ($area->tipoArea->tipo_nombre == 'Gerencia') {
+                        $detalleRespuesta->gerencia_evaluado_id = $area->id;
+                    }
+
+                    if ($area->tipoArea->tipo_nombre == 'Subgerencia') {
+                        $detalleRespuesta->subgerencia_evaluado_id = $area->id;
+                    }
+
+                    if ($area->tipoArea->tipo_nombre == 'Area') {
+                        $detalleRespuesta->area_evaluado_id = $area->id;
+                    }
+
+                    if ($area->tipoArea->tipo_nombre == 'Subárea') {
+                        $detalleRespuesta->subarea_evaluado_id = $area->id;
+                    }
+                }
+            }
+
+            if ($row['tipo'] == 'area') {
+                $area = Area::where('nombre', $row['nombre_tipo'])
+                        ->first();
+
+                $detalleRespuesta->area_id = $area->id;
+                $detalleRespuesta->tipo_area_id = $area->tipoArea->id;
+
+                $areas = $area->obtenerAreasRelacionadas();
+                $areas->push($area);
+                // dd($areas->count());
+                foreach ($areas as $area) {
+                    if ($area->tipoArea->tipo_nombre == 'Gerencia') {
+                        $detalleRespuesta->gerencia_evaluado_id = $area->id;
+                    }
+
+                    if ($area->tipoArea->tipo_nombre == 'Subgerencia') {
+                        $detalleRespuesta->subgerencia_evaluado_id = $area->id;
+                    }
+
+                    if ($area->tipoArea->tipo_nombre == 'Area') {
+                        $detalleRespuesta->area_evaluado_id = $area->id;
+                    }
+
+                    if ($area->tipoArea->tipo_nombre == 'Subárea') {
+                        $detalleRespuesta->subarea_evaluado_id = $area->id;
+                    }
+                }
+            }
+
+            // Respuesta::make();
+            // dd($row);
+            $detalleRespuesta->save();
+
+            //preguntas de forma masiva
+
+            // dd($keys->count());
+
+            for ($i = 5; $i < $keys->count(); ++$i) {
+                $pregunta = Pregunta::where('pregunta', $keys[$i])
+                            ->first();
+
+                // dd($pregunta);
+                if (!$pregunta) {
+                    throw ValidationException::withMessages(['pregunta' => 'No se encuentra la pregunta.']);
+                }
+
+                $valor = $row[$keys[$i]];
+
+                // dd($valor);
+                $respuesta = Respuesta::make([
+                    'resultado' => $valor,
+                    'valor_respuesta' => $pregunta->tipo == 'alternativas' ? $this->obtenerValorRespuesta($pregunta, $valor) : null,
+                    'detalle_respuesta_id' => $detalleRespuesta->id,
+                    'pregunta_id' => $pregunta->id,
+                ]);
+
+                // dd($respuesta);
+                $respuesta->save();
+            }
+            // dd($row[8]);
+
+            // Respuesta::make([
+//     'resultado'=>,
+//     'valor_respuesta'=>,
+//     'detalle_respuesta_id',
+//     'pregunta_id'
+// ])
+//             'resultado',
+//             'valor_respu
+//             esta',
+//             'detalle_respuesta_id',
+//             'pregunta_id',
+
+            // $detalleRespuesta = DetalleRespuesta::make([
+            //     'evaluador_id' => $colaborador->id,
+            //     'cargo_evaluador_id',
+            //     'gerencia_evaluador_id',
+            //     'subgerencia_evaluador_id',
+            //     'area_evaluador_id',
+            //     'subarea_evaluador_id',
+            //     'evaluado_id',
+            //     'cargo_evaluado_id',
+            //     'gerencia_evaluado_id',
+            //     'subgerencia_evaluado_id',
+            //     'area_evaluado_id',
+            //     'subarea_evaluado_id',
+            //     'cargo_polifuncionalidad_id',
+            //     'horas_turno_polifuncionalidad',
+            //     'fecha' => now()->format('Y-m-d'),
+            //     'encuesta_id' => $encuesta->id,
+            //     'cargo_id',
+            //     'area_id',
+            //     'tipo_area_id',
+            // ]);
+
+            // $cargo = Cargo::make([
+            //     'nombre' => $row['nombre'],
+            //     'descriptor_url' => $row['descriptor_url'],
+            //     'organigrama_url' => $row['organigrama_url'],
+            //     'nombre_fantasia' => $row['nombre_fantasia'],
+            //     'estado' => $row['estado'],
+            // ]);
+
+            // $cargo->supervisor_id = $row['supervisor_id'];
+            // $cargo->nivel_jerarquico_id = $row['nivel_jerarquico_id'];
+            // $cargo->area_id = $row['area_id'];
+
+            // $cargo->save();
+
+            // $cargo->generarArchivo('organigrama');
+            // $cargo->generarArchivo('descriptor');
+        }
+    }
+
+    public function rules(): array
+    {
+        return [
+            '*.rut_evaluador' => [
+                            'required',
+                            'exists:colaboradores,rut',
+                         ],
+            '*.nombres_carga' => ['required', 'string', 'max:255'],
+
+            // 'nombres_carga' => ['required', 'string', 'max:255'],
+            // 'rut_colaborador' => ['required', 'exists:colaboradores,rut'],
+            // 'tipo_carga_id' => ['required', 'exists:tipo_cargas,id'],
+        ];
+    }
+
+    public function obtenerValorRespuesta($pregunta, $valor)
+    {
+        // dd('aqui');
+        $encuestaPlantilla = $pregunta->encuestaPlantilla;
+        if ($encuestaPlantilla->tipo_puntaje == 1) {
+            // tipo puntaje 1
+
+            switch ($valor) {
+                case 'Totalmente de acuerdo':
+                    return 1;
+                case 'De acuerdo':
+                    return 1;
+                case  'Ni de acuerdo ni en desacuerdo':
+                    return 0;
+                case 'En desacuerdo':
+                    return -1;
+                case'Totalmente en desacuerdo':
+                    return -1;
+                default:
+                    return '';
+            }
+        } else {
+            // tipopuntaje 2
+
+            switch ($valor) {
+                case 'Totalmente de acuerdo':
+                    return 100;
+                case 'De acuerdo':
+                    return 75;
+                case  'Ni de acuerdo ni en desacuerdo':
+                    return 50;
+                case 'En desacuerdo':
+                    return 25;
+                case'Totalmente en desacuerdo':
+                    return 0;
+                default:
+                    return '';
+            }
+        }
+    }
+
+    public function rules2($row): array
+    {
+        if ($row['tipo'] == 'cargo') {
+            // dd($row['tipo']);
+
+            return [
+                'rut_evaluador' => [
+                                'required',
+                                'exists:colaboradores,rut',
+                             ],
+                'encuesta_facil_id' => ['required', 'exists:encuestas,encuesta_facil_id'],
+                'tipo' => ['required'],
+                'nombre_tipo' => ['required', 'exists:cargos,nombre'],
+                // 'encuesta_facil_id' => ['required'],
+                // 'nombres_carga' => ['required', 'string', 'max:255'],
+                // 'rut_colaborador' => ['required', 'exists:colaboradores,rut'],
+                // 'tipo_carga_id' => ['required', 'exists:tipo_cargas,id'],
+            ];
+        }
+
+        return [
+            'rut_evaluador' => [
+                            'required',
+                            'exists:colaboradores,rut',
+                         ],
+            'encuesta_facil_id' => ['required', 'exists:encuestas,encuesta_facil_id'],
+            'tipo' => ['required'],
+            'nombre_tipo' => ['required', 'exists:areas,nombre'],
+            // 'encuesta_facil_id' => ['required'],
+            // 'nombres_carga' => ['required', 'string', 'max:255'],
+            // 'rut_colaborador' => ['required', 'exists:colaboradores,rut'],
+            // 'tipo_carga_id' => ['required', 'exists:tipo_cargas,id'],
+        ];
+    }
+}

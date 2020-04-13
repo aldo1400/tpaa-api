@@ -32,6 +32,8 @@ tags:
       description: Everything about consultas
     - name: cursos
       description: Everything about cursos
+    - name: detalle-respuestas
+      description: Everything about detalle respuestas
     - name: estado civiles
       description: Everything about niveles estado civiles
     - name: encuesta plantillas
@@ -2622,6 +2624,32 @@ paths:
                 401:
                     description: Unauthenticated
 
+    "/periodos/{id}/detalle-respuestas":
+        post:
+            tags:
+                - detalle-respuestas
+            summary: Subir un excel de respuestas
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/FileRequest"
+            responses:
+                200:
+                    description: Data retrieved successfully
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
     "/user":
         get:
             tags:
@@ -3569,6 +3597,12 @@ definitions:
                 enum: [0, 1]
             tipo_curso_id:
                 type: integer
+
+    FileRequest:
+        type: object
+        properties:
+            file:
+                type: string
 
     CursoUpdateRequest:
         type: object
