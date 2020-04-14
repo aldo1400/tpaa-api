@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DetalleRespuestas;
 
 use App\Periodo;
+use App\Encuesta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,7 @@ class ImportDataController extends Controller
     {
         $periodo = Periodo::findOrFail($id);
 
+        // dd(Encuesta::all());
         DB::transaction(function () use ($request,$periodo) {
             $encuestaPlantilla = $periodo->encuestaPlantilla;
 
@@ -42,7 +44,7 @@ class ImportDataController extends Controller
                             }
                             $detalleRespuesta->delete();
                         }
-                        $encuesta->delete();
+                        // $encuesta->delete();
                     }
 
                     // dd($ruta);

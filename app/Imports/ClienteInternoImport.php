@@ -80,6 +80,7 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
                 throw ValidationException::withMessages(['message' => 'No se encuentra la columna nombre tipo']);
             }
 
+            // dd(Encuesta::all());
             $customMessages = [
                 'required' => 'El campo :attribute es obligatorio : '.$row['rut_evaluador'],
                 'exists' => 'El campo :attribute es inválido : '.$row['rut_evaluador'],
