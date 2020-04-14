@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetalleRespuesta extends Model
 {
@@ -41,4 +43,20 @@ class DetalleRespuesta extends Model
     protected $dates = [
         'fecha',
     ];
+
+    /**
+     * Get the estado civil for the colaborador.
+     */
+    public function encuesta(): BelongsTo
+    {
+        return $this->belongsTo('App\Encuesta');
+    }
+
+    /**
+     * The colaboradores that belong to the encuesta.
+     */
+    public function respuestas(): HasMany
+    {
+        return $this->hasMany('App\Respuesta');
+    }
 }

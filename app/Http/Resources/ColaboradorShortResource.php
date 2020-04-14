@@ -25,6 +25,8 @@ class ColaboradorShortResource extends JsonResource
             'apellido_paterno' => $this->apellido_paterno ? $this->apellido_paterno : '',
             'apellido_materno' => $this->apellido_materno ? $this->apellido_materno : '',
             'imagen_url' => $this->imagen_url ? $this->imagen_url : '',
+            'cargoActual' => $this->cargoActual() ? new CargoResource($this->cargoActual()) : '',
+            'areaActual' => $this->cargoActual() ? new AreaResource($this->cargoActual()->area) : '',
         ];
     }
 }

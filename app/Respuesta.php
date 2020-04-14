@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Respuesta extends Model
 {
@@ -17,4 +18,12 @@ class Respuesta extends Model
         'detalle_respuesta_id',
         'pregunta_id',
     ];
+
+    /**
+     * Get the estado civil for the colaborador.
+     */
+    public function detalleRespuesta(): BelongsTo
+    {
+        return $this->belongsTo('App\DetalleRespuesta');
+    }
 }

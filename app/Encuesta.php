@@ -49,6 +49,14 @@ class Encuesta extends Model
                 ->withTimestamps();
     }
 
+    /**
+     * The colaboradores that belong to the encuesta.
+     */
+    public function detalleRespuestas(): HasMany
+    {
+        return $this->hasMany('App\DetalleRespuesta');
+    }
+
     public function generarUrl($colaboradorId)
     {
         $colaborador = Colaborador::findOrFail($colaboradorId);
