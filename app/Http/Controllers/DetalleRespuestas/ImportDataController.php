@@ -18,10 +18,10 @@ class ImportDataController extends Controller
         $periodo = Periodo::findOrFail($id);
 
         // dd(Encuesta::all());
-        DB::transaction(function () use ($request,$periodo) {
-            $encuestaPlantilla = $periodo->encuestaPlantilla;
 
-            switch ($encuestaPlantilla->id) {
+        $encuestaPlantilla = $periodo->encuestaPlantilla;
+
+        switch ($encuestaPlantilla->id) {
                 case 1:
 
                     if ($request->file->getClientOriginalName() != 'plantilla_cliente_interno.xlsx') {
@@ -33,19 +33,21 @@ class ImportDataController extends Controller
                         'plantilla_cliente_interno.xlsx'
                     );
 
-                    $encuestas = $periodo->encuestas;
+                    DB::transaction(function () use ($request,$periodo) {
+                        $encuestas = $periodo->encuestas;
 
-                    // dd($encuestas);
-                    foreach ($encuestas as $encuesta) {
-                        $detalleRespuestas = $encuesta->detalleRespuestas;
-                        foreach ($detalleRespuestas as $detalleRespuesta) {
-                            foreach ($detalleRespuesta->respuestas as $respuesta) {
-                                $respuesta->delete();
+                        // dd($encuestas);
+                        foreach ($encuestas as $encuesta) {
+                            $detalleRespuestas = $encuesta->detalleRespuestas;
+                            foreach ($detalleRespuestas as $detalleRespuesta) {
+                                foreach ($detalleRespuesta->respuestas as $respuesta) {
+                                    $respuesta->delete();
+                                }
+                                $detalleRespuesta->delete();
                             }
-                            $detalleRespuesta->delete();
+                            // $encuesta->delete();
                         }
-                        // $encuesta->delete();
-                    }
+                    });
 
                     // dd($ruta);
                     // try {
@@ -66,6 +68,5 @@ class ImportDataController extends Controller
                     // code...
                     break;
             }
-        });
     }
 }
