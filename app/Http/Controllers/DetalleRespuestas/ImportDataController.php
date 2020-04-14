@@ -33,10 +33,11 @@ class ImportDataController extends Controller
 
                     $encuestas = $periodo->encuestas;
 
+                    // dd($encuestas);
                     foreach ($encuestas as $encuesta) {
                         $detalleRespuestas = $encuesta->detalleRespuestas;
                         foreach ($detalleRespuestas as $detalleRespuesta) {
-                            foreach ($detalleRespuestas->respuestas as $respuestas) {
+                            foreach ($detalleRespuesta->respuestas as $respuesta) {
                                 $respuesta->delete();
                             }
                             $detalleRespuesta->delete();

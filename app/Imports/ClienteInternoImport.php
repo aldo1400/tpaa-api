@@ -100,6 +100,19 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
 
             $encuesta = Encuesta::where('encuesta_facil_id', $row['encuesta_facil_id'])
                         ->first();
+
+            $arrayIdEncuesta = $this->periodo->encuestas->pluck('id')->toArray();
+            // dd($arrayIdEncuesta);
+
+            if (!in_array($encuesta->id, $arrayIdEncuesta)) {
+                throw ValidationException::withMessages(['message' => 'Encuesta fácil id no está relacionada con el periodo.']);
+            }
+
+            // dd('fsdfsd');
+            // if ($this->periodo->encuesta->id != $encuesta->id) {
+            //     throw ValidationException::withMessages(['message' => 'Encuesta fácil id no esta relacionada con el periodo.']);
+            // }
+
             $colaborador = Colaborador::where('rut', $row['rut_evaluador'])
                             ->first();
 
