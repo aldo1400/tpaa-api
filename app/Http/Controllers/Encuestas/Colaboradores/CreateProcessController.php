@@ -23,7 +23,7 @@ class CreateProcessController extends Controller
             $datos[$colaborador] = ['estado' => '4', 'url' => $url];
         }
 
-        $encuesta->colaboradores()->sync($datos);
+        $encuesta->colaboradores()->attach($datos);
 
         return response()->json();
     }
