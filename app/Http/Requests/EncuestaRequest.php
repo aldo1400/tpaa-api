@@ -25,7 +25,7 @@ class EncuestaRequest extends FormRequest
     {
         $rules = [
             'nombre' => ['required', 'string', 'max:255'],
-            'descripcion' => ['required', 'string', 'max:255'],
+            'descripcion' => ['nullable', 'string', 'max:255'],
             'fecha_inicio' => ['required', 'date', 'date_format:Y-m-d'],
             'fecha_fin' => ['required', 'date', 'date_format:Y-m-d'],
             'encuesta_facil_id' => ['required', 'string'],

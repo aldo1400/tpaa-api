@@ -27,7 +27,7 @@ class PeriodoRequest extends FormRequest
             'nombre' => ['required', 'string', 'max:255'],
             'year' => ['required', 'integer'],
             'detalle' => ['nullable', 'string'],
-            'descripcion' => ['required', 'string'],
+            'descripcion' => ['nullable', 'string'],
             'encuesta_plantilla_id' => ['required', 'exists:encuesta_plantillas,id'],
             // 'publicado' => ['required', 'boolean'],
         ];
