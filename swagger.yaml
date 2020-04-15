@@ -1829,6 +1829,33 @@ paths:
                 401:
                     description: Unauthenticated
 
+        patch:
+            tags:
+                - encuestas
+            summary: Actualizar una encuesta
+            consumes:
+                - application/json
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+                  description: Encuesta ID
+                - in: body
+                  name: body
+                  required: true
+                  schema:
+                      $ref: "#/definitions/EncuestaUpdateRequest"
+            responses:
+                200:
+                    description: Data retrieved successfully
+                404:
+                    description: Method or resource not found
+                401:
+                    description: Unauthenticated
+
     "/encuestas/{id}/colaboradores-disponibles":
         get:
             tags:
@@ -3693,8 +3720,6 @@ definitions:
     EncuestaCreateRequest:
         type: object
         properties:
-            id:
-                type: integer
             nombre:
                 type: string
             descripcion:
@@ -3709,6 +3734,20 @@ definitions:
                 type: string
             periodo_id:
                 type: integer
+
+    EncuestaUpdateRequest:
+        type: object
+        properties:
+            nombre:
+                type: string
+            fecha_inicio:
+                type: string
+                format: date
+            fecha_fin:
+                type: string
+                format: date
+            encuesta_facil_id:
+                type: string
 
     NotificacionResource:
         type: object

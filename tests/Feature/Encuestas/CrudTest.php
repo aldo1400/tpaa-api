@@ -334,7 +334,7 @@ class CrudTest extends TestCase
                     ->assertSeeText(json_encode('Fecha de termino debe ser mayor a la fecha de inicio.'));
     }
 
-    public function testEditarEncuesta()
+    public function testEditarEncuestaSinColaboradoresRelacionados()
     {
         $encuesta = factory(Encuesta::class)->create();
 
@@ -355,7 +355,7 @@ class CrudTest extends TestCase
         $this->assertDatabaseHas('encuestas', [
             'id' => $encuesta->id,
             'nombre' => $parameters['nombre'],
-            'descripcion' => $parameters['descripcion'],
+            'descripcion' => $encuesta->descripcion,
             'fecha_inicio' => $parameters['fecha_inicio'],
             'fecha_fin' => $parameters['fecha_fin'],
             'encuesta_facil_id' => $parameters['encuesta_facil_id'],
@@ -370,6 +370,99 @@ class CrudTest extends TestCase
             'fecha_fin' => $encuesta->fecha_fin->format('Y-m-d'),
             'encuesta_facil_id' => $encuesta->encuesta_facil_id,
             'periodo_id' => $encuesta->periodo_id,
+        ]);
+    }
+
+    public function testValidarEditarEncuestaConColaboradoresRelacionados()
+    {
+        $colaboradores = factory(Colaborador::class, 3)
+                        ->create([
+                            'estado' => 1,
+                        ]);
+
+        $encuestas = factory(Encuesta::class, 2)
+                    ->create();
+
+        $encuestasId = $encuestas->pluck('id')->toArray();
+
+        $datos = [];
+        $url = 'URL PROVISIONAL';
+
+        foreach ($encuestasId as $encuesta) {
+            $datos[$encuesta] = ['estado' => '4', 'url' => $url];
+        }
+
+        $colaboradores[0]->encuestas()->sync($datos);
+
+        $parameters = [
+            'nombre' => 'Un nombre intersante',
+            'descripcion' => 'Otra descripcion muy corta la verdad',
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'fecha_fin' => now()->addDays(3)->format('Y-m-d'),
+            'encuesta_facil_id' => '65454',
+        ];
+
+        $url = '/api/encuestas/'.$encuestas[0]->id;
+
+        $response = $this->json('PATCH', $url, $parameters);
+
+        $response->assertStatus(409)
+                    ->assertSeeText(json_encode('La encuesta esta relacionada con colaboradores.'));
+    }
+
+    public function testEditarEncuestaConColaboradoresRelacionados()
+    {
+        $colaboradores = factory(Colaborador::class, 3)
+                        ->create([
+                            'estado' => 1,
+                        ]);
+
+        $encuestas = factory(Encuesta::class, 2)
+                    ->create();
+
+        $encuestasId = $encuestas->pluck('id')->toArray();
+
+        $datos = [];
+        $url = 'URL PROVISIONAL';
+
+        foreach ($encuestasId as $encuesta) {
+            $datos[$encuesta] = ['estado' => '4', 'url' => $url];
+        }
+
+        $colaboradores[0]->encuestas()->sync($datos);
+
+        $parameters = [
+            'nombre' => 'Un nombre intersante',
+            'descripcion' => 'Otra descripcion muy corta la verdad',
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'fecha_fin' => now()->addDays(3)->format('Y-m-d'),
+            'encuesta_facil_id' => '',
+        ];
+
+        $url = '/api/encuestas/'.$encuestas[0]->id;
+
+        $response = $this->json('PATCH', $url, $parameters);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('encuestas', [
+            'id' => $encuestas[0]->id,
+            'nombre' => $parameters['nombre'],
+            'descripcion' => $encuestas[0]->descripcion,
+            'fecha_inicio' => $parameters['fecha_inicio'],
+            'fecha_fin' => $parameters['fecha_fin'],
+            'encuesta_facil_id' => $encuestas[0]->encuesta_facil_id,
+            'periodo_id' => $encuestas[0]->periodo_id,
+        ]);
+
+        $this->assertDatabaseMissing('encuestas', [
+            'id' => $encuestas[0]->id,
+            'nombre' => $encuestas[0]->nombre,
+            'descripcion' => $encuestas[0]->descripcion,
+            'fecha_inicio' => $encuestas[0]->fecha_inicio,
+            'fecha_fin' => $encuestas[0]->fecha_fin,
+            'encuesta_facil_id' => $encuestas[0]->encuesta_facil_id,
+            'periodo_id' => $encuestas[0]->periodo_id,
         ]);
     }
 

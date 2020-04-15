@@ -25,13 +25,13 @@ class EncuestaRequest extends FormRequest
     {
         $rules = [
             'nombre' => ['required', 'string', 'max:255'],
-            'descripcion' => ['nullable', 'string', 'max:255'],
             'fecha_inicio' => ['required', 'date', 'date_format:Y-m-d'],
             'fecha_fin' => ['required', 'date', 'date_format:Y-m-d'],
-            'encuesta_facil_id' => ['required', 'string'],
+            'encuesta_facil_id' => ['nullable', 'string'],
         ];
 
-        if ($this->method == 'POST') {
+        if ($this->method() == 'POST') {
+            $rules['descripcion'] = 'nullable|string|max:255';
             $rules['periodo_id'] = 'required|exists:periodos,id';
         }
 
