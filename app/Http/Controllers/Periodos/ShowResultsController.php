@@ -20,10 +20,10 @@ class ShowResultsController extends Controller
 
         // eliminar registros anteriores
         $resultadoAreas = $periodo->resultadoAreas;
-        ResultadoArea::whereIn('periodo_id', $resultadoAreas->pluck('id'))->delete();
+        ResultadoArea::whereIn('periodo_id', $resultadoAreas->pluck('periodo_id'))->delete();
 
-        $areas = Area::where('tipo_area_id', '!=', 1)->get();
-        // dd($areas);
+        $areas = Area::where('tipo_area_id', '!=', 1)->orderBy('tipo_area_id', 'DESC')->get();
+        // dd($areas->pluck('id'));
         $sumaTotal = 0;
         $areasConPromedio = 0;
         foreach ($areas as $area) {
@@ -81,6 +81,8 @@ class ShowResultsController extends Controller
         $areaGerenciaGeneral->periodo()->associate($periodo->id);
         $areaGerenciaGeneral->save();
 
-        return ResultadoAreaResource::collection($periodo->resultadoAreas);
+        // dd($periodo->resultadoAreas->sortByDesc('tipo_area_id')->pluck('area_id'));
+
+        return ResultadoAreaResource::collection($periodo->resultadoAreas->sortByDesc('tipo_area_id'));
     }
 }
