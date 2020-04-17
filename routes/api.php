@@ -199,6 +199,7 @@ Route::get('/periodos', 'Periodos\IndexController');
 Route::post('/periodos', 'Periodos\CreateProcessController');
 Route::get('/periodos/{id}', 'Periodos\ShowController');
 Route::get('/periodos/{id}/encuestas', 'Periodos\Encuestas\IndexController');
+Route::get('/periodos/{id}/estadisticas', 'Periodos\ShowResultsController');
 Route::put('/periodos/{id}', 'Periodos\UpdateProcessController');
 Route::delete('/periodos/{id}', 'Periodos\DeleteProcessController');
 

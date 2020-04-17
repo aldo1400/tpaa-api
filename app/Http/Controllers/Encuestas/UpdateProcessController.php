@@ -12,7 +12,6 @@ class UpdateProcessController extends Controller
     {
         $encuesta = Encuesta::findOrFail($id);
 
-        // dd($encuesta->colaboradores);
         if ($encuesta->colaboradores->count() && $request->encuesta_facil_id) {
             return response()->json(['message' => 'La encuesta esta relacionada con colaboradores.'], 409);
         }

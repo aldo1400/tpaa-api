@@ -44,6 +44,37 @@ class DetalleRespuesta extends Model
         'fecha',
     ];
 
+    protected $appends = ['promedio'];
+
+    public function clienteInternoPromedio()
+    {
+        $respuestas = $this->respuestas;
+        $suma = 0;
+        foreach ($respuestas as $respuesta) {
+            if ($respuesta->valor_respuesta) {
+                $suma = $suma + $respuesta->valor_respuesta;
+            }
+        }
+
+        return ($suma / 10) * 100;
+    }
+
+    public function getPromedioAttribute()
+    {
+        switch ($this->encuesta->periodo->encuestaPlantilla->id) {
+            case 1:
+                $promedio = $this->clienteInternoPromedio();
+                break;
+
+            default:
+                $promedio = 0;
+                break;
+        }
+
+        // $promedio=
+        return $promedio;
+    }
+
     /**
      * Get the estado civil for the colaborador.
      */
