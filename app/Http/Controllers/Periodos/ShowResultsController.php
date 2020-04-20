@@ -22,15 +22,18 @@ class ShowResultsController extends Controller
         $resultadoAreas = $periodo->resultadoAreas;
         ResultadoArea::whereIn('periodo_id', $resultadoAreas->pluck('periodo_id'))->delete();
 
-        $areas = Area::where('tipo_area_id', '!=', 1)->orderBy('tipo_area_id', 'DESC')->get();
+        $areas = Area::orderBy('tipo_area_id', 'DESC')->get();
         // dd($areas->pluck('id'));
         $sumaTotal = 0;
         $areasConPromedio = 0;
         foreach ($areas as $area) {
             $promedio = 0;
             $suma = 0;
-            // dd($areas[0]);
+
             switch ($area->tipoArea->id) {
+                case 1:
+                    $resultados = $detallesRespuestas;
+                    break;
                 case 2:
                     $resultados = $detallesRespuestas->where('gerencia_evaluado_id', $area->id);
 
@@ -73,15 +76,13 @@ class ShowResultsController extends Controller
             $areaResultado->save();
         }
 
-        $areaGerenciaGeneral = ResultadoArea::make([
-            'resultado' => $sumaTotal / $areasConPromedio,
-        ]);
+        // $areaGerenciaGeneral = ResultadoArea::make([
+        //     'resultado' => $sumaTotal / $areasConPromedio,
+        // ]);
 
-        $areaGerenciaGeneral->area()->associate(1);
-        $areaGerenciaGeneral->periodo()->associate($periodo->id);
-        $areaGerenciaGeneral->save();
-
-        // dd($periodo->resultadoAreas->sortByDesc('tipo_area_id')->pluck('area_id'));
+        // $areaGerenciaGeneral->area()->associate(1);
+        // $areaGerenciaGeneral->periodo()->associate($periodo->id);
+        // $areaGerenciaGeneral->save();
 
         return ResultadoAreaResource::collection($periodo->resultadoAreas->sortByDesc('tipo_area_id'));
     }
