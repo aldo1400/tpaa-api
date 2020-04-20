@@ -76,13 +76,7 @@ class ShowResultsController extends Controller
             $areaResultado->save();
         }
 
-        // $areaGerenciaGeneral = ResultadoArea::make([
-        //     'resultado' => $sumaTotal / $areasConPromedio,
-        // ]);
-
-        // $areaGerenciaGeneral->area()->associate(1);
-        // $areaGerenciaGeneral->periodo()->associate($periodo->id);
-        // $areaGerenciaGeneral->save();
+        $periodo = Periodo::findOrFail($id);
 
         return ResultadoAreaResource::collection($periodo->resultadoAreas->sortByDesc('tipo_area_id'));
     }
