@@ -60,12 +60,12 @@ class ShowResultsController extends Controller
                 $suma = $suma + $resultado->promedio;
             }
 
-            $promedio = $resultados->count() ? $suma / $resultados->count() : 0;
+            $promedio = $resultados->count() ? $suma / $resultados->count() : null;
 
-            if ($promedio) {
-                $sumaTotal = $sumaTotal + $promedio;
-                $areasConPromedio = $areasConPromedio + 1;
-            }
+            // if ($promedio) {
+            //     $sumaTotal = $sumaTotal + $promedio;
+            //     $areasConPromedio = $areasConPromedio + 1;
+            // }
 
             $areaResultado = ResultadoArea::make([
                 'resultado' => $promedio,
