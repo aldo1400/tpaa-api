@@ -12,6 +12,7 @@ class EncuestaPlantilla extends Model
     const PRIMER = 'primer';
     const SEGUNDO = 'segundo';
 
+    const CLIENTE_INTERNO_FILE_NAME = 'plantilla_cliente_interno.xlsx';
     /**
      * The attributes that are mass assignable.
      *

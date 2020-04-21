@@ -255,58 +255,6 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
                 // dd($respuesta);
                 $respuesta->save();
             }
-            // dd($row[8]);
-
-            // Respuesta::make([
-//     'resultado'=>,
-//     'valor_respuesta'=>,
-//     'detalle_respuesta_id',
-//     'pregunta_id'
-// ])
-//             'resultado',
-//             'valor_respu
-//             esta',
-//             'detalle_respuesta_id',
-//             'pregunta_id',
-
-            // $detalleRespuesta = DetalleRespuesta::make([
-            //     'evaluador_id' => $colaborador->id,
-            //     'cargo_evaluador_id',
-            //     'gerencia_evaluador_id',
-            //     'subgerencia_evaluador_id',
-            //     'area_evaluador_id',
-            //     'subarea_evaluador_id',
-            //     'evaluado_id',
-            //     'cargo_evaluado_id',
-            //     'gerencia_evaluado_id',
-            //     'subgerencia_evaluado_id',
-            //     'area_evaluado_id',
-            //     'subarea_evaluado_id',
-            //     'cargo_polifuncionalidad_id',
-            //     'horas_turno_polifuncionalidad',
-            //     'fecha' => now()->format('Y-m-d'),
-            //     'encuesta_id' => $encuesta->id,
-            //     'cargo_id',
-            //     'area_id',
-            //     'tipo_area_id',
-            // ]);
-
-            // $cargo = Cargo::make([
-            //     'nombre' => $row['nombre'],
-            //     'descriptor_url' => $row['descriptor_url'],
-            //     'organigrama_url' => $row['organigrama_url'],
-            //     'nombre_fantasia' => $row['nombre_fantasia'],
-            //     'estado' => $row['estado'],
-            // ]);
-
-            // $cargo->supervisor_id = $row['supervisor_id'];
-            // $cargo->nivel_jerarquico_id = $row['nivel_jerarquico_id'];
-            // $cargo->area_id = $row['area_id'];
-
-            // $cargo->save();
-
-            // $cargo->generarArchivo('organigrama');
-            // $cargo->generarArchivo('descriptor');
         }
     }
 
@@ -318,10 +266,6 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
                             'exists:colaboradores,rut',
                          ],
             '*.nombres_carga' => ['required', 'string', 'max:255'],
-
-            // 'nombres_carga' => ['required', 'string', 'max:255'],
-            // 'rut_colaborador' => ['required', 'exists:colaboradores,rut'],
-            // 'tipo_carga_id' => ['required', 'exists:tipo_cargas,id'],
         ];
     }
 
