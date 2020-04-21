@@ -188,6 +188,7 @@ Route::get('/encuestas', 'Encuestas\IndexController');
 Route::post('/encuestas', 'Encuestas\CreateProcessController');
 Route::get('/encuestas/{id}', 'Encuestas\ShowController');
 Route::patch('/encuestas/{id}', 'Encuestas\UpdateProcessController');
+Route::delete('/encuestas/{id}', 'Encuestas\DeleteProcessController');
 
 Route::get('/encuestas/{id}/colaboradores-disponibles', 'Encuestas\Colaboradores\GetAvailableController');
 

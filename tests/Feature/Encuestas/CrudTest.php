@@ -4,8 +4,11 @@ namespace Tests\Feature\Encuestas;
 
 use App\Periodo;
 use App\Encuesta;
+use App\Pregunta;
+use App\Respuesta;
 use Tests\TestCase;
 use App\Colaborador;
+use App\DetalleRespuesta;
 
 class CrudTest extends TestCase
 {
@@ -463,6 +466,78 @@ class CrudTest extends TestCase
             'fecha_fin' => $encuestas[0]->fecha_fin,
             'encuesta_facil_id' => $encuestas[0]->encuesta_facil_id,
             'periodo_id' => $encuestas[0]->periodo_id,
+        ]);
+    }
+
+    public function testEliminarEncuestaConColaboradoresRelacionados()
+    {
+        $colaboradores = factory(Colaborador::class, 3)
+                        ->create([
+                            'estado' => 1,
+                        ]);
+
+        $encuestas = factory(Encuesta::class, 2)
+                        ->create();
+
+        $detalleRespuestas = factory(DetalleRespuesta::class, 3)->create([
+                            'encuesta_id' => $encuestas[0]->id,
+                            'fecha' => now()->format('Y-m-d'),
+                            'evaluador_id' => $colaboradores[1]->id,
+                        ]);
+
+        $pregunta = factory(Pregunta::class)->create();
+
+        $respuesta = factory(Respuesta::class)->create([
+                            'detalle_respuesta_id' => $detalleRespuestas[0]->id,
+                            'pregunta_id' => $pregunta->id,
+                            'resultado' => 'En desacuerdo',
+                        ]);
+
+        $encuestasId = $encuestas->pluck('id')->toArray();
+
+        $datos = [];
+        $url = 'URL PROVISIONAL';
+
+        foreach ($encuestasId as $encuesta) {
+            $datos[$encuesta] = ['estado' => '4', 'url' => $url];
+        }
+
+        $colaboradores[0]->encuestas()->sync($datos);
+
+        $parameters = [
+            'nombre' => 'Un nombre intersante',
+            'descripcion' => 'Otra descripcion muy corta la verdad',
+            'fecha_inicio' => now()->addDays(2)->format('Y-m-d'),
+            'fecha_fin' => now()->addDays(3)->format('Y-m-d'),
+            'encuesta_facil_id' => '',
+        ];
+
+        $url = '/api/encuestas/'.$encuestas[0]->id;
+
+        $response = $this->json('DELETE', $url, $parameters);
+
+        // dd($response->decodeResponseJson());
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('colaborador_encuesta', [
+            'encuesta_id' => $encuestas[0]->id,
+            'colaborador_id' => $colaboradores[0]->id,
+        ]);
+
+        $this->assertDatabaseMissing('detalle_respuestas', [
+            'id' => $detalleRespuestas[0]->id,
+        ]);
+
+        $this->assertDatabaseMissing('detalle_respuestas', [
+            'id' => $detalleRespuestas[1]->id,
+        ]);
+
+        $this->assertDatabaseMissing('detalle_respuestas', [
+            'id' => $detalleRespuestas[2]->id,
+        ]);
+
+        $this->assertDatabaseMissing('respuestas', [
+            'id' => $respuesta->id,
         ]);
     }
 
