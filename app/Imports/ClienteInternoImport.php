@@ -50,13 +50,7 @@ class ClienteInternoImport implements ToCollection, WithValidation, WithHeadingR
     public function collection(Collection $rows)
     {
         $this->data = $rows;
-        // dd($this->periodo);
-        //    dd($rows->toArray());
 
-        // if (!$rows) {
-        //     throw ValidationException::withMessages(['message' => 'El excel esta vacio.']);
-        // }
-        // dd($rows);
         foreach ($rows as $row) {
             $keys = $row->keys();
 

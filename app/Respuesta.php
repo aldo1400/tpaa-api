@@ -26,4 +26,9 @@ class Respuesta extends Model
     {
         return $this->belongsTo('App\DetalleRespuesta');
     }
+
+    public function pregunta(): BelongsTo
+    {
+        return $this->belongsTo('App\Pregunta');
+    }
 }

@@ -59,19 +59,45 @@ class DetalleRespuesta extends Model
         return ($suma / 10) * 100;
     }
 
+    public function encuestaClimaPromedio()
+    {
+        $respuestas = $this->respuestas;
+        $suma = 0;
+        $promedioTotal = 0;
+        // TO DO Mejorar algoritmo
+        for ($i = 1; $i < 23; ++$i) {
+            $suma = 0;
+            $numeroRespuestas = 0;
+            foreach ($respuestas as $respuesta) {
+                if ($respuesta->valor_respuesta && $respuesta->pregunta->item == $i) {
+                    $suma = $suma + $respuesta->valor_respuesta;
+                    $numeroRespuestas = $numeroRespuestas + 1;
+                }
+            }
+
+            $promedio = $suma / $numeroRespuestas;
+
+            $promedioTotal = $promedio + $promedioTotal;
+        }
+
+        return ($promedioTotal / 22) * 100;
+    }
+
     public function getPromedioAttribute()
     {
         switch ($this->encuesta->periodo->encuestaPlantilla->id) {
             case 1:
                 $promedio = $this->clienteInternoPromedio();
                 break;
+            case 2:
 
+                $promedio = $this->encuestaClimaPromedio();
+                break;
             default:
                 $promedio = 0;
                 break;
         }
 
-        // $promedio=
         return $promedio;
     }
 

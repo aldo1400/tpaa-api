@@ -10,7 +10,7 @@ class ImportDataController extends Controller
 {
     public function __invoke()
     {
-        Excel::import(new PreguntasImport(), 'public/Preguntas.xlsx');
+        Excel::import(new PreguntasImport(), 'public/Pregunta2.xlsx');
 
         return redirect('/')->with('success', 'All good!');
     }

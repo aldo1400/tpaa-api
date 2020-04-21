@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pregunta extends Model
 {
-    const ALTERNATIVA = 'Alternativa';
+    const ALTERNATIVA = 'alternativas';
     const ABIERTA = 'Abierta';
     const CERRADA = 'Cerrada';
 
