@@ -85,7 +85,11 @@ class DetalleRespuesta extends Model
 
     public function getPromedioAttribute()
     {
-        switch ($this->encuesta->periodo->encuestaPlantilla->id) {
+        $encuestaPlantilla = $this->encuesta
+                                ->periodo
+                                ->encuestaPlantilla;
+
+        switch ($encuestaPlantilla->id) {
             case 1:
                 $promedio = $this->clienteInternoPromedio();
                 break;

@@ -33,11 +33,6 @@ class ImportDataController extends Controller
                         return response()->json(['message' => 'El nombre del archivo es incorrecto.'], 409);
                     }
 
-                    $ruta = $request->file->storeAs(
-                        'public/detalle_respuestas',
-                        EncuestaPlantilla::CLIENTE_INTERNO_FILE_NAME
-                    );
-
                     DB::transaction(function () use ($request,$periodo) {
                         $encuestas = $periodo->encuestas;
 
@@ -53,9 +48,14 @@ class ImportDataController extends Controller
                     });
 
                         $import = new ClienteInternoImport($periodo);
-                        Excel::import($import, $ruta);
+                        Excel::import($import, $request->file);
 
                         $this->calcularResultadosClienteInterno($periodo);
+
+                        $ruta = $request->file->storeAs(
+                            'public/detalle_respuestas',
+                            EncuestaPlantilla::CLIENTE_INTERNO_FILE_NAME
+                        );
 
                         return response()->json(['data' => $import->data], 200);
                     break;
@@ -65,11 +65,6 @@ class ImportDataController extends Controller
                     if ($request->file->getClientOriginalName() != EncuestaPlantilla::ENCUESTA_CLIMA_FILE_NAME) {
                         return response()->json(['message' => 'El nombre del archivo es incorrecto.'], 409);
                     }
-
-                    $ruta = $request->file->storeAs(
-                        'public/detalle_respuestas',
-                        EncuestaPlantilla::ENCUESTA_CLIMA_FILE_NAME
-                    );
 
                     DB::transaction(function () use ($request,$periodo) {
                         $encuestas = $periodo->encuestas;
@@ -86,13 +81,18 @@ class ImportDataController extends Controller
                     });
 
                     $import = new EncuestaClimaImport($periodo);
-                    Excel::import($import, $ruta);
+                    Excel::import($import, $request->file);
 
                     $this->calcularResultadosEncuestaClima($periodo);
 
+                    $ruta = $request->file->storeAs(
+                        'public/detalle_respuestas',
+                        EncuestaPlantilla::ENCUESTA_CLIMA_FILE_NAME
+                    );
+
                     return response()->json(['data' => $import->data], 200);
 
-                    // no break
+                    break;
                 default:
                     // code...
                     break;

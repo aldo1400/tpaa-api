@@ -81,6 +81,10 @@ class EncuestaClimaImport implements ToCollection, WithValidation, WithHeadingRo
 
             $cargo = $colaborador->cargoActual();
 
+            if (!$cargo) {
+                throw ValidationException::withMessages(['message' => 'Rut colaborador sin cargo asignado.Fila:'.$colaborador->rut]);
+            }
+
             $areas = $cargo->area->obtenerAreasRelacionadas();
 
             $detalleRespuesta = DetalleRespuesta::make([
@@ -164,6 +168,10 @@ class EncuestaClimaImport implements ToCollection, WithValidation, WithHeadingRo
 
                 $valor = $row[$keys[$i]];
 
+                if (!$valor) {
+                    throw ValidationException::withMessages(['pregunta' => 'Se encontraron respuestas sin completar. Fila: '.$colaborador->rut]);
+                }
+
                 $respuesta = Respuesta::make([
                     'resultado' => $valor,
                     'valor_respuesta' => $pregunta->tipo == 'alternativas' ? $this->obtenerValorRespuesta($pregunta, $valor) : null,
@@ -238,7 +246,7 @@ class EncuestaClimaImport implements ToCollection, WithValidation, WithHeadingRo
                             'exists:colaboradores,rut',
                          ],
             'Encuesta_Facil_ID' => ['required', 'exists:encuestas,encuesta_facil_id'],
-            'Rut  a Evaluar' => ['required'],
+            'Rut  a Evaluar' => ['required', 'exists:colaboradores,rut'],
         ];
     }
 }
