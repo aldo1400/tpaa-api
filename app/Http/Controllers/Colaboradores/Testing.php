@@ -12,7 +12,7 @@ class Testing extends Controller
 {
     public function __invoke($rut)
     {
-        // dd($rut);
+        $excepcionCargo = false;
         $colaborador = Colaborador::where('rut', $rut)->first();
         $movilidad = Movilidad::where('colaborador_id', $colaborador->id)
                     ->where('estado', 1)
@@ -20,6 +20,11 @@ class Testing extends Controller
 
         if (!$movilidad) {
             return $array_hijos = [];
+        }
+
+        if ($movilidad->cargo->nombre == 'Gerente de Personas' || $movilidad->cargo->nombre == 'Gerente General') {
+            $movilidad->cargo_id = 1;
+            $excepcionCargo = true;
         }
 
         $array_hijos = Cargo::where('supervisor_id', $movilidad->cargo_id)->get();
@@ -50,6 +55,10 @@ class Testing extends Controller
             foreach ($movilidades as $movilidad) {
                 $colaboradores->push($movilidad->colaborador);
             }
+        }
+
+        if ($excepcionCargo) {
+            $colaboradores = $colaboradores->where('id', '!=', $colaborador->id);
         }
 
         return ColaboradorResource::collection($colaboradores);

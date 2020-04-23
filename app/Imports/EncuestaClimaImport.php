@@ -58,8 +58,8 @@ class EncuestaClimaImport implements ToCollection, WithValidation, WithHeadingRo
             }
 
             $customMessages = [
-                'required' => 'El campo :attribute es obligatorio : '.$row['Rut Evaluador'],
-                'exists' => 'El campo :attribute es inválido : '.$row['Rut Evaluador'],
+                'required' => 'Fila : '.$row['Rut Evaluador'].' Error: El campo :attribute es obligatorio ',
+                'exists' => 'Fila : '.$row['Rut Evaluador'].' Error: El campo :attribute es inválido ',
             ];
 
             Validator::make($row->toArray(), $this->rules2($row), $customMessages)->validate();
@@ -82,7 +82,7 @@ class EncuestaClimaImport implements ToCollection, WithValidation, WithHeadingRo
             $cargo = $colaborador->cargoActual();
 
             if (!$cargo) {
-                throw ValidationException::withMessages(['message' => 'Rut colaborador sin cargo asignado.Fila:'.$colaborador->rut]);
+                throw ValidationException::withMessages(['message' => 'Fila : '.$colaborador->rut.' Error : Rut colaborador sin cargo asignado']);
             }
 
             $areas = $cargo->area->obtenerAreasRelacionadas();
@@ -169,7 +169,7 @@ class EncuestaClimaImport implements ToCollection, WithValidation, WithHeadingRo
                 $valor = $row[$keys[$i]];
 
                 if (!$valor) {
-                    throw ValidationException::withMessages(['pregunta' => 'Se encontraron respuestas sin completar. Fila: '.$colaborador->rut]);
+                    throw ValidationException::withMessages(['pregunta' => 'Fila : '.$colaborador->rut.' Error : Se encontraron respuestas sin completar.']);
                 }
 
                 $respuesta = Respuesta::make([

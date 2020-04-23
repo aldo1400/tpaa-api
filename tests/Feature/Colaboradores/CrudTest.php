@@ -1624,8 +1624,6 @@ class CrudTest extends TestCase
 
     public function testObtenerTodosColaboradoresHijos()
     {
-        // $curso = factory(Curso::class)->create();
-
         $colaborador = factory(Colaborador::class)
                     ->create([
                         'estado' => 1,
@@ -1646,14 +1644,13 @@ class CrudTest extends TestCase
         ]);
 
         $cargoHijo = factory(Cargo::class)->create([
-            'nombre' => 'Cargo Hijo',
             'estado' => 1,
             'supervisor_id' => $cargoSupervisor->id,
         ]);
 
         $cargoNieto = factory(Cargo::class)->create([
             'nombre' => 'Cargo Nieto',
-            'estado' => 0,
+            'estado' => 1,
             'supervisor_id' => $cargoHijo->id,
         ]);
 
@@ -1671,7 +1668,7 @@ class CrudTest extends TestCase
 
         $movilidadHijoSegundo = factory(Movilidad::class)->create([
             'estado' => 1,
-            'cargo_id' => $cargoHijo->id,
+            'cargo_id' => $cargoNieto->id,
             'colaborador_id' => $colaboradorHijoSegundo->id,
         ]);
 
@@ -1683,6 +1680,71 @@ class CrudTest extends TestCase
         // $response->assertStatus(200);
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data');
+    }
+
+    public function testObtenerTodosColaboradoresHijosDeUnGerenteGeneral()
+    {
+        // $curso = factory(Curso::class)->create();
+
+        $colaboradorPadre = factory(Colaborador::class)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        $colaborador = factory(Colaborador::class)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        $colaboradorHijoPrimero = factory(Colaborador::class)
+                    ->create([
+                        'estado' => 1,
+                    ]);
+
+        $cargoSupervisor = factory(Cargo::class)->create([
+            'id' => 1,
+            'nombre' => 'TPA',
+            'estado' => 1,
+        ]);
+
+        $cargoHijo = factory(Cargo::class)->create([
+            'nombre' => 'Gerencia de Personas',
+            'estado' => 1,
+            'supervisor_id' => $cargoSupervisor->id,
+        ]);
+
+        $cargoNieto = factory(Cargo::class)->create([
+            'nombre' => 'Cargo Nieto',
+            'estado' => 1,
+            'supervisor_id' => $cargoHijo->id,
+        ]);
+
+        $movilidadPadre = factory(Movilidad::class)->create([
+            'estado' => 1,
+            'cargo_id' => $cargoSupervisor->id,
+            'colaborador_id' => $colaboradorPadre->id,
+        ]);
+
+        $movilidad = factory(Movilidad::class)->create([
+            'estado' => 1,
+            'cargo_id' => $cargoHijo->id,
+            'colaborador_id' => $colaborador->id,
+        ]);
+
+        $movilidadHijoPrimero = factory(Movilidad::class)->create([
+            'estado' => 1,
+            'cargo_id' => $cargoNieto->id,
+            'colaborador_id' => $colaboradorHijoPrimero->id,
+        ]);
+
+        $url = '/api/colaboradores-hijos/'.$colaborador->rut;
+
+        $response = $this->json('GET', $url);
+        // dd($response->decodeResponseJson());
+        //
+        // $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data');
     }
 
     public function testObtenerTodosLasEncuestasRelacionadosConUnColaborador()
